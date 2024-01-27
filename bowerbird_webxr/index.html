@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/components/sphere-collider.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/dist/physx.min.js"></script>
@@ -21,18 +21,22 @@
     <script src="https://cdn.jsdelivr.net/npm/handy-work@3.1.10/build/handy-controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work@3.1.10/build/magnet-helpers.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-htmlmesh@2.2.0/build/aframe-html.min.js"></script>
-    <script src="ar-shadow-helper.js"></script>
-    <script src="ar-cursor.js"></script>
+
+    <script src="./src/components/colorize.js"></script>
+    <!-- <script src="ar-shadow-helper.js"></script> -->
+    <!-- <script src="ar-cursor.js"></script> -->
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
+
+    <!-- <script src="main.js"></script> -->
   </head>
 
   <body>
     <!-- <div id="app"></div>
     <script type="module" src="./src/index.ts"></script> -->
 
+    <!-- stats -->
     <a-scene
-      stats
       physx="autoLoad: true; delay: 1000; wasmUrl: https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/wasm/physx.release.wasm; useDefaultScene: false;"
       webxr="overlayElement:#dom-overlay;"
       background="color: #232323;"
@@ -42,7 +46,7 @@
       shadow="type: pcfsoft"
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.6/;"
       ar-cursor raycaster="objects: #my-ar-objects a-sphere"
-      xr-mode-ui="XRMode:vr"
+      xr-mode-ui="XRMode:xr"
       fog="type: exponential; color: #232323; density: 0; near: 0.1; far: 100;"
     >
       <a-assets>
@@ -55,7 +59,7 @@
         <!-- <a-asset-item id="watch-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watch.glb?v=1645016979219"></a-asset-item> -->
         <!-- <a-asset-item id="sword-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/katana.glb?v=1648465043810"></a-asset-item> -->
         <!-- <a-asset-item id="watergun-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watergun.glb?v=1646916260646"></a-asset-item> -->
-        <!-- <a-asset-item id="stew-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/model.gltf?v=1690887932932"></a-asset-item> -->
+        <a-asset-item id="apple-gltf" src="./src/assets/objects/red_apple.glb"></a-asset-item>
         <!-- <a-asset-item id="table-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/small_wooden_table_01_1k-v1.glb?v=1647263187998"></a-asset-item> -->
         <!-- <a-asset-item id="clock-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/vintage_grandfather_clock_01_1k-v2.glb?v=1647265174189"></a-asset-item> -->
         <!-- <a-asset-item id="ladder-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/ladder.glb?v=1648465045608"></a-asset-item> -->
@@ -105,63 +109,51 @@
         </a-entity>
         
         <!-- Hand tracking -->
-        <a-entity handy-controls="
-          right: #right-gltf;
-          materialOverride: right, left;
-          left: #left-gltf;"
-          material="color: gold;
-          metalness: 1;
-          roughness: 0;">
-          
-          <!-- For screen space inputs like mobile AR -->
-          <!-- <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
+        <a-entity handy-controls="materialOverride:right;" material="color:gold;metalness:1;roughness:0;">
+
+          <!-- Screen space inputs like mobile AR -->
+          <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:green" data-none="screen-1"></a-torus>
-          <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:red" data-none="screen-2"></a-torus> -->
+          <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:red" data-none="screen-2"></a-torus>
           
-          <!-- Put an exit button on the wrist for handtracking -->
+          <!-- Objects attached to tracked hand joints -->
           <!-- <a-gltf-model src="#watch-gltf" data-left="wrist" position="-1000 0 0">
             <a-sphere radius="0.02" position="0 0.02 0" sphere-collider="radius:0.02;objects:[data-right$=-tip];" exit-on="hitend" visible="false"></a-sphere>
           </a-gltf-model> -->
-          
-          <!-- Add a golden ring on the finger -->
           <!-- <a-entity data-left="ring-finger-phalanx-proximal">
             <a-torus position="0 0 -0.03" radius="0.008" radius-tubular="0.001" scale="1 1 1.5" material="color:gold;metalness:1;roughness:0;"></a-torus>
           </a-entity> -->
           
-          <!-- Use the finger tips for teleporting when the user points -->
-          <a-entity data-right="index-finger-tip" mixin="blink" blink-controls="snapTurn:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;cancelEvents:pose_cancel_point;"></a-entity>
-          <a-entity data-left="index-finger-tip"  mixin="blink" blink-controls="snapTurn:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;cancelEvents:pose_cancel_point;"></a-entity>
-
-          <!-- The direction hands are facing, we will also attach labels to show the currently detected pose or controller button -->
-          <!-- These also do teleportaion for Blink controls in VR -->
-          <a-entity data-right="ray" mixin="blink" cursor="" raycaster="objects:[html];far:0.3;showLine:false;lineColor:black;">
-            <a-entity position="0 0 -0.22" visible="false" class="pose-label" text="value: Hello World; align: center;"></a-entity>
-          </a-entity>
-          <a-entity data-left="ray" mixin="blink" cursor="" raycaster="objects:[html];far:0.3;showLine:false;lineColor:black;">
-            <a-entity position="0 0 -0.22" visible="false" class="pose-label" text="value: Hello World; align: center;"></a-entity>
-          </a-entity>
+          <a-entity data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;"></a-entity>
+          <a-entity data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;"></a-entity>
           
-          <!-- These get drawn towards grabable objects, moving the whole hand and the attached elements-->
-          <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#left-no-magnet;"></a-entity>
-          <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#right-no-magnet;"></a-entity>
-      
-          <!-- markers to let us know the real location of the hands, you probably want to make them visible="false" or just make them empty <a-entities> -->
-          <a-entity id="left-no-magnet" data-left="grip" data-no-magnet>
-            <a-entity html="html:#my-interface;cursor:#cursor" position="-0.142 -0.0166 -0.02928" rotation="-80 90 0" scale="0.7 0.7 0.7"></a-entity>
+          <!-- Ray and Grip are Available on Hands or Tracked Inputs -->
+          <a-entity data-right="ray" mixin="blink" blink-controls>
+            <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
           </a-entity>
-          <a-entity id="right-no-magnet" data-right="grip" data-no-magnet></a-entity>
+          <a-entity data-left="ray" mixin="blink" blink-controls>
+            <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
+          </a-entity>
+        
+          <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
+          <a-entity id="right-magnet" data-right="grip" data-magnet=".magnet-right:not([data-no-magnet]),.magnet:not([data-no-magnet])" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
+          <a-entity id="left-magnet" data-left="grip"  data-magnet=".magnet-left:not([data-no-magnet]),.magnet:not([data-no-magnet])"  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
+        
+          <!-- Markers to let us know the real location of the hands -->
+          <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
+          <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
           
           <!-- Invisible objects at the tips of each finger for physics or intersections -->
-          <a-sphere data-right="index-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-right="middle-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-right="ring-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-right="pinky-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-right="thumb-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-left="index-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-left="middle-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-left="ring-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-left="pinky-finger-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
-          <a-sphere data-left="thumb-tip" radius="0.004" visible="false" physx-body="type: kinematic;"></a-sphere>
+          <a-sphere data-right="index-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-right="middle-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-right="ring-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-right="pinky-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-right="thumb-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-left="index-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-left="middle-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-left="ring-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-left="pinky-finger-tip" radius="0.01" visible="false"></a-sphere>
+          <a-sphere data-left="thumb-tip" radius="0.01" visible="false"></a-sphere>
         </a-entity>
       </a-entity>
       
@@ -171,7 +163,7 @@
         <a-entity id="ambientlight"
           light="
             type: ambient;
-            intensity: 0.1;
+            intensity: 1;
             color: #fff;"
           >
         </a-entity>
@@ -181,7 +173,7 @@
             type: spot;
             angle: 50;
             penumbra: 0.25;
-            intensity: 2;
+            intensity: 8;
             shadowBias: -0.0001;
             shadowMapHeight: 1024;
             shadowMapWidth: 1024;
@@ -207,9 +199,21 @@
       </a-entity> -->
 
       <a-gltf-model id="testScene"
+        colorize="color: #fff"
         position="0 0 -3"
+        scale="1.2 1.2 1.2"
         src="#test1-glb"
+        shadow
       >
+        <a-box 
+          position="-5.148 -0.1 -0.355"
+          visible="false"
+          geometry="width:33.67;height:0.2;depth:19.06"
+          physx-body="type: static;"
+          physx-restitution="1.5">
+        </a-box>
+        <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="" shadow="receive: false" src="#apple-gltf" position="0.5885 0.55577 0" scale="0.2 0.2 0.2" physx-body-from-model="type:dynamic;mass:2;" gltf-model="./src/assets/objects/red_apple.glb" data-pick-up="" data-magnet-range="0.2,0.1,360,0">
+        </a-gltf-model>
       </a-gltf-model>
 
       
@@ -221,17 +225,6 @@
 
       <!-- <a-entity hide-on-enter-ar position="0 -0.2 0" environment="lighting:none;shadow:true;preset: osiris;"></a-entity> -->
       <a-entity rotation="0 0 0" position="0 0 0" hide-on-enter-ar>
-        <a-box 
-          position="-5.148 -0.1 -0.355"
-          visible="false"
-          geometry="width:33.67;height:0.2;depth:19.06"
-          physx-body="type: static;"
-          physx-restitution="1.5">
-        </a-box>
-        <!-- <a-gltf-model id="pot" toggle-physics shadow="receive:false;" src="#stew-gltf" position="-2 1.2 0.8" physx-body-from-model="type:dynamic;mass:2;">
-          <a-entity id="stew-handle-1" data-magnet-range="0.2,0.1,360,180" data-pick-up="parent" class="magnet-left magnet-right" position="0 0.35 -0.35" rotation="0 90 0"></a-entity>
-          <a-entity id="stew-handle-2" data-magnet-range="0.2,0.1,360,180" data-pick-up="parent" class="magnet-left magnet-right" position="0 0.35 0.35" rotation="0 90 0"></a-entity>
-        </a-gltf-model> -->
         <!-- <a-gltf-model id="table" shadow="receive:true;" src="#table-gltf" position="-2 0 0.8" rotation="0 51 0" scale="1.5 1.5 1.5" physx-body-from-model="type: static;">
           <a-plane rotation="-90 0 0" width="1.2" height="0.6" class="navmesh-hole" visible="false"></a-plane>
         </a-gltf-model> -->
@@ -295,6 +288,7 @@
         
         <!-- HTML form logic -->
         <script>
+          console.log('hello')
           let movementType = 'teleport';
           function toggleThumbstick(detail) {
             const rayPointers = ['[data-right="ray"]', '[data-left="ray"]'].map(s => document.querySelector(s));
