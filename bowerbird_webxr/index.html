@@ -28,7 +28,7 @@
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
 
-    <!-- <script src="main.js"></script> -->
+    <script src="main.js"></script>
   </head>
 
   <body>
@@ -109,7 +109,7 @@
         </a-entity>
         
         <!-- Hand tracking -->
-        <a-entity handy-controls="materialOverride:right;" material="color:gold;metalness:1;roughness:0;">
+        <a-entity handy-controls="materialOverride:none;">
 
           <!-- Screen space inputs like mobile AR -->
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
@@ -136,9 +136,9 @@
           </a-entity>
         
           <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
-          <a-entity id="right-magnet" data-right="grip" data-magnet=".magnet-right:not([data-no-magnet]),.magnet:not([data-no-magnet])" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
-          <a-entity id="left-magnet" data-left="grip"  data-magnet=".magnet-left:not([data-no-magnet]),.magnet:not([data-no-magnet])"  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;"></a-entity>
-        
+          <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#left-no-magnet;"></a-entity>
+          <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#right-no-magnet;"></a-entity>
+      
           <!-- Markers to let us know the real location of the hands -->
           <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
           <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
@@ -156,6 +156,9 @@
           <a-sphere data-left="thumb-tip" radius="0.01" visible="false"></a-sphere>
         </a-entity>
       </a-entity>
+
+      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" grab-options="scalable" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
+      </a-gltf-model>
       
       <a-entity id="spotlightParent"
         position="0 3 -5">
@@ -198,11 +201,12 @@
         <a-plane rotation="-90 0 0" shadow="cast:false;receive:true;" position="0 0.01 0" material="shader:shadow; depthWrite:false; opacity:0.9;"></a-plane>
       </a-entity> -->
 
+      <!-- colorize="color: #fff" -->
       <a-gltf-model id="testScene"
-        colorize="color: #fff"
         position="0 0 -3"
         scale="1.2 1.2 1.2"
         src="#test1-glb"
+        physx-body-from-model="type: static;"
         shadow
       >
         <a-box 
@@ -212,8 +216,7 @@
           physx-body="type: static;"
           physx-restitution="1.5">
         </a-box>
-        <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="" shadow="receive: false" src="#apple-gltf" position="0.5885 0.55577 0" scale="0.2 0.2 0.2" physx-body-from-model="type:dynamic;mass:2;" gltf-model="./src/assets/objects/red_apple.glb" data-pick-up="" data-magnet-range="0.2,0.1,360,0">
-        </a-gltf-model>
+
       </a-gltf-model>
 
       
