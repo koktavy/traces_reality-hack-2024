@@ -98,6 +98,9 @@ AFRAME.registerComponent("physx-body-from-model", {
   }
 });
 
+const quaternion = new THREE.Quaternion();
+const xyz = new THREE.Vector3();
+
 AFRAME.registerComponent("toggle-physics", {
   events: {
     pickup: function() {
@@ -109,7 +112,12 @@ AFRAME.registerComponent("toggle-physics", {
         const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
         const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
         if (pose && pose.angularVelocity) {
-          this.el.components['physx-body'].rigidBody.setAngularVelocity(pose.angularVelocity);
+          // Ex: {x: -0.21239659190177917, y: -0.27352192997932434, z: 0.286095529794693, w: 1}
+          // convert {x y z w} to {x y z}
+          quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
+          quaternion.normalize();
+          xyz.set(quaternion.x, quaternion.y, quaternion.z);
+          this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
         }
         if (pose && pose.linearVelocity) {
           this.el.components['physx-body'].rigidBody.setLinearVelocity(pose.linearVelocity);
