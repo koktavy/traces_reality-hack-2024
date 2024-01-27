@@ -69,7 +69,10 @@
           rotateOnTeleport: false;
           cameraRig: #cameraRig; 
           teleportOrigin: #head; 
-          collisionEntities: .navmesh;">
+          collisionEntities: .navmesh;
+          snapTurnAngle: 15;
+          teleportationMethod: position-warp;
+          positionWarpDuration: 750">
         </a-mixin>
         <a-mixin id="handle-visual" geometry="width:0.05;height:0.05;depth:0.2"></a-mixin>
 
