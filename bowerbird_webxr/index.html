@@ -50,8 +50,8 @@
         <!-- <a-asset-item id="test2-glb" src="./src/assets/Models/Testscene-v2.glb"></a-asset-item> -->
 
         <!-- <a-asset-item id="navmesh-glb" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/navmesh.glb?v=1644329586500"></a-asset-item> -->
-        <!-- <a-asset-item id="right-gltf" src="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/skeleton-right-hand-webxr/model.gltf"></a-asset-item> -->
-        <!-- <a-asset-item id="left-gltf" src="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/skeleton-left-hand-webxr/model.gltf"></a-asset-item> -->
+        <a-asset-item id="right-gltf" src="./src/assets/Models/player/blob-right-hand.glb"></a-asset-item>
+        <a-asset-item id="left-gltf" src="./src/assets/Models/player/blob-left-hand.glb"></a-asset-item>
         <!-- <a-asset-item id="watch-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watch.glb?v=1645016979219"></a-asset-item> -->
         <!-- <a-asset-item id="sword-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/katana.glb?v=1648465043810"></a-asset-item> -->
         <!-- <a-asset-item id="watergun-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watergun.glb?v=1646916260646"></a-asset-item> -->
@@ -105,7 +105,13 @@
         </a-entity>
         
         <!-- Hand tracking -->
-        <a-entity handy-controls="right:#right-gltf;materialOverride:right;" material="color:gold;metalness:1;roughness:0;">
+        <a-entity handy-controls="
+          right: #right-gltf;
+          materialOverride: right, left;
+          left: #left-gltf;"
+          material="color: gold;
+          metalness: 1;
+          roughness: 0;">
           
           <!-- For screen space inputs like mobile AR -->
           <!-- <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
