@@ -12,7 +12,11 @@ This is where a description of your project will go. README.md files support [Ma
 
 **Oh yeah, by the way, don't forget to set up `git lfs` on your machine.**
 
-Tell everyone what your project needs in order to run. This might involve many components or software. Maybe some cool libraries?
+_Setup Journal_
+- Unity 2022.3.18f1
+- 3D UPR project created
+- Add [Meta XR All-in-One SDK](https://assetstore.unity.com/packages/tools/integration/meta-xr-all-in-one-sdk-269657) from website
+- 
 
 ### Hardware Required
 
