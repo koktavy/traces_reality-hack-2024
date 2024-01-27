@@ -32,6 +32,7 @@
     <script type="module" src="./src/index.ts"></script> -->
 
     <a-scene
+      stats
       physx="autoLoad: true; delay: 1000; wasmUrl: https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/wasm/physx.release.wasm; useDefaultScene: false;"
       webxr="overlayElement:#dom-overlay;"
       background="color: #232323;"
@@ -42,7 +43,7 @@
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.6/;"
       ar-cursor raycaster="objects: #my-ar-objects a-sphere"
       xr-mode-ui="XRMode:vr"
-      fog="type: exponential; color: #232323; density: 0.125; near: 0.1; far: 100;"
+      fog="type: exponential; color: #232323; density: 0; near: 0.1; far: 100;"
     >
       <a-assets>
         <a-asset-item id="test1-glb" src="./src/assets/Models/Testscene-v1.glb"></a-asset-item>
@@ -62,6 +63,9 @@
         <a-mixin id="animations" animation__click="property: components.material.material.color; type: color; to: blue; startEvents: click; dur: 500;"></a-mixin>
         <a-mixin id="blink" blink-controls="rotateOnTeleport:false;cameraRig: #cameraRig; teleportOrigin: #head; collisionEntities:.navmesh;"></a-mixin>
         <a-mixin id="handle-visual" geometry="width:0.05;height:0.05;depth:0.2"></a-mixin>
+
+        <!-- images -->
+        <img id="lightfadeSrc" src="./src/assets/images/light-fade.png" crossorigin="anonymous">
       </a-assets>
 
       <a-entity
@@ -169,7 +173,7 @@
           rotation="-90 0 0"
           light="
             type: spot;
-            angle: 25;
+            angle: 50;
             penumbra: 0.25;
             intensity: 2;
             shadowBias: -0.0001;
@@ -179,20 +183,8 @@
             castShadow: true;"
           >
         </a-entity>
-        <a-entity id="spotlightCone"
-          position="0 -1.495 0"
-          rotation="0 0 0"
-          geometry="
-            primitive: cone;
-            radiusBottom: 1.2;
-            height: 3;
-            openEnded: true;"
-          material="
-            color: #ddd;
-            side: back;
-            transparent: true;
-            opacity: 1"
-          >
+        <a-entity id="spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+        </a-entity>
         </a-entity>
       </a-entity>
       <!-- <a-entity id="my-ar-objects" position="-6 0 1"> -->
