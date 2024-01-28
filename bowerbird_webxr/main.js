@@ -6,7 +6,38 @@ AFRAME.registerComponent('scene-controller', {
     default: ''
   },
   init: function () {
+    this.el.sceneEl.addEventListener('teleported', () => {
+      document.getElementById('1intro').components['sound'].playSound()
+      document.getElementById('piano').components['sound'].playSound()
+    }, { once: true })
     this.endScene = this.endScene.bind(this)
+    this.control = this.control.bind(this)
+
+    this.scene1 = null
+    this.scene2 = null
+    this.scene3 = null
+    this.scene4 = null
+    this.scene5 = null
+    this.scene6 = null
+    this.scene7 = null
+    this.scene8 = null
+    this.scene9 = null
+    this.scene10 = null
+    this.scene11 = null
+    this.scene12 = null
+
+    this.hero1 = document.getElementById('1hero')
+    this.hero2 = document.getElementById('2hero')
+    this.hero3 = document.getElementById('3hero')
+    this.hero4 = document.getElementById('4hero')
+    this.hero5 = document.getElementById('5hero')
+    this.hero6 = document.getElementById('6hero')
+    this.hero7 = document.getElementById('7hero')
+    this.hero8 = document.getElementById('8hero')
+    this.hero9 = document.getElementById('9hero')
+    this.hero10 = document.getElementById('10hero')
+    this.hero11 = document.getElementById('11hero')
+    this.hero12 = document.getElementById('12hero')
     // Build onboarding slideshow
 
     // Show Title card
@@ -15,26 +46,47 @@ AFRAME.registerComponent('scene-controller', {
 
     // Fade to black on enter suitcase
 
-    // Toggle visibility on scene one
-    // Play 1intro
-    // document.getElementById(`${sceneNum}intro`)[sound].playSound()
-    // Play 1amb
-    // document.getElementById(`${sceneNum}amb`)[sound].playSound()
-    // listen for putdown event -> play 1outro
-    // listen for lockPosition event -> animate 1amb volume out
-    // toggle visibility on scene one
+    const wholescene = document.getElementById('wholescene')
+    const model = wholescene.getObject3D('mesh')
+    if (model) {
+      this.control(model)
+    } else {
+      wholescene.addEventListener('model-loaded', (e) => {
+        this.control(e.detail.model)
+      }, { once: true })
+    }
+  },
 
-    // Toggle visibility on scene two
-    // Play 2intro
-    // document.getElementById(`${sceneNum}intro`)[sound].playSound()
-    // Play 2amb
-    // document.getElementById(`${sceneNum}amb`)[sound].playSound()
-    // listen for putdown event -> play 2outro
-    // listen for lockPosition event -> animate 2amb volume out
-    // toggle visibility on scene two
-
-    // Toggle visibility on scene three
-    // ...
+  control: function (model) {
+    // const { data } = this
+    if (!model) return
+    model.traverse((node) => {
+      // if the nodes that you wish to target are of the same material, uncomment below to target each individually
+      // this.clonedMaterial = node.material.clone()
+      // node.material = this.clonedMaterial
+      if (node.isMesh) {
+        node.visible = false
+      }
+      if (node.name.includes('1_scene')) {
+        this.scene1 = node
+        node.visible = true
+      }
+      if (node.name.includes('2_scene')) this.scene2 = node
+      if (node.name.includes('3_scene')) this.scene3 = node
+      if (node.name.includes('4_scene')) {
+        this.scene4 = node
+        this.scene10 = node
+        this.scene12 = node
+      }
+      if (node.name.includes('5_scene')) this.scene5 = node
+      if (node.name.includes('6_scene')) {
+        this.scene6 = node
+        this.scene8 = node
+        this.scene11 = node
+      }
+      if (node.name.includes('7_scene')) this.scene7 = node
+      if (node.name.includes('9_scene')) this.scene9 = node
+    })
   },
 
   endScene: function () {
@@ -119,6 +171,54 @@ AFRAME.registerComponent('attach-to-parent', {
   },
 
   lockPosition() {
+    // 4 10 12 6 8 11
+    const loopNums = [4, 10, 12, 6, 8, 11]
+    const sceneNum = this.el.id.charAt(0)
+    const nextScene = parseInt(sceneNum) + 1
+    const sceneNeedsLoop = loopNums.includes(parseInt(sceneNum))
+    const nextNeedsLoop = loopNums.includes(nextScene)
+    console.log(nextScene)
+    if (nextScene === 13) {
+      // show end scene
+    }
+    // Turn off spotlight
+    const parent = document.getElementById(`${sceneNum}parent`)
+    parent.setAttribute('visible', false)
+    // Turn off this scene
+    const thisScene = this.el.sceneEl.components['scene-controller'][`scene${sceneNum}`]
+    if (sceneNeedsLoop) {
+      thisScene.traverse((node) => {
+        if (node.isMesh) {
+          node.visible = false
+        }
+      })
+    } else {
+      thisScene.visible = false
+    }
+
+    setTimeout(() => {
+      // Turn on spotlight
+      const parent = document.getElementById(`${nextScene}parent`)
+      parent.setAttribute('visible', true)
+      // get the next hero
+      const nextHero = document.getElementById(`${nextScene}hero`)
+      nextHero.setAttribute('visible', true)
+      // turn on next scene
+      const nextSceneModel = this.el.sceneEl.components['scene-controller'][`scene${nextScene}`]
+      if (nextNeedsLoop) {
+        nextSceneModel.traverse((node) => {
+          if (node.isMesh) {
+            node.visible = true
+          }
+        })
+      } else {
+        nextSceneModel.visible = true
+      }
+      setTimeout(() => {
+        document.getElementById(`${nextScene}intro`).components['sound'].playSound()
+      }, 1000)
+    }, 1000)
+
     // World rotation before parenting
     const worldQuaternion = new THREE.Quaternion();
     this.el.object3D.getWorldQuaternion(worldQuaternion);
@@ -256,6 +356,11 @@ AFRAME.registerComponent("toggle-physics", {
   events: {
     pickup: function() {
       this.el.addState('grabbed');
+      console.log(this.el.id) // 1hero
+      // play audio
+      // get the 1st char of this.el.id
+      const sceneNum = this.el.id.charAt(0)
+      document.getElementById(`${sceneNum}outro`).components['sound'].playSound()
     },
     // putdown: function(e) {
     //   this.el.removeState('grabbed');
