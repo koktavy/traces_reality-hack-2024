@@ -174,8 +174,8 @@ AFRAME.registerComponent('attach-to-parent', {
     // 4 10 12 6 8 11
     const loopNums = [4, 10, 12, 6, 8, 11]
     const sceneNum = parseInt(this.el.id, 10);
-    const nextScene = parseInt(sceneNum) + 1
-    const sceneNeedsLoop = loopNums.includes(parseInt(sceneNum))
+    const nextScene = sceneNum + 1
+    const sceneNeedsLoop = loopNums.includes(sceneNum)
     const nextNeedsLoop = loopNums.includes(nextScene)
     console.log(nextScene)
     if (nextScene === 13) {
@@ -216,7 +216,7 @@ AFRAME.registerComponent('attach-to-parent', {
       }
       setTimeout(() => {
         document.getElementById(`${nextScene}intro`).components['sound'].playSound()
-      }, 1000)
+      }, 2500)
     }, 1000)
 
     // World rotation before parenting
@@ -356,10 +356,10 @@ AFRAME.registerComponent("toggle-physics", {
   events: {
     pickup: function() {
       this.el.addState('grabbed');
-      console.log(this.el.id) // 1hero
       // play audio
       // get the 1st char of this.el.id
       const sceneNum = parseInt(this.el.id, 10);
+      console.log(sceneNum) // 1hero
       document.getElementById(`${sceneNum}outro`).components['sound'].playSound()
     },
     // putdown: function(e) {
