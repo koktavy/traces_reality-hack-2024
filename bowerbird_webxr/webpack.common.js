@@ -1,7 +1,9 @@
 const path = require('path')
+const DotenvWebpackPlugin = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    mode: 'production',
     entry: './src/index.ts',
     module: {
         rules: [
@@ -28,12 +30,15 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js', // confused by this. chat suggested bundle.js in the index.html script, but it needed to be index.ts, which breaks the build here so...
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.js'
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
     ],
+    performance: {
+      hints: process.env.NODE_ENV === 'production' ? "warning" : false,
+    }
 }
