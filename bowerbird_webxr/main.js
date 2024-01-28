@@ -1,6 +1,69 @@
 /* jshint esversion: 9 */
 /* global THREE, AFRAME */
 
+AFRAME.registerComponent('follow-along', {
+  schema: {
+    target: {type: 'selector'},
+    offset: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+    rotOnlyY: {type: 'boolean', default: false}
+  },
+  init: function () {
+    this.targetPos = new THREE.Vector3();
+    this.targetRot = new THREE.Quaternion();
+    this.targetEul = new THREE.Euler();
+  },
+  tick: function () {
+    // Pos
+    this.data.target.object3D.getWorldPosition(this.targetPos);
+    this.targetPos.add(this.data.offset);
+    this.el.object3D.position.copy(this.targetPos);
+    // Rot
+    this.data.target.object3D.getWorldQuaternion(this.targetRot);
+    if (this.data.rotOnlyY) {
+      this.targetEul.setFromQuaternion(this.targetRot, 'YXZ');
+      this.el.object3D.rotation.y = this.targetEul.y;
+    } else {
+      // set full quaternion
+      this.el.object3D.quaternion.copy(this.targetRot);
+    }
+  }
+});
+
+AFRAME.registerComponent('attach-to-parent', {
+  schema: {
+    target: { type: 'selector' },
+    offset: { type: 'vec3', default: { x: 0, y: 0, z: 0 } }
+  },
+
+  init: function () {
+    this.attachToParent = this.attachToParent.bind(this);
+  },
+
+  update: function () {
+    this.attachToParent();
+  },
+
+  attachToParent: function () {
+    if (this.data.target) {
+      // Set the initial position relative to the parent entity
+      // Make the current entity a child of the target entity
+      console.log(this.el.id)
+      this.data.target.object3D.add(this.el.object3D);
+      console.log(this.data.target)
+      this.el.object3D.position.set(this.data.offset.x, this.data.offset.y, this.data.offset.z);
+    } else {
+      console.warn('No target entity provided for attach-to-parent component.');
+    }
+  },
+
+  // remove: function () {
+  //   // Append the entity to the scene instead of removing it
+  //   if (this.el.parentNode) {
+  //     this.el.sceneEl.appendChild(this.el);
+  //   }
+  // }
+});
+
 AFRAME.registerComponent("hide-on-hit-test-start", {
   init: function() {
     var self = this;
@@ -102,27 +165,72 @@ const quaternion = new THREE.Quaternion();
 const xyz = new THREE.Vector3();
 
 AFRAME.registerComponent("toggle-physics", {
+  schema: {
+    offset: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+  },
+  init() {
+
+  },
+  tick() {
+
+  },
   events: {
     pickup: function() {
       this.el.addState('grabbed');
     },
+    // putdown: function(e) {
+    //   this.el.removeState('grabbed');
+    //   if (e.detail.frame && e.detail.inputSource) {
+    //     const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
+    //     const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
+    //     if (pose && pose.angularVelocity) {
+    //       // Ex: {x: -0.21239659190177917, y: -0.27352192997932434, z: 0.286095529794693, w: 1}
+    //       // convert {x y z w} to {x y z}
+    //       quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
+    //       quaternion.normalize();
+    //       xyz.set(quaternion.x, quaternion.y, quaternion.z);
+    //       this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
+    //     }
+    //     if (pose && pose.linearVelocity) {
+    //       this.el.components['physx-body'].rigidBody.setLinearVelocity(pose.linearVelocity);
+    //     }
+    //   }
+    // },
     putdown: function(e) {
       this.el.removeState('grabbed');
-      if (e.detail.frame && e.detail.inputSource) {
+      const bodyEl = document.querySelector('#body');
+      const targetPosition = new THREE.Vector3();
+      bodyEl.object3D.getWorldPosition(targetPosition);
+
+      this.el.setAttribute('animation__position', {
+        property: 'position',
+        to: `${targetPosition.x} ${targetPosition.y} ${targetPosition.z - this.data.offset.z}`,
+        dur: 750,
+        easing: 'easeOutBack'
+      });
+
+      // Keep original angular velocity if pose has it
+      if (e.detail.frame && e.detail.inputSource && e.detail.inputSource.gripSpace) {
         const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
         const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
         if (pose && pose.angularVelocity) {
-          // Ex: {x: -0.21239659190177917, y: -0.27352192997932434, z: 0.286095529794693, w: 1}
-          // convert {x y z w} to {x y z}
           quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
           quaternion.normalize();
           xyz.set(quaternion.x, quaternion.y, quaternion.z);
-          this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
-        }
-        if (pose && pose.linearVelocity) {
-          this.el.components['physx-body'].rigidBody.setLinearVelocity(pose.linearVelocity);
+          // this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
         }
       }
+
+      this.el.addEventListener('animationcomplete__position', () => {
+        this.el.removeAttribute('toggle-physics');
+        this.el.removeAttribute('class');
+        this.el.removeAttribute('data-pick-up');
+        this.el.removeAttribute('data-magnet-range');
+        this.el.removeAttribute('physx-body');
+        this.el.removeAttribute('physx-material');
+        this.el.removeAttribute('attach-to-parent');
+        this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.offset.x} ${this.data.offset.y} ${this.data.offset.z}`);
+      }, {once: true});
     }
   }
 });

@@ -56,6 +56,8 @@
         <!-- <a-asset-item id="navmesh-glb" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/navmesh.glb?v=1644329586500"></a-asset-item> -->
         <a-asset-item id="right-gltf" src="./src/assets/Models/player/blob-right-hand.glb"></a-asset-item>
         <a-asset-item id="left-gltf" src="./src/assets/Models/player/blob-left-hand.glb"></a-asset-item>
+        <!-- body -->
+        <a-asset-item id="body-gltf" src="./src/assets/Models/player/blob-body.glb"></a-asset-item>
         <!-- <a-asset-item id="watch-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watch.glb?v=1645016979219"></a-asset-item> -->
         <!-- <a-asset-item id="sword-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/katana.glb?v=1648465043810"></a-asset-item> -->
         <!-- <a-asset-item id="watergun-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/watergun.glb?v=1646916260646"></a-asset-item> -->
@@ -80,18 +82,32 @@
         <img id="lightfadeSrc" src="./src/assets/images/light-fade.png" crossorigin="anonymous">
       </a-assets>
 
+      <!-- Body -->
+      <a-entity id="bodyParent"
+        follow-along="target: #head; rotOnlyY: true">
+        <a-entity id="body"
+          visible="true"
+          gltf-model="./src/assets/Models/player/blob-body.glb"
+          position="-0.07 -0.7 0.075"
+          scale="0.25 0.25 0.25"
+          rotation="0 -155 0"
+          physx-material="density: 0.1">
+          <!-- physx-body-from-model="type: kinematic;" -->
+        </a-entity>
+      </a-entity>
+
       <a-entity
         id="cameraRig"
-        simple-navmesh-constraint="navmesh:.navmesh;fall:0.5;height:0;exclude:.navmesh-hole;"
-        movement-controls="speed:0.15;camera:#head;"
+        simple-navmesh-constraint="navmesh: .navmesh; fall: 0.5; height: 0; exclude: .navmesh-hole;"
+        movement-controls="speed: 0.15;camera: #head;"
         position="0 0 0" rotation="0 0 0" origin-on-ar-start
       >
-        <!-- camera -->
+        <!-- camera / "head" -->
         <a-entity id="head"
-          camera="near:0.01;"
+          camera="near: 0.01;"
           look-controls="pointerLockEnabled: false"
-          position="0 1.65 0"
-        ></a-entity>
+          position="0 1.65 0">
+        </a-entity>
         
         <a-entity xr-follow>
           <!-- <a-gltf-model
@@ -148,8 +164,8 @@
           <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#right-no-magnet;"></a-entity>
       
           <!-- Markers to let us know the real location of the hands -->
-          <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
-          <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red"></a-sphere>
+          <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red" visible="false"></a-sphere>
+          <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red" visible="false"></a-sphere>
           
           <!-- Invisible objects at the tips of each finger for physics or intersections -->
           <a-sphere data-right="index-finger-tip" radius="0.01" visible="false"></a-sphere>
@@ -165,7 +181,10 @@
         </a-entity>
       </a-entity>
 
-      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" grab-options="scalable" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
+      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="offset: 0.15 -0.478 -0.167" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
+      </a-gltf-model>
+
+      <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="offset: -0.19 -0.72 -0.17" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
       </a-gltf-model>
       
       <a-entity id="spotlightParent"
@@ -299,7 +318,6 @@
         
         <!-- HTML form logic -->
         <script>
-          console.log('hello')
           let movementType = 'teleport';
           function toggleThumbstick(detail) {
             const rayPointers = ['[data-right="ray"]', '[data-left="ray"]'].map(s => document.querySelector(s));
