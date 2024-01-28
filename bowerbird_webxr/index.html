@@ -22,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/aframe-htmlmesh@2.2.0/build/aframe-html.min.js"></script>
 
     <script src="./src/components/colorize.js"></script>
+    <script src="./src/components/model-opacity.js"></script>
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
 
@@ -31,11 +32,11 @@
   <body>
 
     <!-- stats -->
+    <!-- reflection="directionalLight:#dirlight;" -->
     <a-scene
       physx="autoLoad: true; delay: 1000; wasmUrl: https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/wasm/physx.release.wasm; useDefaultScene: false;"
       webxr="overlayElement:#dom-overlay;"
       background="color: #232323;"
-      reflection="directionalLight:#dirlight;"
       renderer="alpha:true;physicallyCorrectLights:true;colorManagement:true;exposure:2;toneMapping:ACESFilmic;"
       ar-hit-test="target:#my-ar-objects;type:footprint;footprintDepth:0.2;"
       shadow="type: pcfsoft"
@@ -69,6 +70,62 @@
 
         <!-- images -->
         <img id="lightfadeSrc" src="./src/assets/images/light-fade.png" crossorigin="anonymous">
+
+        <!-- Intro Audio -->
+        <audio id="1intro" src="./src/assets/scenes/1_Bedroom/1intro.mp3" preload="auto"></audio>
+        <audio id="2intro" src="./src/assets/scenes/2_Front_Door/2intro.mp3" preload="auto"></audio>
+        <audio id="3intro" src="./src/assets/scenes/3_Grocery_Store/3intro.mp3" preload="auto"></audio>
+        <audio id="4intro" src="./src/assets/scenes/4_Cafeteria/4intro.mp3" preload="auto"></audio>
+        <audio id="5intro" src="./src/assets/scenes/5_Living_Room/5intro.mp3" preload="auto"></audio>
+        <audio id="6intro" src="./src/assets/scenes/6_Classroom/6intro.mp3" preload="auto"></audio>
+        <audio id="7intro" src="./src/assets/scenes/7_Schoolyard/7intro.mp3" preload="auto"></audio>
+        <audio id="8intro" src="./src/assets/scenes/8_Classroom/8intro.mp3" preload="auto"></audio>
+        <audio id="9intro" src="./src/assets/scenes/9_Skate Park/9intro.mp3" preload="auto"></audio>
+        <audio id="10intro" src="./src/assets/scenes/10_Cafeteria/10intro.mp3" preload="auto"></audio>
+        <audio id="11intro" src="./src/assets/scenes/11_Classroom/11intro.mp3" preload="auto"></audio>
+        <audio id="12intro" src="./src/assets/scenes/12_Cafeteria/12intro.mp3" preload="auto"></audio>
+
+        <!-- Outro Audio -->
+        <audio id="1outro" src="./src/assets/scenes/1_Bedroom/1outro.mp3" preload="auto"></audio>
+        <audio id="2outro" src="./src/assets/scenes/2_Front_Door/2outro.mp3" preload="auto"></audio>
+        <audio id="3outro" src="./src/assets/scenes/3_Grocery_Store/3outro.mp3" preload="auto"></audio>
+        <audio id="4outro" src="./src/assets/scenes/4_Cafeteria/4outro.mp3" preload="auto"></audio>
+        <audio id="5outro" src="./src/assets/scenes/5_Living_Room/5outro.mp3" preload="auto"></audio>
+        <audio id="6outro" src="./src/assets/scenes/6_Classroom/6outro.mp3" preload="auto"></audio>
+        <audio id="7outro" src="./src/assets/scenes/7_Schoolyard/7outro.mp3" preload="auto"></audio>
+        <audio id="8outro" src="./src/assets/scenes/8_Classroom/8outro.mp3" preload="auto"></audio>
+        <audio id="9outro" src="./src/assets/scenes/9_Skate Park/9outro.mp3" preload="auto"></audio>
+        <audio id="10outro" src="./src/assets/scenes/10_Cafeteria/10outro.mp3" preload="auto"></audio>
+        <audio id="11outro" src="./src/assets/scenes/11_Classroom/11outro.mp3" preload="auto"></audio>
+        <audio id="12outro" src="./src/assets/scenes/12_Cafeteria/12outro.mp3" preload="auto"></audio>
+
+        <!-- Amb -->
+        <audio id="1amb" src="./src/assets/scenes/1_Bedroom/1amb.mp3" preload="auto"></audio>
+        <audio id="2amb" src="./src/assets/scenes/2_Front_Door/2amb.mp3" preload="auto"></audio>
+        <audio id="3amb" src="./src/assets/scenes/3_Grocery_Store/3amb.mp3" preload="auto"></audio>
+        <audio id="4amb" src="./src/assets/scenes/4_Cafeteria/4amb.mp3" preload="auto"></audio>
+        <audio id="5amb" src="./src/assets/scenes/5_Living_Room/5amb.mp3" preload="auto"></audio>
+        <audio id="6amb" src="./src/assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
+        <audio id="7amb" src="./src/assets/scenes/7_Schoolyard/7amb.mp3" preload="auto"></audio>
+        <!-- <audio id="8amb" src="./src/assets/scenes/8_Classroom/8amb.mp3" preload="auto"></audio> -->
+        <audio id="9amb" src="./src/assets/scenes/9_Skate Park/9amb.mp3" preload="auto"></audio>
+        <audio id="10amb" src="./src/assets/scenes/10_Cafeteria/10amb.mp3" preload="auto"></audio>
+        <!-- <audio id="11amb" src="./src/assets/scenes/11_Classroom/11amb.mp3" preload="auto"></audio> -->
+        <audio id="12amb" src="./src/assets/scenes/12_Cafeteria/12amb.mp3" preload="auto"></audio>
+
+        <!-- GLB objects -->
+        <a-asset-item id="1object" src="./src/assets/scenes/1_Bedroom/1object.glb"></a-asset-item>
+        <a-asset-item id="2object" src="./src/assets/scenes/2_Front_Door/2object.glb"></a-asset-item>
+        <a-asset-item id="3object" src="./src/assets/scenes/3_Grocery_Store/3object.glb"></a-asset-item>
+        <a-asset-item id="4object" src="./src/assets/scenes/4_Cafeteria/4object.glb"></a-asset-item>
+        <a-asset-item id="5object" src="./src/assets/scenes/5_Living_Room/5object.glb"></a-asset-item>
+        <a-asset-item id="6object" src="./src/assets/scenes/6_Classroom/6object.glb"></a-asset-item>
+        <a-asset-item id="7object" src="./src/assets/scenes/7_Schoolyard/7object.glb"></a-asset-item>
+        <a-asset-item id="8object" src="./src/assets/scenes/8_Classroom/8object.glb"></a-asset-item>
+        <a-asset-item id="9object" src="./src/assets/scenes/9_Skate Park/9object.glb"></a-asset-item>
+        <a-asset-item id="10object" src="./src/assets/scenes/10_Cafeteria/10object.glb"></a-asset-item>
+        <a-asset-item id="11object" src="./src/assets/scenes/11_Classroom/11object.glb"></a-asset-item>
+        <a-asset-item id="12object" src="./src/assets/scenes/12_Cafeteria/12object.glb"></a-asset-item>
       </a-assets>
 
       <!-- Body -->
@@ -193,66 +250,679 @@
         </a-gltf-model>
       </a-entity>
 
-      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="0 0 0" scale="0.15 0.15 0.15">
-      </a-gltf-model>
+      <!-- <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="0 0 0" scale="0.15 0.15 0.15">
+      </a-gltf-model> -->
 
-      <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.15" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-45 0.34003514272847424 -30" scale="0.15 0.15 0.15">
-      </a-gltf-model>
-      
-      <a-entity id="spotlightParent"
-        position="0 3 -5">
-        <!-- ambient -->
+      <!-- <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.15" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-45 0.34003514272847424 -30" scale="0.15 0.15 0.15">
+      </a-gltf-model> -->
+
+        <!-- Ambient Light -->
         <a-entity id="ambientlight"
-          light="
-            type: ambient;
-            intensity: 1;
-            color: #fff;"
-          >
-        </a-entity>
-        <a-entity id="spotlight"
-          rotation="-90 0 0"
-          light="
-            type: spot;
-            angle: 50;
-            penumbra: 0.25;
-            intensity: 8;
-            shadowBias: 0.0003;
-            shadowMapHeight: 1024;
-            shadowMapWidth: 1024;
-            shadowCameraVisible: false;
-            castShadow: true;"
-          >
-        </a-entity>
-        <a-entity id="spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
-          <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;"></a-entity>
-        </a-entity>
-        </a-entity>
+        light="
+          type: ambient;
+          intensity: 1;
+          color: #fff;"
+        >
       </a-entity>
 
-      <!-- colorize="color: #fff" -->
-      <a-gltf-model id="testScene"
-        colorize="color: #fff"
-        position="0 0 -3"
-        scale="1.2 1.2 1.2"
-        src="#test1-glb"
-        physx-body-from-model="type: static;"
-        shadow
-      >
-        <a-box 
-          position="-5.148 -0.1 -0.355"
-          visible="false"
-          geometry="width:33.67;height:0.2;depth:19.06"
-          physx-body="type: static;"
-          physx-restitution="1.5">
-        </a-box>
+      <!-- Object -->
+      <a-gltf-model id="1hero"
+        src="#1object"
+        colorize="color: #FFE178"
+        position="0.533 0.708 -2.55"
+        rotation="0 0 0"
+        scale="1 1 1"
+        class="magnet-left magnet-right"
+        toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+        data-magnet-range="0.2,0.1,360,0"
+        data-pick-up=""
+        shadow>
+        <!-- physx-body="type: dynamic; mass: 2" -->
+        <a-entity sound="src: #1outro"></a-entity>
       </a-gltf-model>
+      <!-- Vignette #1 Group -->
+      <a-entity id="1parent" position="0 0 -3" visible="true">
+        <!-- Scene #1 -->
+        <a-gltf-model id="1scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #1amb"></a-entity>
+          <a-entity sound="src: #1intro"></a-entity>
+          <a-entity id="1spotlightParent"
+            position="0 3 0">
+            <a-entity id="1spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="1spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
 
+      <!-- Vignette #2 Group -->
+      <a-entity id="2parent" position="0 0 -15" visible="false">
+        <!-- Scene #2 -->
+        <a-gltf-model id="2scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #2amb"></a-entity>
+          <a-entity sound="src: #2intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="2hero"
+            src="#2object"
+            colorize="color: #FFDADF"
+            position="0.59803 0.61295 0"
+            rotation="0 0 70"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #2outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="2spotlightParent"
+            position="0 3 0">
+            <a-entity id="2spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="2spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
       
-      <!-- <a-gltf-model id="testScene"
-        position="0 0 -3"
-        src="#test2-glb"
-      >
-      </a-gltf-model> -->
+      <!-- Vignette #3 Group -->
+      <a-entity id="3parent" position="0 0 -30" visible="false">
+        <!-- Scene #3 -->
+        <a-gltf-model id="3scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #3amb"></a-entity>
+          <a-entity sound="src: #3intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="3hero"
+            src="#3object"
+            colorize="color: #FFCD84"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #3outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="3spotlightParent"
+            position="0 3 0">
+            <a-entity id="3spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="3spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #4 Group -->
+      <a-entity id="4parent" position="0 0 -45" visible="false">
+        <!-- Scene #4 -->
+        <a-gltf-model id="4scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #4amb"></a-entity>
+          <a-entity sound="src: #4intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="4hero"
+            src="#4object"
+            colorize="color: #93B9DD"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #4outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="4spotlightParent"
+            position="0 3 0">
+            <a-entity id="4spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="4spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #5 Group -->
+      <a-entity id="5parent" position="0 0 -60" visible="false">
+        <!-- Scene #5 -->
+        <a-gltf-model id="5scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #5amb"></a-entity>
+          <a-entity sound="src: #5intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="5hero"
+            src="#5object"
+            colorize="color: #F06F5E"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #5outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="5spotlightParent"
+            position="0 3 0">
+            <a-entity id="5spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="5spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #6 Group -->
+      <a-entity id="6parent" position="0 0 -75" visible="false">
+        <!-- Scene #6 -->
+        <a-gltf-model id="6scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #6amb"></a-entity>
+          <a-entity sound="src: #6intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="6hero"
+            src="#6object"
+            colorize="color: #BFC0DF"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #6outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="6spotlightParent"
+            position="0 3 0">
+            <a-entity id="6spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="6spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #7 Group -->
+      <a-entity id="7parent" position="0 0 -90" visible="false">
+        <!-- Scene #7 -->
+        <a-gltf-model id="7scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #7amb"></a-entity>
+          <a-entity sound="src: #7intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="7hero"
+            src="#7object"
+            colorize="color: #62A5AD"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #7outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="7spotlightParent"
+            position="0 3 0">
+            <a-entity id="7spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="7spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #8 Group -->
+      <a-entity id="8parent" position="0 0 -105" visible="false">
+        <!-- Scene #8 -->
+        <a-gltf-model id="8scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <!-- <a-entity sound="src: #8amb"></a-entity> -->
+          <a-entity sound="src: #8intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="8hero"
+            src="#8object"
+            colorize="color: #C9EAD8"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #8outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="8spotlightParent"
+            position="0 3 0">
+            <a-entity id="8spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="8spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #9 Group -->
+      <a-entity id="9parent" position="0 0 -120" visible="false">
+        <!-- Scene #9 -->
+        <a-gltf-model id="9scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #9amb"></a-entity>
+          <a-entity sound="src: #9intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="9hero"
+            src="#9object"
+            colorize="color: #F9F3AA"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #9outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="9spotlightParent"
+            position="0 3 0">
+            <a-entity id="9spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="9spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #10 Group -->
+      <a-entity id="10parent" position="0 0 -135" visible="false">
+        <!-- Scene #10 -->
+        <a-gltf-model id="10scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2"
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #10amb"></a-entity>
+          <a-entity sound="src: #10intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="10hero"
+            src="#10object"
+            colorize="color: #78A3D4"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #10outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="10spotlightParent"
+            position="0 3 0">
+            <a-entity id="10spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="10spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #11 Group -->
+      <a-entity id="11parent" position="0 0 -150" visible="false">
+        <!-- Scene #11 -->
+        <a-gltf-model id="11scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2" 
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <!-- <a-entity sound="src: #11amb"></a-entity> -->
+          <a-entity sound="src: #11intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="11hero"
+            src="#11object"
+            colorize="color: #C4E9E6"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 2" -->
+            <a-entity sound="src: #11outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="11spotlightParent"
+            position="0 3 0">
+            <a-entity id="11spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="11spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
+
+      <!-- Vignette #12 Group -->
+      <a-entity id="12parent" position="0 0 -165" visible="false">
+        <!-- Scene #12 -->
+        <a-gltf-model id="12scene"
+          position="0 0 0"
+          scale="1.2 1.2 1.2" 
+          src="#test1-glb"
+          physx-body-from-model="type: static;"
+          physx-restitution="1.5"
+          shadow
+        >
+          <!-- Audio -->
+          <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
+          <a-entity sound="src: #12amb"></a-entity>
+          <a-entity sound="src: #12intro"></a-entity>
+          <!-- Object -->
+          <a-gltf-model id="12hero"
+            src="#12object"
+            colorize="color: #E4BE9B"
+            position="0.59803 0.61295 0"
+            rotation="0 0 0"
+            scale="1 1 1"
+            class="magnet-left magnet-right"
+            toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155"
+            data-magnet-range="0.2,0.1,360,0"
+            data-pick-up=""
+            physx-material="density: NaN"
+            shadow>
+            <!-- physx-body="type: static; mass: 3" -->
+            <a-entity sound="src: #12outro"></a-entity>
+          </a-gltf-model>
+          <a-entity id="12spotlightParent"
+            position="0 3 0">
+            <a-entity id="12spotlight"
+              rotation="-90 0 0"
+              light="
+                type: spot;
+                angle: 50;
+                penumbra: 0.25;
+                intensity: 8;
+                shadowBias: -0.001;
+                shadowMapHeight: 512;
+                shadowMapWidth: 512;
+                shadowCameraVisible: false;
+                castShadow: true;"
+              >
+            </a-entity>
+            <a-entity id="12spotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+              <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-gltf-model>
+      </a-entity>
 
       <!-- <a-entity hide-on-enter-ar position="0 -0.2 0" environment="lighting:none;shadow:true;preset: osiris;"></a-entity> -->
 

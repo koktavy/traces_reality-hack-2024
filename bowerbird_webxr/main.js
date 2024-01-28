@@ -1,6 +1,53 @@
 /* jshint esversion: 9 */
 /* global THREE, AFRAME */
 
+AFRAME.registerComponent('scene-controller', {
+  schema: {
+    default: ''
+  },
+  init: function () {
+    this.endScene = this.endScene.bind(this)
+    // Build onboarding slideshow
+
+    // Show Title card
+
+    // Show suitcase
+
+    // Fade to black on enter suitcase
+
+    // Toggle visibility on scene one
+    // Play 1intro
+    // document.getElementById(`${sceneNum}intro`)[sound].playSound()
+    // Play 1amb
+    // document.getElementById(`${sceneNum}amb`)[sound].playSound()
+    // listen for putdown event -> play 1outro
+    // listen for lockPosition event -> animate 1amb volume out
+    // toggle visibility on scene one
+
+    // Toggle visibility on scene two
+    // Play 2intro
+    // document.getElementById(`${sceneNum}intro`)[sound].playSound()
+    // Play 2amb
+    // document.getElementById(`${sceneNum}amb`)[sound].playSound()
+    // listen for putdown event -> play 2outro
+    // listen for lockPosition event -> animate 2amb volume out
+    // toggle visibility on scene two
+
+    // Toggle visibility on scene three
+    // ...
+  },
+
+  endScene: function () {
+    // parent all objects to scene
+    // animate them off the body
+    // float with random sway
+    // animate scale larger
+    // animate gently off into the spotlight of each scene (no scene model visible)
+    // last dialogue line?
+    // fade to black
+  }
+});
+
 AFRAME.registerComponent('follow-along', {
   schema: {
     target: {type: 'selector'},
@@ -14,7 +61,7 @@ AFRAME.registerComponent('follow-along', {
   },
   tick: function () {
     // Pos
-    
+
     this.data.target.object3D.updateMatrixWorld();
     this.data.target.object3D.getWorldPosition(this.targetPos);
     this.targetPos.add(this.data.offset);
@@ -235,16 +282,16 @@ AFRAME.registerComponent("toggle-physics", {
       bodyEl.object3D.getWorldPosition(targetPosition);
 
       // Keep original angular velocity if pose has it
-      if (e.detail.frame && e.detail.inputSource && e.detail.inputSource.gripSpace) {
-        const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
-        const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
-        if (pose && pose.angularVelocity) {
-          quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
-          quaternion.normalize();
-          xyz.set(quaternion.x, quaternion.y, quaternion.z);
-          // this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
-        }
-      }
+      // if (e.detail.frame && e.detail.inputSource && e.detail.inputSource.gripSpace) {
+      //   const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
+      //   const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
+      //   if (pose && pose.angularVelocity) {
+      //     quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
+      //     quaternion.normalize();
+      //     xyz.set(quaternion.x, quaternion.y, quaternion.z);
+      //     // this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
+      //   }
+      // }
 
       // Clear all interactions and physics from this el
       this.el.removeAttribute('toggle-physics');
