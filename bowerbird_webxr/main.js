@@ -14,6 +14,8 @@ AFRAME.registerComponent('follow-along', {
   },
   tick: function () {
     // Pos
+    
+    this.data.target.object3D.updateMatrixWorld();
     this.data.target.object3D.getWorldPosition(this.targetPos);
     this.targetPos.add(this.data.offset);
     this.el.object3D.position.copy(this.targetPos);
