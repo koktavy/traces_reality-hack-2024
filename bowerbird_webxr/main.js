@@ -173,7 +173,7 @@ AFRAME.registerComponent('attach-to-parent', {
   lockPosition() {
     // 4 10 12 6 8 11
     const loopNums = [4, 10, 12, 6, 8, 11]
-    const sceneNum = this.el.id.charAt(0)
+    const sceneNum = parseInt(this.el.id, 10);
     const nextScene = parseInt(sceneNum) + 1
     const sceneNeedsLoop = loopNums.includes(parseInt(sceneNum))
     const nextNeedsLoop = loopNums.includes(nextScene)
@@ -359,7 +359,7 @@ AFRAME.registerComponent("toggle-physics", {
       console.log(this.el.id) // 1hero
       // play audio
       // get the 1st char of this.el.id
-      const sceneNum = this.el.id.charAt(0)
+      const sceneNum = parseInt(this.el.id, 10);
       document.getElementById(`${sceneNum}outro`).components['sound'].playSound()
     },
     // putdown: function(e) {
