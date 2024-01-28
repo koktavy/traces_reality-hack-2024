@@ -78,7 +78,7 @@
           visible="true"
           gltf-model="./src/assets/Models/player/blob-body.glb"
           position="-0.07 -0.7 0.075"
-          scale="0.25 0.25 0.25"
+          scale="0.2 0.25 0.2"
           rotation="0 -155 0"
           physx-material="density: 0.1">
           <!-- physx-body-from-model="type: kinematic;" -->
@@ -97,18 +97,18 @@
           look-controls="pointerLockEnabled: false"
           position="0 1.65 0">
         </a-entity>
-        
+
         <!-- Hand tracking -->
         <!-- LEAVE THIS AS IS, BLINK AND MAGNET CONTROLS LIVE HERE -->
-        <a-entity handy-controls="materialOverride:none;">
+        <a-entity handy-controls="materialOverride: both;" material="transparent: true; opacity: 0; alphaTest: 0.99">
 
           <!-- Screen space inputs like mobile AR -->
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:green" data-none="screen-1"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:red" data-none="screen-2"></a-torus>
           
-          <a-entity data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;"></a-entity>
-          <a-entity data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false;startEvents:pose_point_fuseShort;endEvents:pose_point_fuseLong;"></a-entity>
+          <a-entity data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
+          <a-entity data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
           
           <!-- Ray and Grip are Available on Hands or Tracked Inputs -->
           <a-entity data-right="ray" mixin="blink" blink-controls>
@@ -119,13 +119,41 @@
           </a-entity>
         
           <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
-          <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"  grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#left-no-magnet;"></a-entity>
-          <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right" grab-magnet-target="startEvents:squeezestart,pose_fist;stopEvents:pose_flat_fuseShort,squeezeend;noMagnetEl:#right-no-magnet;"></a-entity>
+          <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"
+            grab-magnet-target="
+              startEvents: squeezestart, pose_fist;
+              stopEvents: squeezeend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
+              noMagnetEl: #left-no-magnet;">
+          </a-entity>
+          <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right"
+            grab-magnet-target="
+              startEvents: squeezestart, pose_fist;
+              stopEvents: squeezeend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
+              noMagnetEl: #right-no-magnet;">
+          </a-entity>
       
+          <!-- NOTE: Not all poses available on both hands! -->
+          <!-- https://github.com/AdaRoseCannon/handy-work/issues/16 -->
+
+          <!-- el.addEventListener('pose_flat', this.handyControlsPoses);
+          el.addEventListener('pose_vulcan', this.handyControlsPoses);
+          el.addEventListener('pose_relax', this.handyControlsPoses);
+          el.addEventListener('pose_shaka', this.handyControlsPoses);
+          el.addEventListener('pose_fist', this.handyControlsPoses);
+          el.addEventListener('pose_point', this.handyControlsPoses);
+          el.addEventListener('pose_horns', this.handyControlsPoses); -->
+
+          <!-- el.addEventListener('select', this.webxrAPIEvents);
+          el.addEventListener('selectstart', this.webxrAPIEvents);
+          el.addEventListener('selectend', this.webxrAPIEvents);
+          el.addEventListener('squeeze', this.webxrAPIEvents);
+          el.addEventListener('squeezestart', this.webxrAPIEvents);
+          el.addEventListener('squeezeend', this.webxrAPIEvents); -->
+
           <!-- Markers to let us know the real location of the hands -->
           <a-sphere id="right-no-magnet" data-right="grip" data-no-magnet radius="0.01" color="red" visible="false"></a-sphere>
           <a-sphere id="left-no-magnet" data-left="grip" data-no-magnet radius="0.01" color="red" visible="false"></a-sphere>
-          
+
           <!-- Invisible objects at the tips of each finger for physics or intersections -->
           <a-sphere data-right="index-finger-tip" radius="0.01" visible="false"></a-sphere>
           <a-sphere data-right="middle-finger-tip" radius="0.01" visible="false"></a-sphere>
@@ -140,10 +168,29 @@
         </a-entity>
       </a-entity>
 
-      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="offset: 0.15 -0.478 -0.167" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
+      <a-entity id="rightHandParent"
+        follow-along="target: #right-magnet; offset: 0 0 0">
+        <a-gltf-model id="rightHand"
+          shadow="receive: false; cast: true"
+          src="#right-gltf"
+          rotation="90 -90 0"
+          scale="0.3 0.45 0.275">
+        </a-gltf-model>
+      </a-entity>
+      <a-entity id="leftHandParent"
+        follow-along="target: #left-magnet; offset: 0 0 0">
+        <a-gltf-model id="leftHand"
+          shadow="receive: false; cast: true"
+          src="#left-gltf"
+          rotation="90 90 0"
+          scale="0.3 0.45 0.275">
+        </a-gltf-model>
+      </a-entity>
+
+      <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.167" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
       </a-gltf-model>
 
-      <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="offset: -0.19 -0.72 -0.17" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
+      <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.17" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,180" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-0.2204984335597549 0.34003514272847424 -0.9770846522520321" scale="0.15 0.15 0.15">
       </a-gltf-model>
       
       <a-entity id="spotlightParent"

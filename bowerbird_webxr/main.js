@@ -196,7 +196,7 @@ const xyz = new THREE.Vector3();
 
 AFRAME.registerComponent("toggle-physics", {
   schema: {
-    offset: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+    bodyAttachOffset: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
   },
   init() {
 
@@ -252,7 +252,7 @@ AFRAME.registerComponent("toggle-physics", {
       this.el.removeAttribute('physx-body');
       this.el.removeAttribute('physx-material');
 
-      this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.offset.x} ${this.data.offset.y} ${this.data.offset.z}`);
+      this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.bodyAttachOffset.x} ${this.data.bodyAttachOffset.y} ${this.data.bodyAttachOffset.z}`);
     }
   }
 });
