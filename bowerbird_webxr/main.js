@@ -36,32 +36,62 @@ AFRAME.registerComponent('attach-to-parent', {
   },
 
   init: function () {
-    this.attachToParent = this.attachToParent.bind(this);
+    this.lockPosition = this.lockPosition.bind(this)
+    this.isMoving = false
+    this.newPos = new THREE.Vector3()
+    this.threshold = 0.02; // Set your desired threshold
+    this.lerpFactor = 0.05; // Set your desired lerp factor (0-1)
   },
 
   update: function () {
-    this.attachToParent();
-  },
-
-  attachToParent: function () {
     if (this.data.target) {
-      // Set the initial position relative to the parent entity
-      // Make the current entity a child of the target entity
-      console.log(this.el.id)
-      this.data.target.object3D.add(this.el.object3D);
-      console.log(this.data.target)
-      this.el.object3D.position.set(this.data.offset.x, this.data.offset.y, this.data.offset.z);
+      this.newPos = new THREE.Vector3()
+      this.isMoving = true
     } else {
       console.warn('No target entity provided for attach-to-parent component.');
     }
   },
 
-  // remove: function () {
-  //   // Append the entity to the scene instead of removing it
-  //   if (this.el.parentNode) {
-  //     this.el.sceneEl.appendChild(this.el);
-  //   }
-  // }
+  tick: function () {
+    if (this.isMoving) {
+      // Compute the latest world position of the offset relative to the target's local space (since the user may move)
+      this.el.object3D.parent.updateMatrixWorld();
+      this.newPos.copy(this.data.offset);
+      this.data.target.object3D.localToWorld(this.newPos);
+      // Smoothly move this element to the new position
+      this.el.object3D.position.lerp(this.newPos, this.lerpFactor)
+      const newDistance = this.el.object3D.position.distanceTo(this.newPos)
+      // Consider it done if close enough
+      if (newDistance < this.threshold) {
+        this.isMoving = false
+        this.lockPosition()
+      }
+    }
+  },
+
+  lockPosition() {
+    // World rotation before parenting
+    const worldQuaternion = new THREE.Quaternion();
+    this.el.object3D.getWorldQuaternion(worldQuaternion);
+  
+    // Add as nested object of the parent
+    this.data.target.object3D.add(this.el.object3D);
+  
+    // Compute local rotation in the context of the new parent
+    const inverseParentQuaternion = new THREE.Quaternion().copy(this.data.target.object3D.quaternion).invert();
+    const localQuaternion = inverseParentQuaternion.multiply(worldQuaternion);
+    
+    // Apply the local rotation and position
+    this.el.object3D.quaternion.copy(localQuaternion);
+    this.el.object3D.position.copy(this.data.offset);
+  },
+
+  remove: function () {
+    // Append the entity to the scene instead of removing it
+    if (this.el.parentNode) {
+      this.el.sceneEl.object3D.add(this.el.object3D);
+    }
+  }
 });
 
 AFRAME.registerComponent("hide-on-hit-test-start", {
@@ -202,13 +232,6 @@ AFRAME.registerComponent("toggle-physics", {
       const targetPosition = new THREE.Vector3();
       bodyEl.object3D.getWorldPosition(targetPosition);
 
-      this.el.setAttribute('animation__position', {
-        property: 'position',
-        to: `${targetPosition.x} ${targetPosition.y} ${targetPosition.z - this.data.offset.z}`,
-        dur: 750,
-        easing: 'easeOutBack'
-      });
-
       // Keep original angular velocity if pose has it
       if (e.detail.frame && e.detail.inputSource && e.detail.inputSource.gripSpace) {
         const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
@@ -221,16 +244,15 @@ AFRAME.registerComponent("toggle-physics", {
         }
       }
 
-      this.el.addEventListener('animationcomplete__position', () => {
-        this.el.removeAttribute('toggle-physics');
-        this.el.removeAttribute('class');
-        this.el.removeAttribute('data-pick-up');
-        this.el.removeAttribute('data-magnet-range');
-        this.el.removeAttribute('physx-body');
-        this.el.removeAttribute('physx-material');
-        this.el.removeAttribute('attach-to-parent');
-        this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.offset.x} ${this.data.offset.y} ${this.data.offset.z}`);
-      }, {once: true});
+      // Clear all interactions and physics from this el
+      this.el.removeAttribute('toggle-physics');
+      this.el.removeAttribute('class');
+      this.el.removeAttribute('data-pick-up');
+      this.el.removeAttribute('data-magnet-range');
+      this.el.removeAttribute('physx-body');
+      this.el.removeAttribute('physx-material');
+
+      this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.offset.x} ${this.data.offset.y} ${this.data.offset.z}`);
     }
   }
 });
