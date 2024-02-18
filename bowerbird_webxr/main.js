@@ -224,9 +224,6 @@ AFRAME.registerComponent('attach-to-parent', {
     const sceneNeedsLoop = loopNums.includes(sceneNum)
     const nextNeedsLoop = loopNums.includes(nextScene)
     console.log(nextScene)
-    if (nextScene === 13) {
-      // show end scene
-    }
     // Turn off spotlight
     const parent = document.getElementById(`${sceneNum}parent`)
     parent.setAttribute('visible', false)
@@ -242,36 +239,14 @@ AFRAME.registerComponent('attach-to-parent', {
       thisScene.visible = false
     }
 
-    setTimeout(() => {
-      // Turn on spotlight
-      const parent = document.getElementById(`${nextScene}parent`)
-      parent.setAttribute('visible', true)
-      // get the next hero
-      const nextHero = document.getElementById(`${nextScene}hero`)
-      nextHero.setAttribute('visible', true)
-      // turn on next scene
-      const nextSceneModel = this.el.sceneEl.components['scene-controller'][`scene${nextScene}`]
-      if (nextNeedsLoop) {
-        nextSceneModel.traverse((node) => {
-          if (node.isMesh) {
-            node.visible = true
-          }
-        })
-      } else {
-        nextSceneModel.visible = true
-      }
-      setTimeout(() => {
-        document.getElementById(`${nextScene}intro`).components['sound'].playSound()
-      }, 2500)
-    }, 1000)
-
+    
     // World rotation before parenting
     const worldQuaternion = new THREE.Quaternion();
     this.el.object3D.getWorldQuaternion(worldQuaternion);
-  
+    
     // Add as nested object of the parent
     this.data.target.object3D.add(this.el.object3D);
-  
+    
     // Compute local rotation in the context of the new parent
     const inverseParentQuaternion = new THREE.Quaternion().copy(this.data.target.object3D.quaternion).invert();
     const localQuaternion = inverseParentQuaternion.multiply(worldQuaternion);
@@ -279,6 +254,34 @@ AFRAME.registerComponent('attach-to-parent', {
     // Apply the local rotation and position
     this.el.object3D.quaternion.copy(localQuaternion);
     this.el.object3D.position.copy(this.data.offset);
+
+    if (nextScene === 13) {
+      // Show end scene
+    } else {
+      // Show next scene
+      setTimeout(() => {
+        // Turn on spotlight
+        const parent = document.getElementById(`${nextScene}parent`)
+        parent.setAttribute('visible', true)
+        // get the next hero
+        const nextHero = document.getElementById(`${nextScene}hero`)
+        nextHero.setAttribute('visible', true)
+        // turn on next scene
+        const nextSceneModel = this.el.sceneEl.components['scene-controller'][`scene${nextScene}`]
+        if (nextNeedsLoop) {
+          nextSceneModel.traverse((node) => {
+            if (node.isMesh) {
+              node.visible = true
+            }
+          })
+        } else {
+          nextSceneModel.visible = true
+        }
+        setTimeout(() => {
+          document.getElementById(`${nextScene}intro`).components['sound'].playSound()
+        }, 2500)
+      }, 1000)
+    }
   },
 
   remove: function () {
