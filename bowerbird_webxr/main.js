@@ -117,8 +117,22 @@ AFRAME.registerComponent('scene-controller', {
   },
 
   startIntro: function () {
+    setTimeout(() => {
+      this.introParent.setAttribute('visible', true)
+      this.updateNavmesh('.suitcase')
+    }, 1000)
   },
 
+  updateNavmesh: function (newNavClass) {
+    // Note, newNavClass should be of format '.classname'
+    const rightFingertip = document.getElementById('rightFingertip')
+    const leftFingertip = document.getElementById('leftFingertip')
+    const rightRay = document.getElementById('rightRay')
+    const leftRay = document.getElementById('leftRay')
+    if (rightFingertip) rightFingertip.setAttribute('blink-controls', 'collisionEntities', newNavClass)
+    if (leftFingertip) leftFingertip.setAttribute('blink-controls', 'collisionEntities', newNavClass)
+    if (rightRay) rightRay.setAttribute('blink-controls', 'collisionEntities', newNavClass)
+    if (leftRay) leftRay.setAttribute('blink-controls', 'collisionEntities', newNavClass)
   },
 
   endScene: function () {

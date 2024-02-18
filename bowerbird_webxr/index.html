@@ -202,14 +202,14 @@
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:green" data-none="screen-1"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:red" data-none="screen-2"></a-torus>
           
-          <a-entity data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
-          <a-entity data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
+          <a-entity id="rightFingertip" data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
+          <a-entity id="leftFingertip" data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
           
           <!-- Ray and Grip are Available on Hands or Tracked Inputs -->
-          <a-entity data-right="ray" mixin="blink" blink-controls>
+          <a-entity id="rightRay" data-right="ray" mixin="blink" blink-controls>
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
           </a-entity>
-          <a-entity data-left="ray" mixin="blink" blink-controls>
+          <a-entity id="leftRay" data-left="ray" mixin="blink" blink-controls>
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
           </a-entity>
         
@@ -505,7 +505,7 @@
         >
       </a-entity> -->
 
-      <a-gltf-model id="suitcase"
+      <a-gltf-model id="suitcaseOutro"
         src="#suitcaseModel"
         position="0 0 0"
         rotation="0 0 0"
@@ -527,6 +527,39 @@
         scale="1 1 1"
         shadow>
       </a-gltf-model>
+
+      <a-entity id="introParent"
+        visible="false"
+        position="0 0.15 -2.25">
+        <a-entity id="introSpotlightParent"
+          position="0 3 1.5">
+          <a-entity id="introSpotlight"
+            rotation="-90 0 0"
+            light="
+              type: spot;
+              angle: 50;
+              penumbra: 0.25;
+              intensity: 8;
+              shadowBias: -0.001;
+              shadowMapHeight: 512;
+              shadowMapWidth: 512;
+              shadowCameraVisible: false;
+              castShadow: true;"
+            >
+          </a-entity>
+          <a-entity id="introSpotlightCone" position="" rotation="" geometry="primitive: cone; radiusBottom: 3; height: 6; openEnded: true; radiusTop: 0.2" material="src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25">
+            <a-entity geometry="primitive: cone; height: 0.15; radiusBottom: 0.2; radiusTop: 0.05" position="0 3.075 0" material="color: #454545;">
+            </a-entity>
+          </a-entity>
+        </a-entity>
+        <a-gltf-model id="suitcaseIntro"
+          class="suitcase"
+          src="#suitcaseModel"
+          rotation="0 0 0"
+          scale="0.0175 0.0175 0.0175"
+          shadow="cast: true; receive: true">
+        </a-gltf-model>
+      </a-entity>
 
       <a-entity id="piano" sound="src: #pianoSrc" position="0 3 0" loop="true" volume="0.5"></a-entity>
 
