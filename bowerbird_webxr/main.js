@@ -119,6 +119,7 @@ AFRAME.registerComponent('scene-controller', {
   startIntro: function () {
     setTimeout(() => {
       this.introParent.setAttribute('visible', true)
+      document.getElementById('introSpotlightAudio').components['sound'].playSound()
       this.updateNavmesh('.suitcase')
     }, 1000)
   },
@@ -263,6 +264,7 @@ AFRAME.registerComponent('attach-to-parent', {
         // Turn on spotlight
         const parent = document.getElementById(`${nextScene}parent`)
         parent.setAttribute('visible', true)
+        document.getElementById(`${nextScene}spotlightAudio`).components['sound'].playSound()
         // get the next hero
         const nextHero = document.getElementById(`${nextScene}hero`)
         nextHero.setAttribute('visible', true)
