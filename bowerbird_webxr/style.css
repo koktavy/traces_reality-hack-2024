@@ -1,10 +1,8 @@
 body {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  background: #2e2e2e;
   overflow: hidden;
   margin: 0px;
-}
-
-body {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .overlay-footer {
@@ -12,14 +10,8 @@ body {
   inset: auto 0 0 0;
 }
 
-.a-dom-overlay button {
-  padding: 1em;
-  appearance: none;
-  background: #00000055;
-  border: 3px solid white;
-  border-radius: 1em;
-  margin: 1em 1em 0 0;
-  color: white;
+.a-dom-overlay {
+  padding: 0 !important;
 }
 
 #my-interface {
@@ -35,9 +27,151 @@ body {
   margin-bottom: 0.5em;
 }
 
+#dom-overlay {
+  overflow: hidden;
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
 #dom-overlay-message {
-  padding: 1em;
-  background: #33333355;
-  border-top: 5px solid #ffffff55;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: #2e2e2e;
   color: white;
+}
+
+#heroImgParent, #instructionsParent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+}
+
+#heroImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#group1, #group2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#push, #release, #grab, #light {
+  width: 35%;
+  margin: 0 0.5em 1em 0.5em;
+}
+
+#enterVR {
+  padding: 1%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  width: 15%;
+  min-width: 120px;
+  background: #2e2e2e;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  text-align: center;
+  border: 2px solid white;
+  border-radius: 0.5em;
+}
+
+#enterVR:hover {
+  border: 2px solid #177fa6;
+  color: #177fa6;
+  background: white;
+  font-weight: bold;
+}
+
+
+/**
+Loading dots
+https://martinwolf.org/before-2018/blog/2015/01/pure-css-savingloading-dots-animation/
+HTML:
+  <div id="loadingDots" class="loading"><span>.</span><span>.</span><span>.</span></div>
+Suggested use:
+  Place the above div within your intro button, replace button's innerHTML with text in ui-manager after the click listener has loaded
+*/
+@keyframes blink {
+  /**
+   * At the start of the animation the dot
+   * has an opacity of .2
+   */
+  0% {
+    opacity: .2;
+  }
+  /**
+   * At 20% the dot is fully visible and
+   * then fades out slowly
+   */
+  20% {
+    opacity: 1;
+  }
+  /**
+   * Until it reaches an opacity of .2 and
+   * the animation can start again
+   */
+  100% {
+    opacity: .2;
+  }
+}
+
+.loading span {
+  padding: 0;
+  margin: 0;
+  /**
+   * Use the blink animation, which is defined above
+   */
+  animation-name: blink;
+  /**
+   * The animation should take 1.4 seconds
+   */
+  animation-duration: 1.4s;
+  /**
+   * It will repeat itself forever
+   */
+  animation-iteration-count: infinite;
+  /**
+   * This makes sure that the starting style (opacity: .2)
+   * of the animation is applied before the animation starts.
+   * Otherwise we would see a short flash or would have
+   * to set the default styling of the dots to the same
+   * as the animation. Same applies for the ending styles.
+   */
+  animation-fill-mode: both;
+}
+
+.loading span:nth-child(2) {
+  /**
+   * Starts the animation of the third dot
+   * with a delay of .2s, otherwise all dots
+   * would animate at the same time
+   */
+  animation-delay: .2s;
+}
+
+.loading span:nth-child(3) {
+  /**
+   * Starts the animation of the third dot
+   * with a delay of .4s, otherwise all dots
+   * would animate at the same time
+   */
+  animation-delay: .4s;
 }

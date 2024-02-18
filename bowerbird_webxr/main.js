@@ -6,10 +6,14 @@ AFRAME.registerComponent('scene-controller', {
     default: ''
   },
   init: function () {
-    this.el.sceneEl.addEventListener('teleported', () => {
-      document.getElementById('1intro').components['sound'].playSound()
-      document.getElementById('piano').components['sound'].playSound()
-    }, { once: true })
+    this.enterVR = document.getElementById('enterVR')
+    this.uiIntro = document.getElementById('uiIntro')
+    this.ground = document.getElementById('ground')
+    this.introParent = document.getElementById('introParent')
+
+    // Bindings
+    this.startIntro = this.startIntro.bind(this)
+    this.updateNavmesh = this.updateNavmesh.bind(this)
     this.endScene = this.endScene.bind(this)
     this.control = this.control.bind(this)
 
@@ -69,7 +73,7 @@ AFRAME.registerComponent('scene-controller', {
       }
       if (node.name.includes('1_scene')) {
         this.scene1 = node
-        node.visible = true
+        // node.visible = true
       }
       if (node.name.includes('2_scene')) this.scene2 = node
       if (node.name.includes('3_scene')) this.scene3 = node
@@ -87,6 +91,34 @@ AFRAME.registerComponent('scene-controller', {
       if (node.name.includes('7_scene')) this.scene7 = node
       if (node.name.includes('9_scene')) this.scene9 = node
     })
+
+    this.enterVR.innerHTML = 'Start VR'
+    this.el.sceneEl.addEventListener('enter-vr', () => {
+      document.getElementById('dom-overlay-message').style.display = 'none'
+      // a-frame animate to fade in
+      this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
+      this.uiIntro.addEventListener('animationcomplete', () => {
+        // Moment's pause
+        setTimeout(() => {
+          // animate out the uiIntro
+          this.uiIntro.removeAttribute('animation')
+          this.uiIntro.setAttribute('animation', 'property: opacity; from: 1; to: 0; dur: 1500; easing: linear')
+          // Fade in fog
+          this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.025; dur: 3500; easing: linear')
+          // Fade in ground
+          this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3500; easing: linear')
+          this.ground.addEventListener('animationcomplete', this.startIntro)
+        }, 1000)
+      }, { once: true })
+    })
+    this.el.sceneEl.addEventListener('exit-vr', () => {
+      document.getElementById('dom-overlay-message').style.display = 'flex'
+    })
+  },
+
+  startIntro: function () {
+  },
+
   },
 
   endScene: function () {

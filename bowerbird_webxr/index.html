@@ -37,12 +37,12 @@
       physx="autoLoad: true; delay: 1000; wasmUrl: https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/wasm/physx.release.wasm; useDefaultScene: false;"
       webxr="overlayElement:#dom-overlay;"
       background="color: #232323;"
-      renderer="alpha:true;physicallyCorrectLights:true;colorManagement:true;exposure:2;toneMapping:ACESFilmic;"
+      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true; exposure: 1.25; toneMapping: ACESFilmic; antialias: true"
       ar-hit-test="target:#my-ar-objects;type:footprint;footprintDepth:0.2;"
       shadow="type: pcfsoft"
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.6/;"
       ar-cursor raycaster="objects: #my-ar-objects a-sphere"
-      xr-mode-ui="XRMode:vr"
+      xr-mode-ui="XRMode:vr; enterVRButton: #enterVR;"
       fog="type: exponential; color: #232323; density: 0; near: 0.1; far: 100;"
       scene-controller
     >
@@ -71,6 +71,14 @@
 
         <!-- images -->
         <img id="lightfadeSrc" src="./src/assets/images/light-fade.png" crossorigin="anonymous">
+
+        <!-- UI -->
+        <img id="introImg" src="./src/assets/ui/intro.png" crossorigin="anonymous">
+        <img id="outroImg" src="./src/assets/ui/outro.png" crossorigin="anonymous">
+        <img id="pushImg" src="./src/assets/ui/push.png" crossorigin="anonymous">
+        <img id="releaseImg" src="./src/assets/ui/release.png" crossorigin="anonymous">
+        <img id="grabImg" src="./src/assets/ui/grab.png" crossorigin="anonymous">
+        <img id="lightImg" src="./src/assets/ui/light.png" crossorigin="anonymous">
 
         <!-- Intro Audio -->
         <audio id="1introSrc" src="./src/assets/scenes/1_Bedroom/1intro.mp3" preload="auto"></audio>
@@ -161,6 +169,9 @@
           camera="near: 0.01;"
           look-controls="pointerLockEnabled: false"
           position="0 1.65 0">
+          <a-entity id="uiParent">
+            <a-plane id="uiIntro" material="src: #introImg; transparent: true; opacity: 0; alphaTest: 0.001" position="0 -0.15 -1.5" scale=""></a-plane>
+          </a-entity>
           <a-entity id="introSounds" position="0 0 -0.5">
             <a-entity id="1intro" sound="src: #1introSrc"></a-entity>
             <a-entity id="2intro" sound="src: #2introSrc"></a-entity>
@@ -289,6 +300,7 @@
 
       <!-- Object -->
       <a-gltf-model id="1hero"
+        visible="false"
         src="#1object"
         colorize="color: #FFE178"
         position="0 0.82623 -7.5097" rotation="0 -101.79053596735181 0"
@@ -436,6 +448,7 @@
         <a-entity id="10outro" sound="src: #10outroSrc"></a-entity>
       </a-gltf-model>
 
+      
       <a-gltf-model id="11hero"
       visible="false"
         src="#11object"
@@ -508,7 +521,7 @@
       <a-entity id="piano" sound="src: #pianoSrc" position="0 3 0" loop="true" volume="0.5"></a-entity>
 
       <!-- Vignette #1 Group -->
-      <a-entity id="1parent" position="0 0 -8.1" visible="true">
+      <a-entity id="1parent" position="0 0 -8.1" visible="false">
           <!-- Audio -->
           <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
           <a-entity sound="src: #1amb"></a-entity>
@@ -899,45 +912,62 @@
       <!-- <h1>
         Hello World
       </h1> -->
-      <div class="overlay-footer">
-        <section style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" id="my-interface">
-          <!-- <h2>Settings</h2>
-          <fieldset style="border:none;">
-            <legend>Thumbstick Behaviour</legend>
-            <input onclick="toggleThumbstick(this)" type="radio" id="thumbstick-teleport" name="thumbstick" value="teleport" checked><label for="thumbstick-teleport"> Teleport</label>
-            <input onclick="toggleThumbstick(this)" type="radio" id="thumbstick-move" name="thumbstick" value="move"><label for="thumbstick-move"> Move</label>
-          </fieldset> -->
-          <!-- <button onclick="AFRAME.scenes[0].exitVR()" style="display: block;">Exit Immersive</button> -->
-        </section>
-        
-        <!-- HTML form logic -->
-        <script>
-          let movementType = 'teleport';
-          function toggleThumbstick(detail) {
-            const rayPointers = ['[data-right="ray"]', '[data-left="ray"]'].map(s => document.querySelector(s));
-            const type = detail.value;
-            movementType = type;
-            if (type === 'move') {
-              cameraRig.setAttribute('movement-controls', 'enabled', true);
-              for (const p of rayPointers) p.removeAttribute('mixin');
-            }
-            if (type === 'teleport') {
-              cameraRig.setAttribute('movement-controls', 'enabled', false);
-              for (const p of rayPointers) p.setAttribute('mixin', 'blink');
-            }
-          }
-          // If the user is teleporting disable movement-controls in XR
-          const sceneEl = document.querySelector("a-scene");
-          sceneEl.addEventListener("enter-vr", function() {
-            if (movementType === 'teleport') {
-              cameraRig.setAttribute('movement-controls', 'enabled', false);
-            }
-          });
-          sceneEl.addEventListener("exit-vr", function() {
+      <!-- <section style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" id="my-interface">
+        <h2>Settings</h2>
+        <fieldset style="border:none;">
+          <legend>Thumbstick Behaviour</legend>
+          <input onclick="toggleThumbstick(this)" type="radio" id="thumbstick-teleport" name="thumbstick" value="teleport" checked><label for="thumbstick-teleport"> Teleport</label>
+          <input onclick="toggleThumbstick(this)" type="radio" id="thumbstick-move" name="thumbstick" value="move"><label for="thumbstick-move"> Move</label>
+        </fieldset>
+        <button onclick="AFRAME.scenes[0].exitVR()" style="display: block;">Exit Immersive</button>
+      </section> -->
+      
+      <!-- HTML form logic -->
+      <script>
+        let movementType = 'teleport';
+        function toggleThumbstick(detail) {
+          const rayPointers = ['[data-right="ray"]', '[data-left="ray"]'].map(s => document.querySelector(s));
+          const type = detail.value;
+          movementType = type;
+          if (type === 'move') {
             cameraRig.setAttribute('movement-controls', 'enabled', true);
-          });
-        </script>
-        <!-- <div id="dom-overlay-message">Enter AR or VR to start.</div> -->
+            for (const p of rayPointers) p.removeAttribute('mixin');
+          }
+          if (type === 'teleport') {
+            cameraRig.setAttribute('movement-controls', 'enabled', false);
+            for (const p of rayPointers) p.setAttribute('mixin', 'blink');
+          }
+        }
+        // If the user is teleporting disable movement-controls in XR
+        const sceneEl = document.querySelector("a-scene");
+        sceneEl.addEventListener("enter-vr", function() {
+          if (movementType === 'teleport') {
+            cameraRig.setAttribute('movement-controls', 'enabled', false);
+          }
+        });
+        sceneEl.addEventListener("exit-vr", function() {
+          cameraRig.setAttribute('movement-controls', 'enabled', true);
+        });
+      </script>
+      <!-- Main Overlay -->
+      <div id="dom-overlay-message">
+        <div id="heroImgParent">
+          <img id="heroImg" src="./src/assets/ui/hero.png" alt="Traces Logo">
+        </div>
+        <div id="instructionsParent">
+          <div id="group1">
+            <img id="push" src="./src/assets/ui/push-thin.png" alt="Push joystick to aim teleport" />
+            <img id="release" src="./src/assets/ui/release-thin.png" alt="Release joystick to teleport" />
+          </div>
+          <div id="group2">
+            <img id="grab" src="./src/assets/ui/grab-thin.png" alt="Grab objects with the grip" />
+            <img id="light" src="./src/assets/ui/light-thin.png" alt="Follow the light" />
+          </div>
+        </div>
+        <div id="enterVR">
+          <div id="loadingDots" class="loading"><span>.</span><span>.</span><span>.</span>
+        </div>
+      </div>
       </div>
     </div>
   </body>
