@@ -229,6 +229,7 @@ AFRAME.registerComponent('blink-controls', {
       this.line = this.createLine(data)
       this.line.material.opacity = this.data.hitOpacity
       this.line.material.transparent = this.data.hitOpacity < 1
+      this.line.material.alphaTest = 0.05
       this.numActivePoints = data.curveNumberPoints
       this.teleportEntity.setObject3D('mesh', this.line.mesh)
     }
@@ -323,6 +324,7 @@ AFRAME.registerComponent('blink-controls', {
       }
       this.line.material.opacity = this.data.missOpacity
       this.line.material.transparent = this.data.missOpacity < 1
+      this.line.material.alphaTest = 0.05
       this.hitEntity.setAttribute('visible', false)
       this.hit = false
 
@@ -506,6 +508,7 @@ AFRAME.registerComponent('blink-controls', {
       this.line.material.color.set(this.curveHitColor)
       this.line.material.opacity = this.data.hitOpacity
       this.line.material.transparent = this.data.hitOpacity < 1
+      this.line.material.alphaTest = 0.05
       this.hitEntity.setAttribute('position', point)
       this.hitEntity.setAttribute('visible', true)
 

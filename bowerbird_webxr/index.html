@@ -59,6 +59,11 @@
         <!-- <a-asset-item id="table-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/small_wooden_table_01_1k-v1.glb?v=1647263187998"></a-asset-item> -->
         <a-mixin id="animations" animation__click="property: components.material.material.color; type: color; to: blue; startEvents: click; dur: 500;"></a-mixin>
         <a-mixin id="blink" blink-controls="
+          hitCylinderColor: #177fa6;
+          curveHitColor: #177fa6;
+          hitCylinderRadius: 0.15;
+          hitCylinderHeight: 0.02;
+          curveLineWidth: 0.01;
           rotateOnTeleport: false;
           cameraRig: #cameraRig; 
           teleportOrigin: #head; 
