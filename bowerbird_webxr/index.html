@@ -67,7 +67,7 @@
           rotateOnTeleport: false;
           cameraRig: #cameraRig; 
           teleportOrigin: #head; 
-          collisionEntities: .navmesh;
+          collisionEntities: .apple;
           snapTurnAngle: 15;
           teleportationMethod: none;
           positionWarpDuration: 875">
@@ -288,8 +288,13 @@
         </a-gltf-model>
       </a-entity>
 
-      <!-- <a-gltf-model id="apple" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: 0.15 -0.478 -0.155" shadow="receive: false" src="#apple-gltf" position="0.59803 0.61295 -2.66374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="0 0 0" scale="0.15 0.15 0.15">
-      </a-gltf-model> -->
+      <a-gltf-model id="apple"
+        class="apple"
+        shadow="receive: false; cast: false"
+        src="#apple-gltf"
+        position="0 -1000 0"
+        scale="0.01 0.01 0.01">
+      </a-gltf-model>
 
       <!-- <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.15" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./src/assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-45 0.34003514272847424 -30" scale="0.15 0.15 0.15">
       </a-gltf-model> -->
