@@ -25,12 +25,9 @@ app.use(cors({
 
 // Serve static files from 'dist' directory
 app.use('/', express.static(path.join(__dirname, 'dist')));
-// app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
-// app.use('/assets/ui', express.static(path.join(__dirname, 'dist/assets/ui')));
-// app.use('/components', express.static(path.join(__dirname, 'dist/components')));
-app.use('/assets', setCustomCorsHeader, express.static(path.join(__dirname, 'dist/assets')));
-app.use('/assets/ui', setCustomCorsHeader, express.static(path.join(__dirname, 'dist/assets/ui')));
-app.use('/components', setCustomCorsHeader, express.static(path.join(__dirname, 'dist/components')));
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
+app.use('/assets/ui', express.static(path.join(__dirname, 'dist/assets/ui')));
+app.use('/components', express.static(path.join(__dirname, 'dist/components')));
 
 // API Endpoint to provide environment variables
 // app.get('/api/get-env-vars', (req, res) => {
