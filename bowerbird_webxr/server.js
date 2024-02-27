@@ -10,6 +10,8 @@ function setCustomCorsHeader(req, res, next) {
   const origin = req.get('origin');
   if (allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
   }
   next();
 }
