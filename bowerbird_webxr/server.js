@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 // Setting up CORS
-const allowedOrigins = ['*'];
+const allowedOrigins = ['*', 'https://traces-cyatz.ondigitalocean.app/', 'https://traces.site'];
 app.use(
   cors({
     origin: function(origin, callback){
