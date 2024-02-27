@@ -1,6 +1,6 @@
 # Traces
 
-## Setup
+## Local Setup
 
 cd bowerbird_webxr
 
@@ -17,6 +17,10 @@ An internet connection
 ### Software Dependencies
 
 N/A
+
+### Development Challenges
+
+GitLFS is incompatible with DigitalOcean hosted Apps, all assets must be hosted directly in the repo.
 
 ## Run
 
