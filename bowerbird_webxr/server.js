@@ -6,16 +6,6 @@ const app = express();
 // Setting up CORS
 const allowedOrigins = ['https://traces-cyatz.ondigitalocean.app/', 'https://traces.site'];
 
-function setCustomCorsHeader(req, res, next) {
-  const origin = req.get('origin');
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-  next();
-}
-
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
