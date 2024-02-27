@@ -297,7 +297,7 @@ AFRAME.registerComponent('attach-to-parent', {
     this.el.object3D.quaternion.copy(localQuaternion);
     this.el.object3D.position.copy(this.data.offset);
 
-    if (nextScene === 2) {
+    if (nextScene === 13) {
       this.el.sceneEl.components['scene-controller'].endScene()
       // Show end scene
     } else {
