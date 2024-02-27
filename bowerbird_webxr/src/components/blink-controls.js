@@ -82,6 +82,7 @@ AFRAME.registerComponent('blink-controls', {
     const el = this.el
     let i
 
+    this.isFirstJump = true
     this.active = false
     this.obj = el.object3D
     this.controllerPosition = new THREE.Vector3()
@@ -416,6 +417,12 @@ AFRAME.registerComponent('blink-controls', {
 
       if (!this.hit) {
         // Button released but no hit point
+        return
+      }
+
+      if (this.isFirstJump) {
+        this.isFirstJump = false
+        this.el.emit('teleported', this.teleportEventDetail)
         return
       }
 

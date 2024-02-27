@@ -78,8 +78,8 @@
         <img id="lightfadeSrc" src="assets/images/light-fade.png" />
 
         <!-- UI -->
-        <img id="introImg" src="assets/ui/intro.png" />
-        <img id="outroImg" src="assets/ui/outro.png" />
+        <img id="introImg" src="assets/ui/hero-noitems.png" />
+        <img id="outroImg" src="assets/ui/hero.png" />
         <!-- <img id="pushImg" src="assets/ui/push.png" />
         <img id="releaseImg" src="assets/ui/release.png" />
         <img id="grabImg" src="assets/ui/grab.png" />
@@ -176,7 +176,8 @@
           look-controls="pointerLockEnabled: false"
           position="0 1.65 0">
           <a-entity id="uiParent">
-            <a-plane id="uiIntro" material="src: #introImg; transparent: true; opacity: 0; alphaTest: 0.001" position="0 -0.15 -1.5" scale=""></a-plane>
+            <a-plane id="uiIntro" material="src: #introImg; transparent: true; opacity: 0; alphaTest: 0.001" position="0 -0.15 -1.5" scale="1 0.5 0.5"></a-plane>
+            <a-plane id="uiOutro" material="src: #outroImg; transparent: true; opacity: 0; alphaTest: 0.001" position="0 -0.15 -1.5" scale="1 0.5 0.5"></a-plane>
           </a-entity>
           <a-entity id="introSounds" position="0 0 -0.5">
             <a-entity id="1intro" sound="src: #1introSrc"></a-entity>
@@ -563,6 +564,13 @@
           rotation="0 0 0"
           scale="0.0175 0.0175 0.0175"
           shadow="cast: true; receive: true">
+          <!-- a soft light -->
+          <a-entity id="suitcaseLight"
+            position="0 9.91265 6.73729"
+            rotation="-60 0 0"
+            light="type: spot; angle: 50; penumbra: 0.25; intensity: 2; shadowBias: -0.001; castShadow: true"
+            animation__intensity="property: light.intensity; from: 0; to: 2; dur: 3500; loop: true; dir: alternate; easing: easeInOutSine">
+          </a-entity>
         </a-gltf-model>
       </a-entity>
 
@@ -994,7 +1002,7 @@
       
       <!-- <a-gltf-model class="navmesh" src="#navmesh-glb" visible="false"></a-gltf-model> -->
 
-      <a-entity id="ground"
+      <a-entity id="ground" class="ground"
         geometry="primitive: circle; segments: 128; radius: 100"
         position="0 0.1 0"
         rotation="-90 0 0"
