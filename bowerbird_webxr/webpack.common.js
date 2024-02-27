@@ -1,6 +1,7 @@
 const path = require('path')
 const DotenvWebpackPlugin = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'production',
@@ -9,7 +10,12 @@ module.exports = {
         rules: [
             {
               test: /\.html$/,
-              use: 'html-loader',
+              use: {
+                loader: 'html-loader',
+                options: {
+                  sources: false,
+                }
+              },
             },
             {
               test: /\.tsx?$/,
@@ -21,16 +27,24 @@ module.exports = {
               use: 'file-loader'
             },
             {
-              test: /\.jpg$/,
-              use: 'file-loader'
+              test: /\.(png|jpg)$/,
+              use: {
+                loader: 'file-loader',
+                options: {
+                  name: '[name].[ext]', // This configuration retains the original filename and extension
+                  outputPath: 'images/',
+                }
+              },
             },
             {
-              test: /\.png$/,
-              use: 'file-loader'
-            },
-            {
-                test: /\.glb$/,
-                use: 'file-loader'
+              test: /\.glb$/,
+              use: {
+                loader: 'file-loader',
+                options: {
+                  name: '[name].[ext]', // This configuration retains the original filename and extension
+                  outputPath: 'models/',
+                }
+              },
             },
         ],
     },
@@ -39,11 +53,17 @@ module.exports = {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js'
+      filename: 'bundle.js',
+      publicPath: '',
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: './index.html',
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: 'src/assets', to: 'assets' },
+            ],
         }),
     ],
     performance: {

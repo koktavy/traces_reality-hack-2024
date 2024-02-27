@@ -22,7 +22,7 @@ N/A
 
 Open your headset's web browser and navigate to:
 
-https://www.traces.site
+https://traces.site
 
 ## Shout-Outs
 

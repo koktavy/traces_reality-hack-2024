@@ -13,9 +13,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/three": "^0.153.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "dotenv-webpack": "^8.0.1",
     "file-loader": "^6.2.0",
     "raw-loader": "^4.0.2",
-    "dotenv-webpack": "^8.0.1",
     "three": "^0.154.0",
     "ts-loader": "^9.4.4",
     "typescript": "^5.0.2",
