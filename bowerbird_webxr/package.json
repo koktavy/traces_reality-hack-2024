@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An immersive VR narrative about belonging.",
   "scripts": {
-    "start": "node server.js",
+    "start": "cd dist && node server.js",
     "dev": "webpack serve --mode development --config ./webpack.dev.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config ./webpack.common.js"

@@ -36,7 +36,6 @@ module.exports = {
                 loader: 'file-loader',
                 options: {
                   name: '[name].[ext]', // This configuration retains the original filename and extension
-                  outputPath: 'images/',
                 }
               },
             },
@@ -46,7 +45,6 @@ module.exports = {
                 loader: 'file-loader',
                 options: {
                   name: '[name].[ext]', // This configuration retains the original filename and extension
-                  outputPath: 'models/',
                 }
               },
             },
@@ -62,19 +60,17 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './index.html',
+          template: './index.html',
         }),
         new CopyPlugin({
-            patterns: [
-                { from: 'src/assets', to: 'assets' },
-                { from: 'style.css', to: 'style.css' },
-                { from: 'main.js', to: 'main.js' },
-                { from: 'src/components/blink-controls.js', to: 'components/blink-controls.js' },
-                { from: 'src/components/colorize.js', to: 'components/colorize.js' },
-                { from: 'src/components/model-opacity.js', to: 'components/model-opacity.js' },
-                { from: 'simple-navmesh-constraint.js', to: 'simple-navmesh-constraint.js' },
-                { from: 'model-utils.js', to: 'model-utils.js' },
-            ],
+          patterns: [
+            { from: 'style.css', to: 'style.css' },
+            { from: 'src/assets', to: 'assets' },
+            { from: 'src/components', to: 'components' },
+            { from: 'simple-navmesh-constraint.js', to: 'simple-navmesh-constraint.js' },
+            { from: 'model-utils.js', to: 'model-utils.js' },
+            { from: 'main.js', to: 'main.js' },
+          ],
         }),
     ],
     performance: {

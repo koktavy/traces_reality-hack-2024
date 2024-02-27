@@ -16,13 +16,13 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/components/sphere-collider.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.2/dist/physx.min.js"></script>
-    <script src="./components/blink-controls.js"></script>
+    <script src="components/blink-controls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work@3.1.10/build/handy-controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handy-work@3.1.10/build/magnet-helpers.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-htmlmesh@2.2.0/build/aframe-html.min.js"></script>
 
-    <script src="./components/colorize.js"></script>
-    <script src="./components/model-opacity.js"></script>
+    <script src="components/colorize.js"></script>
+    <script src="components/model-opacity.js"></script>
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
 
@@ -47,15 +47,15 @@
       scene-controller
     >
       <a-assets>
-        <a-asset-item id="test1-glb" src="./assets/Models/Testscene-v1.glb"></a-asset-item>
-        <!-- <a-asset-item id="test2-glb" src="./assets/Models/Testscene-v2.glb"></a-asset-item> -->
+        <a-asset-item id="test1-glb" src="assets/Models/Testscene-v1.glb"></a-asset-item>
+        <!-- <a-asset-item id="test2-glb" src="assets/Models/Testscene-v2.glb"></a-asset-item> -->
 
         <!-- <a-asset-item id="navmesh-glb" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/navmesh.glb?v=1644329586500"></a-asset-item> -->
-        <a-asset-item id="right-gltf" src="./assets/Models/player/blob-right-hand.glb"></a-asset-item>
-        <a-asset-item id="left-gltf" src="./assets/Models/player/blob-left-hand.glb"></a-asset-item>
+        <a-asset-item id="right-gltf" src="assets/Models/player/blob-right-hand.glb"></a-asset-item>
+        <a-asset-item id="left-gltf" src="assets/Models/player/blob-left-hand.glb"></a-asset-item>
         <!-- body -->
-        <a-asset-item id="body-gltf" src="./assets/Models/player/blob-body.glb"></a-asset-item>
-        <a-asset-item id="apple-gltf" src="./assets/objects/red_apple.glb"></a-asset-item>
+        <a-asset-item id="body-gltf" src="assets/Models/player/blob-body.glb"></a-asset-item>
+        <a-asset-item id="apple-gltf" src="assets/objects/red_apple.glb"></a-asset-item>
         <!-- <a-asset-item id="table-gltf" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/small_wooden_table_01_1k-v1.glb?v=1647263187998"></a-asset-item> -->
         <a-mixin id="animations" animation__click="property: components.material.material.color; type: color; to: blue; startEvents: click; dur: 500;"></a-mixin>
         <a-mixin id="blink" blink-controls="
@@ -75,79 +75,79 @@
         <a-mixin id="handle-visual" geometry="width:0.05;height:0.05;depth:0.2"></a-mixin>
 
         <!-- images -->
-        <img id="lightfadeSrc" src="./assets/images/light-fade.png" crossorigin="anonymous">
+        <img id="lightfadeSrc" src="assets/images/light-fade.png" crossorigin="anonymous">
 
         <!-- UI -->
-        <img id="introImg" src="./assets/ui/intro.png" crossorigin="anonymous">
-        <img id="outroImg" src="./assets/ui/outro.png" crossorigin="anonymous">
-        <img id="pushImg" src="./assets/ui/push.png" crossorigin="anonymous">
-        <img id="releaseImg" src="./assets/ui/release.png" crossorigin="anonymous">
-        <img id="grabImg" src="./assets/ui/grab.png" crossorigin="anonymous">
-        <img id="lightImg" src="./assets/ui/light.png" crossorigin="anonymous">
+        <img id="introImg" src="assets/ui/intro.png" crossorigin="anonymous">
+        <img id="outroImg" src="assets/ui/outro.png" crossorigin="anonymous">
+        <img id="pushImg" src="assets/ui/push.png" crossorigin="anonymous">
+        <img id="releaseImg" src="assets/ui/release.png" crossorigin="anonymous">
+        <img id="grabImg" src="assets/ui/grab.png" crossorigin="anonymous">
+        <img id="lightImg" src="assets/ui/light.png" crossorigin="anonymous">
 
         <!-- Intro Audio -->
-        <audio id="1introSrc" src="./assets/scenes/1_Bedroom/1intro.mp3" preload="auto"></audio>
-        <audio id="2introSrc" src="./assets/scenes/2_Front_Door/2intro.mp3" preload="auto"></audio>
-        <audio id="3introSrc" src="./assets/scenes/3_Grocery_Store/3intro.mp3" preload="auto"></audio>
-        <audio id="4introSrc" src="./assets/scenes/4_Cafeteria/4intro.mp3" preload="auto"></audio>
-        <audio id="5introSrc" src="./assets/scenes/5_Living_Room/5intro.mp3" preload="auto"></audio>
-        <audio id="6introSrc" src="./assets/scenes/6_Classroom/6intro.mp3" preload="auto"></audio>
-        <audio id="7introSrc" src="./assets/scenes/7_Schoolyard/7intro.mp3" preload="auto"></audio>
-        <audio id="8introSrc" src="./assets/scenes/8_Classroom/8intro.mp3" preload="auto"></audio>
-        <audio id="9introSrc" src="./assets/scenes/9_Skate Park/9intro.mp3" preload="auto"></audio>
-        <audio id="10introSrc" src="./assets/scenes/10_Cafeteria/10intro.mp3" preload="auto"></audio>
-        <audio id="11introSrc" src="./assets/scenes/11_Classroom/11intro.mp3" preload="auto"></audio>
-        <audio id="12introSrc" src="./assets/scenes/12_Cafeteria/12intro.mp3" preload="auto"></audio>
+        <audio id="1introSrc" src="assets/scenes/1_Bedroom/1intro.mp3" preload="auto"></audio>
+        <audio id="2introSrc" src="assets/scenes/2_Front_Door/2intro.mp3" preload="auto"></audio>
+        <audio id="3introSrc" src="assets/scenes/3_Grocery_Store/3intro.mp3" preload="auto"></audio>
+        <audio id="4introSrc" src="assets/scenes/4_Cafeteria/4intro.mp3" preload="auto"></audio>
+        <audio id="5introSrc" src="assets/scenes/5_Living_Room/5intro.mp3" preload="auto"></audio>
+        <audio id="6introSrc" src="assets/scenes/6_Classroom/6intro.mp3" preload="auto"></audio>
+        <audio id="7introSrc" src="assets/scenes/7_Schoolyard/7intro.mp3" preload="auto"></audio>
+        <audio id="8introSrc" src="assets/scenes/8_Classroom/8intro.mp3" preload="auto"></audio>
+        <audio id="9introSrc" src="assets/scenes/9_Skate Park/9intro.mp3" preload="auto"></audio>
+        <audio id="10introSrc" src="assets/scenes/10_Cafeteria/10intro.mp3" preload="auto"></audio>
+        <audio id="11introSrc" src="assets/scenes/11_Classroom/11intro.mp3" preload="auto"></audio>
+        <audio id="12introSrc" src="assets/scenes/12_Cafeteria/12intro.mp3" preload="auto"></audio>
 
         <!-- Outro Audio -->
-        <audio id="1outroSrc" src="./assets/scenes/1_Bedroom/1outro.mp3" preload="auto"></audio>
-        <audio id="2outroSrc" src="./assets/scenes/2_Front_Door/2outro.mp3" preload="auto"></audio>
-        <audio id="3outroSrc" src="./assets/scenes/3_Grocery_Store/3outro.mp3" preload="auto"></audio>
-        <audio id="4outroSrc" src="./assets/scenes/4_Cafeteria/4outro.mp3" preload="auto"></audio>
-        <audio id="5outroSrc" src="./assets/scenes/5_Living_Room/5outro.mp3" preload="auto"></audio>
-        <audio id="6outroSrc" src="./assets/scenes/6_Classroom/6outro.mp3" preload="auto"></audio>
-        <audio id="7outroSrc" src="./assets/scenes/7_Schoolyard/7outro.mp3" preload="auto"></audio>
-        <audio id="8outroSrc" src="./assets/scenes/8_Classroom/8outro.mp3" preload="auto"></audio>
-        <audio id="9outroSrc" src="./assets/scenes/9_Skate Park/9outro.mp3" preload="auto"></audio>
-        <audio id="10outroSrc" src="./assets/scenes/10_Cafeteria/10outro.mp3" preload="auto"></audio>
-        <audio id="11outroSrc" src="./assets/scenes/11_Classroom/11outro.mp3" preload="auto"></audio>
-        <audio id="12outroSrc" src="./assets/scenes/12_Cafeteria/12outro.mp3" preload="auto"></audio>
+        <audio id="1outroSrc" src="assets/scenes/1_Bedroom/1outro.mp3" preload="auto"></audio>
+        <audio id="2outroSrc" src="assets/scenes/2_Front_Door/2outro.mp3" preload="auto"></audio>
+        <audio id="3outroSrc" src="assets/scenes/3_Grocery_Store/3outro.mp3" preload="auto"></audio>
+        <audio id="4outroSrc" src="assets/scenes/4_Cafeteria/4outro.mp3" preload="auto"></audio>
+        <audio id="5outroSrc" src="assets/scenes/5_Living_Room/5outro.mp3" preload="auto"></audio>
+        <audio id="6outroSrc" src="assets/scenes/6_Classroom/6outro.mp3" preload="auto"></audio>
+        <audio id="7outroSrc" src="assets/scenes/7_Schoolyard/7outro.mp3" preload="auto"></audio>
+        <audio id="8outroSrc" src="assets/scenes/8_Classroom/8outro.mp3" preload="auto"></audio>
+        <audio id="9outroSrc" src="assets/scenes/9_Skate Park/9outro.mp3" preload="auto"></audio>
+        <audio id="10outroSrc" src="assets/scenes/10_Cafeteria/10outro.mp3" preload="auto"></audio>
+        <audio id="11outroSrc" src="assets/scenes/11_Classroom/11outro.mp3" preload="auto"></audio>
+        <audio id="12outroSrc" src="assets/scenes/12_Cafeteria/12outro.mp3" preload="auto"></audio>
 
         <!-- Amb -->
-        <audio id="1amb" src="./assets/scenes/1_Bedroom/1amb.mp3" preload="auto"></audio>
-        <audio id="2amb" src="./assets/scenes/2_Front_Door/2amb.mp3" preload="auto"></audio>
-        <audio id="3amb" src="./assets/scenes/3_Grocery_Store/3amb.mp3" preload="auto"></audio>
-        <audio id="4amb" src="./assets/scenes/4_Cafeteria/4amb.mp3" preload="auto"></audio>
-        <audio id="5amb" src="./assets/scenes/5_Living_Room/5amb.mp3" preload="auto"></audio>
-        <audio id="6amb" src="./assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
-        <audio id="7amb" src="./assets/scenes/7_Schoolyard/7amb.mp3" preload="auto"></audio>
-        <audio id="8amb" src="./assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
-        <audio id="9amb" src="./assets/scenes/9_Skate Park/9amb.mp3" preload="auto"></audio>
-        <audio id="10amb" src="./assets/scenes/10_Cafeteria/10amb.mp3" preload="auto"></audio>
-        <audio id="11amb" src="./assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
-        <audio id="12amb" src="./assets/scenes/12_Cafeteria/12amb.mp3" preload="auto"></audio>
+        <audio id="1amb" src="assets/scenes/1_Bedroom/1amb.mp3" preload="auto"></audio>
+        <audio id="2amb" src="assets/scenes/2_Front_Door/2amb.mp3" preload="auto"></audio>
+        <audio id="3amb" src="assets/scenes/3_Grocery_Store/3amb.mp3" preload="auto"></audio>
+        <audio id="4amb" src="assets/scenes/4_Cafeteria/4amb.mp3" preload="auto"></audio>
+        <audio id="5amb" src="assets/scenes/5_Living_Room/5amb.mp3" preload="auto"></audio>
+        <audio id="6amb" src="assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
+        <audio id="7amb" src="assets/scenes/7_Schoolyard/7amb.mp3" preload="auto"></audio>
+        <audio id="8amb" src="assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
+        <audio id="9amb" src="assets/scenes/9_Skate Park/9amb.mp3" preload="auto"></audio>
+        <audio id="10amb" src="assets/scenes/10_Cafeteria/10amb.mp3" preload="auto"></audio>
+        <audio id="11amb" src="assets/scenes/6_Classroom/6amb.mp3" preload="auto"></audio>
+        <audio id="12amb" src="assets/scenes/12_Cafeteria/12amb.mp3" preload="auto"></audio>
 
-        <audio id="pianoSrc" src="./assets/piano.mp3" preload="auto"></audio>
-        <audio id="spotlightSrc" src="./assets/scenes/spotlight.mp3" preload="auto"></audio>
+        <audio id="pianoSrc" src="assets/piano.mp3" preload="auto"></audio>
+        <audio id="spotlightSrc" src="assets/scenes/spotlight.mp3" preload="auto"></audio>
 
         <!-- GLB objects -->
-        <a-asset-item id="1object" src="./assets/scenes/1_Bedroom/1object.glb"></a-asset-item>
-        <a-asset-item id="2object" src="./assets/scenes/2_Front_Door/2object.glb"></a-asset-item>
-        <a-asset-item id="3object" src="./assets/scenes/3_Grocery_Store/3object.glb"></a-asset-item>
-        <a-asset-item id="4object" src="./assets/scenes/4_Cafeteria/4object.glb"></a-asset-item>
-        <a-asset-item id="5object" src="./assets/scenes/5_Living_Room/5object.glb"></a-asset-item>
-        <a-asset-item id="6object" src="./assets/scenes/6_Classroom/6object.glb"></a-asset-item>
-        <a-asset-item id="7object" src="./assets/scenes/7_Schoolyard/7object.glb"></a-asset-item>
-        <a-asset-item id="8object" src="./assets/scenes/8_Classroom/8object.glb"></a-asset-item>
-        <a-asset-item id="9object" src="./assets/scenes/9_Skate Park/9object.glb"></a-asset-item>
-        <a-asset-item id="10object" src="./assets/scenes/10_Cafeteria/10object.glb"></a-asset-item>
-        <a-asset-item id="11object" src="./assets/scenes/11_Classroom/11object.glb"></a-asset-item>
-        <a-asset-item id="12object" src="./assets/scenes/12_Cafeteria/12object.glb"></a-asset-item>
+        <a-asset-item id="1object" src="assets/scenes/1_Bedroom/1object.glb"></a-asset-item>
+        <a-asset-item id="2object" src="assets/scenes/2_Front_Door/2object.glb"></a-asset-item>
+        <a-asset-item id="3object" src="assets/scenes/3_Grocery_Store/3object.glb"></a-asset-item>
+        <a-asset-item id="4object" src="assets/scenes/4_Cafeteria/4object.glb"></a-asset-item>
+        <a-asset-item id="5object" src="assets/scenes/5_Living_Room/5object.glb"></a-asset-item>
+        <a-asset-item id="6object" src="assets/scenes/6_Classroom/6object.glb"></a-asset-item>
+        <a-asset-item id="7object" src="assets/scenes/7_Schoolyard/7object.glb"></a-asset-item>
+        <a-asset-item id="8object" src="assets/scenes/8_Classroom/8object.glb"></a-asset-item>
+        <a-asset-item id="9object" src="assets/scenes/9_Skate Park/9object.glb"></a-asset-item>
+        <a-asset-item id="10object" src="assets/scenes/10_Cafeteria/10object.glb"></a-asset-item>
+        <a-asset-item id="11object" src="assets/scenes/11_Classroom/11object.glb"></a-asset-item>
+        <a-asset-item id="12object" src="assets/scenes/12_Cafeteria/12object.glb"></a-asset-item>
 
-        <a-asset-item id="suitcaseModel" src="./assets/Models/suitcase.glb"></a-asset-item>
-        <a-asset-item id="wholesceneModel" src="./assets/Models/wholescene.glb"></a-asset-item>
-        <a-asset-item id="bigheroesModel" src="./assets/Models/bigheroes.glb"></a-asset-item>
-        <a-asset-item id="locationsModel" src="./assets/Models/locations.glb"></a-asset-item>
+        <a-asset-item id="suitcaseModel" src="assets/Models/suitcase.glb"></a-asset-item>
+        <a-asset-item id="wholesceneModel" src="assets/Models/wholescene.glb"></a-asset-item>
+        <a-asset-item id="bigheroesModel" src="assets/Models/bigheroes.glb"></a-asset-item>
+        <a-asset-item id="locationsModel" src="assets/Models/locations.glb"></a-asset-item>
       </a-assets>
 
       <!-- Body -->
@@ -155,7 +155,7 @@
         follow-along="target: #head; rotOnlyY: true">
         <a-entity id="body"
           visible="true"
-          gltf-model="./assets/Models/player/blob-body.glb"
+          gltf-model="assets/Models/player/blob-body.glb"
           position="-0.07 -0.7 0.075"
           scale="0.2 0.25 0.2"
           rotation="0 -155 0"
@@ -297,7 +297,7 @@
         scale="0.01 0.01 0.01">
       </a-gltf-model>
 
-      <!-- <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.15" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="./assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-45 0.34003514272847424 -30" scale="0.15 0.15 0.15">
+      <!-- <a-gltf-model id="apple2" class="magnet-left magnet-right" toggle-physics="bodyAttachOffset: -0.19 -0.72 -0.15" shadow="receive: false" src="#apple-gltf" position="0.2803 0.61295 -2.36374" data-magnet-range="0.2,0.1,360,0" data-pick-up="" gltf-model="assets/objects/red_apple.glb" physx-material="density: NaN" physx-body="type: dynamic; mass: 2" rotation="-45 0.34003514272847424 -30" scale="0.15 0.15 0.15">
       </a-gltf-model> -->
 
         <!-- Ambient Light -->
@@ -1047,16 +1047,16 @@
       <!-- Main Overlay -->
       <div id="dom-overlay-message">
         <div id="heroImgParent">
-          <img id="heroImg" src="./assets/ui/hero.png" alt="Traces Logo">
+          <img id="heroImg" src="assets/ui/hero.png" alt="Traces Logo">
         </div>
         <div id="instructionsParent">
           <div id="group1">
-            <img id="push" src="./assets/ui/push-thin.png" alt="Push joystick to aim teleport" />
-            <img id="release" src="./assets/ui/release-thin.png" alt="Release joystick to teleport" />
+            <img id="push" src="assets/ui/push-thin.png" alt="Push joystick to aim teleport" />
+            <img id="release" src="assets/ui/release-thin.png" alt="Release joystick to teleport" />
           </div>
           <div id="group2">
-            <img id="grab" src="./assets/ui/grab-thin.png" alt="Grab objects with the grip" />
-            <img id="light" src="./assets/ui/light-thin.png" alt="Follow the light" />
+            <img id="grab" src="assets/ui/grab-thin.png" alt="Grab objects with the grip" />
+            <img id="light" src="assets/ui/light-thin.png" alt="Follow the light" />
           </div>
         </div>
         <div id="enterVR">
