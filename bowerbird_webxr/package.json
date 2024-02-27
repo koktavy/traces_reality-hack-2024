@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An immersive VR narrative about belonging.",
   "scripts": {
-    "start": "serve -s dist",
+    "start": "node server.js",
     "dev": "webpack serve --mode development --config ./webpack.dev.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config ./webpack.common.js"
@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "html-loader": "^4.2.0",
-    "html-webpack-plugin": "^5.5.3",
-    "serve": "^14.2.1"
+    "html-webpack-plugin": "^5.5.3"
   }
 }
