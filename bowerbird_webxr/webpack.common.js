@@ -18,6 +18,10 @@ module.exports = {
               },
             },
             {
+              test: /\.css$/,
+              use: ['style-loader', 'css-loader'],
+            },
+            {
               test: /\.tsx?$/,
               use: 'ts-loader',
               exclude: /node_modules/,
@@ -63,6 +67,13 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'src/assets', to: 'assets' },
+                { from: 'style.css', to: 'style.css' },
+                { from: 'main.js', to: 'main.js' },
+                { from: 'src/components/blink-controls.js', to: 'components/blink-controls.js' },
+                { from: 'src/components/colorize.js', to: 'components/colorize.js' },
+                { from: 'src/components/model-opacity.js', to: 'components/model-opacity.js' },
+                { from: 'simple-navmesh-constraint.js', to: 'simple-navmesh-constraint.js' },
+                { from: 'model-utils.js', to: 'model-utils.js' },
             ],
         }),
     ],
