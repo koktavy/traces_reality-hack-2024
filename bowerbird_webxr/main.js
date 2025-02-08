@@ -455,42 +455,40 @@ AFRAME.registerComponent("toggle-physics", {
       console.log(sceneNum) // 1hero
       document.getElementById(`${sceneNum}outro`).components['sound'].playSound()
     },
-    // putdown: function(e) {
-    //   this.el.removeState('grabbed');
-    //   if (e.detail.frame && e.detail.inputSource) {
-    //     const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
-    //     const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
-    //     if (pose && pose.angularVelocity) {
-    //       // Ex: {x: -0.21239659190177917, y: -0.27352192997932434, z: 0.286095529794693, w: 1}
-    //       // convert {x y z w} to {x y z}
-    //       quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
-    //       quaternion.normalize();
-    //       xyz.set(quaternion.x, quaternion.y, quaternion.z);
-    //       this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
-    //     }
-    //     if (pose && pose.linearVelocity) {
-    //       this.el.components['physx-body'].rigidBody.setLinearVelocity(pose.linearVelocity);
-    //     }
-    //   }
-    // },
     putdown: function(e) {
       this.el.removeState('grabbed');
-      const bodyEl = document.querySelector('#body');
+      const bodyEl = document.querySelector('#body'); // We use #body to find the position relative to the GLB
       const targetPosition = new THREE.Vector3();
       bodyEl.object3D.getWorldPosition(targetPosition);
+      console.log(targetPosition)
 
-      // Keep original angular velocity if pose has it
-      // if (e.detail.frame && e.detail.inputSource && e.detail.inputSource.gripSpace) {
-      //   const referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
-      //   const pose = e.detail.frame.getPose(e.detail.inputSource.gripSpace, referenceSpace);
-      //   if (pose && pose.angularVelocity) {
-      //     quaternion.set(pose.angularVelocity.x, pose.angularVelocity.y, pose.angularVelocity.z, pose.angularVelocity.w);
-      //     quaternion.normalize();
-      //     xyz.set(quaternion.x, quaternion.y, quaternion.z);
-      //     // this.el.components['physx-body'].rigidBody.setAngularVelocity(xyz);
-      //   }
-      // }
+      // Calculate the size of the object based on the bounding box
+      const boundingBox = new THREE.Box3().setFromObject(this.el.object3D);
+      const size = new THREE.Vector3();
+      boundingBox.getSize(size);
+      const largestSide = Math.max(size.x, size.y, size.z);
+      const minDimension = 0.15;
+      const maxDimensionVal = 0.7;
+      const clampedDimension = Math.min(Math.max(largestSide, minDimension), maxDimensionVal);
+      const normalizedDimension = (clampedDimension - minDimension) / (maxDimensionVal - minDimension);
+      const minOffsetX = 0.01;
+      const maxOffsetX = 0.22;
+      const minClampY = -0.7;
+      const maxClampY = -0.33;
+      const minOffsetZ = -0.05;
+      const maxOffsetZ = 0.08;
+      const minRadius = 0.25;
+      const maxRadius = 0.375;
+      const lateralOffset = THREE.MathUtils.lerp(minOffsetX, maxOffsetX, normalizedDimension);
+      const depthOffset = THREE.MathUtils.lerp(minOffsetZ, maxOffsetZ, normalizedDimension);
+      const radiusScalar = THREE.MathUtils.lerp(minRadius, maxRadius, normalizedDimension);
 
+      // Calculate the nearest point on the surface of the body
+      const objectPosition = new THREE.Vector3();
+      this.el.object3D.getWorldPosition(objectPosition);
+      const direction = new THREE.Vector3().subVectors(objectPosition, targetPosition).normalize();
+      const nearestPoint = new THREE.Vector3().copy(targetPosition).add(direction.multiplyScalar(radiusScalar)); // Assuming 0.19 is the radius of the body after scale adjustments
+      
       // Clear all interactions and physics from this el
       this.el.removeAttribute('toggle-physics');
       this.el.removeAttribute('class');
@@ -499,7 +497,36 @@ AFRAME.registerComponent("toggle-physics", {
       this.el.removeAttribute('physx-body');
       this.el.removeAttribute('physx-material');
 
-      this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${this.data.bodyAttachOffset.x} ${this.data.bodyAttachOffset.y} ${this.data.bodyAttachOffset.z}`);
+      // Convert nearestPoint to local coordinates relative to bodyParent
+      const bodyParentEl = document.querySelector('#bodyParent'); // We convert to local space of the bodyParent so that the object is not affected by scale or position offsets for the #body GLB
+      const localNearestPoint = nearestPoint.clone();
+      bodyParentEl.object3D.worldToLocal(localNearestPoint);
+      // Incorporate the bodyAttachOffset (assumed to be in bodyParent's local space)
+      localNearestPoint.add(new THREE.Vector3(this.data.bodyAttachOffset.x, this.data.bodyAttachOffset.y, this.data.bodyAttachOffset.z));
+
+      // Compute release local position from objectPosition
+      const releaseLocalPosition = objectPosition.clone();
+      bodyParentEl.object3D.worldToLocal(releaseLocalPosition);
+      // Clamp releaseLocalPosition.y between minClampY and maxClampY
+      const clampedY = Math.min(Math.max(releaseLocalPosition.y, minClampY), maxClampY);
+      // Increase offsets based on a higher drop height: objects dropped higher (closer to maxClampY) get larger X/Z offsets
+      const normalizedY = (clampedY - minClampY) / (maxClampY - minClampY);
+      const extraFactor = THREE.MathUtils.lerp(1, 1.3, normalizedY);
+      const adjustedLateralOffset = lateralOffset * extraFactor;
+      const adjustedDepthOffset = depthOffset * extraFactor;
+
+      // Adjust object's lateral position with the extra factor
+      if (localNearestPoint.x === 0) {
+        localNearestPoint.x = adjustedLateralOffset; // default to right if centered
+      } else if (localNearestPoint.x > 0) {
+        localNearestPoint.x += adjustedLateralOffset;
+      } else {
+        localNearestPoint.x -= adjustedLateralOffset;
+      }
+      localNearestPoint.z += adjustedDepthOffset; // Adjust depth offset accordingly
+      localNearestPoint.y = clampedY;
+
+      this.el.setAttribute('attach-to-parent', `target: #bodyParent; offset: ${localNearestPoint.x} ${localNearestPoint.y} ${localNearestPoint.z}`);
     }
   }
 });
@@ -657,51 +684,3 @@ window.addEventListener("DOMContentLoaded", function() {
     // message.textContent = "Exited Immersive Mode";
   });
 });
-
-// Make the cheap windows look okay 
-// AFRAME.registerComponent('window-replace', {
-//   schema: {
-//     default: ''
-//   },
-//   init() {
-//     this.el.addEventListener('object3dset', this.update.bind(this));
-//     this.materials = new Map();
-//   },
-//   update() {
-//     const filters = this.data.trim().split(',');
-//     this.el.object3D.traverse(function (o) {
-//       if (o.material) {
-//         if (filters.some(filter => o.material.name.includes(filter))) {
-//           o.renderOrder = 1;
-//           const m = o.material;
-//           const sceneEl = this.el.sceneEl;
-//           o.material = this.materials.has(m) ?
-//             this.materials.get(m) :
-//             new THREE.MeshPhongMaterial({
-//               name: 'window_' + m.name,
-//               lightMap: m.lightmap || null,
-//               lightMapIntensity: m.lightMapIntensity,
-//               shininess: 90,
-//               color: '#ffffff',
-//               emissive: '#999999',
-//               emissiveMap: m.map,
-//               transparent: true,
-//               depthWrite: false,
-//               map: m.map,
-//               transparent: true,
-//               side: THREE.DoubleSide,
-//               get envMap() {return sceneEl.object3D.environment},
-//               combine: THREE.MixOperation,
-//               reflectivity: 0.6,
-//               blending: THREE.CustomBlending,
-//               blendEquation: THREE.MaxEquation,
-//               toneMapped: m.toneMapped
-//             });
-//           ;
-//           window.mat = o.material;
-//           this.materials.set(m, o.material);
-//         }
-//       }
-//     }.bind(this));
-//   }
-// });
