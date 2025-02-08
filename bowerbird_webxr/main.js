@@ -8,11 +8,14 @@ AFRAME.registerComponent('scene-controller', {
   init: function () {
     this.enterVR = document.getElementById('enterVR')
     this.uiIntro = document.getElementById('uiIntro')
+    this.uiOutro = document.getElementById('uiOutro')
     this.ground = document.getElementById('ground')
     this.introParent = document.getElementById('introParent')
 
     // Bindings
     this.startIntro = this.startIntro.bind(this)
+    this.beginMain = this.beginMain.bind(this)
+    this.teleportInsideSuitcase = this.teleportInsideSuitcase.bind(this)
     this.updateNavmesh = this.updateNavmesh.bind(this)
     this.endScene = this.endScene.bind(this)
     this.control = this.control.bind(this)
@@ -95,6 +98,8 @@ AFRAME.registerComponent('scene-controller', {
     this.enterVR.innerHTML = 'Start VR'
     this.el.sceneEl.addEventListener('enter-vr', () => {
       document.getElementById('dom-overlay-message').style.display = 'none'
+      // play piano audio
+      document.getElementById('piano').components['sound'].playSound()
       // a-frame animate to fade in
       this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
       this.uiIntro.addEventListener('animationcomplete', () => {
@@ -121,7 +126,42 @@ AFRAME.registerComponent('scene-controller', {
       this.introParent.setAttribute('visible', true)
       document.getElementById('introSpotlightAudio').components['sound'].playSound()
       this.updateNavmesh('.suitcase')
+      this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase)
     }, 1000)
+  },
+
+  teleportInsideSuitcase: function () {
+    document.getElementById('suitcaseLight').setAttribute('visible', false)
+    const suitcaseIntro = document.getElementById('suitcaseIntro')
+    suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
+    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.8`` 0; dur: 7000; easing: easeInOutQuad')
+    document.getElementById('introSpotlightCone').setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
+    document.getElementById('introSpotlightCone').firstElementChild.setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
+    suitcaseIntro.addEventListener('animationcomplete__scale', () => {
+      document.getElementById('introParent').setAttribute('visible', false)
+      this.beginMain()
+    }, { once: true })
+  },
+
+  beginMain: function () {
+    const nextScene = 1
+    // Show first scene
+    setTimeout(() => {
+      this.updateNavmesh('.ground')
+      // Turn on spotlight
+      const parent = document.getElementById(`${nextScene}parent`)
+      parent.setAttribute('visible', true)
+      document.getElementById(`${nextScene}spotlightAudio`).components['sound'].playSound()
+      // get the next hero
+      const nextHero = document.getElementById(`${nextScene}hero`)
+      nextHero.setAttribute('visible', true)
+      // turn on next scene
+      const nextSceneModel = this.el.sceneEl.components['scene-controller'][`scene${nextScene}`]
+      nextSceneModel.visible = true
+      setTimeout(() => {
+        document.getElementById(`${nextScene}intro`).components['sound'].playSound()
+      }, 2500)
+    }, 2500)
   },
 
   updateNavmesh: function (newNavClass) {
@@ -144,6 +184,7 @@ AFRAME.registerComponent('scene-controller', {
     // animate gently off into the spotlight of each scene (no scene model visible)
     // last dialogue line?
     // fade to black
+    this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
   }
 });
 
@@ -257,6 +298,7 @@ AFRAME.registerComponent('attach-to-parent', {
     this.el.object3D.position.copy(this.data.offset);
 
     if (nextScene === 13) {
+      this.el.sceneEl.components['scene-controller'].endScene()
       // Show end scene
     } else {
       // Show next scene

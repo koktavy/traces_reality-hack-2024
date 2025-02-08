@@ -1,6 +1,7 @@
 const path = require('path')
 const DotenvWebpackPlugin = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'production',
@@ -9,7 +10,16 @@ module.exports = {
         rules: [
             {
               test: /\.html$/,
-              use: 'html-loader',
+              use: {
+                loader: 'html-loader',
+                options: {
+                  sources: false,
+                }
+              },
+            },
+            {
+              test: /\.css$/,
+              use: ['style-loader', 'css-loader'],
             },
             {
               test: /\.tsx?$/,
@@ -21,9 +31,23 @@ module.exports = {
               use: 'file-loader'
             },
             {
-              test: /\.jpg$/,
-              use: 'file-loader'
-            }
+              test: /\.(png|jpg)$/,
+              use: {
+                loader: 'file-loader',
+                options: {
+                  name: '[name].[ext]', // This configuration retains the original filename and extension
+                }
+              },
+            },
+            {
+              test: /\.glb$/,
+              use: {
+                loader: 'file-loader',
+                options: {
+                  name: '[name].[ext]', // This configuration retains the original filename and extension
+                }
+              },
+            },
         ],
     },
     resolve: {
@@ -31,11 +55,22 @@ module.exports = {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js'
+      filename: 'bundle.js',
+      publicPath: '',
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+          template: './index.html',
+        }),
+        new CopyPlugin({
+          patterns: [
+            { from: 'style.css', to: 'style.css' },
+            { from: 'src/assets', to: 'assets' },
+            { from: 'src/components', to: 'components' },
+            { from: 'simple-navmesh-constraint.js', to: 'simple-navmesh-constraint.js' },
+            { from: 'model-utils.js', to: 'model-utils.js' },
+            { from: 'main.js', to: 'main.js' },
+          ],
         }),
     ],
     performance: {
