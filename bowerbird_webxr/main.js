@@ -230,6 +230,10 @@ AFRAME.registerComponent('attach-to-parent', {
     this.newPos = new THREE.Vector3()
     this.threshold = 0.02; // Set your desired threshold
     this.lerpFactor = 0.05; // Set your desired lerp factor (0-1)
+    this.isPositive = this.el.classList.contains('positive')
+
+    // Bindings
+    this.lockPosition = this.lockPosition.bind(this)
   },
 
   update: function () {
@@ -296,6 +300,20 @@ AFRAME.registerComponent('attach-to-parent', {
     // Apply the local rotation and position
     this.el.object3D.quaternion.copy(localQuaternion);
     this.el.object3D.position.copy(this.data.offset);
+
+    // Add a bob animation to this object if positive
+    if (this.isPositive) {
+      const pos = this.el.object3D.position;
+      this.el.setAttribute('animation__bob', `
+        property: position;
+        from: ${pos.x} ${pos.y} ${pos.z};
+        to: ${pos.x} ${pos.y + 0.075} ${pos.z};
+        dur: 5000;
+        dir: alternate;
+        easing: easeInOutSine;
+        loop: true
+      `);
+    }
 
     if (nextScene === 13) {
       this.el.sceneEl.components['scene-controller'].endScene()
@@ -491,7 +509,7 @@ AFRAME.registerComponent("toggle-physics", {
       
       // Clear all interactions and physics from this el
       this.el.removeAttribute('toggle-physics');
-      this.el.removeAttribute('class');
+      this.el.classList.remove('magnet-left', 'magnet-right');
       this.el.removeAttribute('data-pick-up');
       this.el.removeAttribute('data-magnet-range');
       this.el.removeAttribute('physx-body');
