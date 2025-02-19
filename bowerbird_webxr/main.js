@@ -131,6 +131,7 @@ AFRAME.registerComponent('scene-controller', {
   },
 
   teleportInsideSuitcase: function () {
+    this.updateNavmesh('.navmesh')
     document.getElementById('suitcaseLight').setAttribute('visible', false)
     const suitcaseIntro = document.getElementById('suitcaseIntro')
     suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
@@ -147,7 +148,6 @@ AFRAME.registerComponent('scene-controller', {
     const nextScene = 1
     // Show first scene
     setTimeout(() => {
-      this.updateNavmesh('.ground')
       // Turn on spotlight
       const parent = document.getElementById(`${nextScene}parent`)
       parent.setAttribute('visible', true)

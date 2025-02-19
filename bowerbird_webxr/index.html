@@ -37,7 +37,7 @@
       physx="autoLoad: true; delay: 1000; wasmUrl: https://cdn.jsdelivr.net/gh/c-frame/physx@v0.1.0/wasm/physx.release.wasm; useDefaultScene: false;"
       webxr="overlayElement:#dom-overlay;"
       background="color: #232323;"
-      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true; exposure: 1.25; toneMapping: ACESFilmic; antialias: true"
+      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true; sortTransparentObjects: false; exposure: 1.25; toneMapping: ACESFilmic; antialias: true"
       ar-hit-test="target:#my-ar-objects;type:footprint;footprintDepth:0.2;"
       shadow="type: pcfsoft"
       gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.6/;"
@@ -50,7 +50,6 @@
         <a-asset-item id="test1-glb" src="assets/Models/Testscene-v1.glb"></a-asset-item>
         <!-- <a-asset-item id="test2-glb" src="assets/Models/Testscene-v2.glb"></a-asset-item> -->
 
-        <!-- <a-asset-item id="navmesh-glb" src="https://cdn.glitch.global/d29f98b4-ddd1-4589-8b66-e2446690e697/navmesh.glb?v=1644329586500"></a-asset-item> -->
         <a-asset-item id="right-gltf" src="assets/Models/player/blob-right-hand.glb"></a-asset-item>
         <a-asset-item id="left-gltf" src="assets/Models/player/blob-left-hand.glb"></a-asset-item>
         <!-- body -->
@@ -148,6 +147,7 @@
         <a-asset-item id="wholesceneModel" src="assets/Models/wholescene.glb"></a-asset-item>
         <a-asset-item id="bigheroesModel" src="assets/Models/bigheroes.glb"></a-asset-item>
         <a-asset-item id="locationsModel" src="assets/Models/locations.glb"></a-asset-item>
+        <a-asset-item id="navmeshModel" src="assets/Models/traces_navmesh.glb"></a-asset-item>
       </a-assets>
 
       <!-- Body -->
@@ -166,7 +166,7 @@
 
       <a-entity
         id="cameraRig"
-        simple-navmesh-constraint="navmesh: .navmesh; fall: 0.5; height: 0; exclude: .navmesh-hole;"
+        simple-navmesh-constraint="navmesh: .ground; fall: 0.5; height: 0; exclude: .navmesh-hole;"
         movement-controls="speed: 0.15;camera: #head;"
         position="0 0 0" rotation="0 0 0" origin-on-ar-start
       >
@@ -507,6 +507,13 @@
         rotation="0 0 0"
         scale="1 1 1"
         shadow>
+      </a-gltf-model>
+      <a-gltf-model id="navmesh" class="navmesh"
+        src="#navmeshModel"
+        position="0 0 0"
+        rotation="0 0 0"
+        scale="1 1 1"
+        visible="false">
       </a-gltf-model>
       <a-gltf-model id="locations"
         src="#locationsModel"
