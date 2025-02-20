@@ -42,6 +42,12 @@ const Colorize = {
       }
     }
 
+    const resetColor = () => {
+      this.leftHandInRange = false
+      this.rightHandInRange = false
+      updateColor()
+    }
+
     const handleHandInRange = (hand) => {
       this[`${hand}HandInRange`] = true
       updateColor()
@@ -56,6 +62,7 @@ const Colorize = {
     this.el.addEventListener('left-magnet-hand-out-of-range', () => handleHandOutOfRange('left'))
     this.el.addEventListener('right-magnet-hand-in-range', () => handleHandInRange('right'))
     this.el.addEventListener('right-magnet-hand-out-of-range', () => handleHandOutOfRange('right'))
+    this.el.addEventListener('grab-disabled', resetColor)
   },
 
   update () {

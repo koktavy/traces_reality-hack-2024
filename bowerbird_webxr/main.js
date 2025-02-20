@@ -514,6 +514,7 @@ AFRAME.registerComponent("toggle-physics", {
       this.el.removeAttribute('data-magnet-range');
       this.el.removeAttribute('physx-body');
       this.el.removeAttribute('physx-material');
+      this.el.emit('grab-disabled');
 
       // Convert nearestPoint to local coordinates relative to bodyParent
       const bodyParentEl = document.querySelector('#bodyParent'); // We convert to local space of the bodyParent so that the object is not affected by scale or position offsets for the #body GLB
