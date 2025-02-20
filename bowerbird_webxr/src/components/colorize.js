@@ -20,7 +20,44 @@ const Colorize = {
     nodeNames: { type: 'string', default: '' }, // Omit this param to occlude the entire mesh
     newMaterial: { type: 'boolean', default: false } // Use to avoid affecting other nodes
   },
-  init () {},
+
+  init () {
+    this.originalColor = this.data.color // Store original color
+    this.leftHandInRange = false
+    this.rightHandInRange = false
+
+    const updateColor = () => {
+      if (this.leftHandInRange || this.rightHandInRange) {
+        if (!this.isLighter) {
+          const color = new THREE.Color(this.data.color)
+          const lighterColor = color.clone().lerp(new THREE.Color(1, 1, 1), 0.3) // Make the color 30% lighter
+          this.el.setAttribute('colorize', 'color', `#${lighterColor.getHexString()}`)
+          this.isLighter = true
+        }
+      } else {
+        if (this.isLighter) {
+          this.el.setAttribute('colorize', 'color', this.originalColor)
+          this.isLighter = false
+        }
+      }
+    }
+
+    const handleHandInRange = (hand) => {
+      this[`${hand}HandInRange`] = true
+      updateColor()
+    }
+
+    const handleHandOutOfRange = (hand) => {
+      this[`${hand}HandInRange`] = false
+      updateColor()
+    }
+
+    this.el.addEventListener('left-magnet-hand-in-range', () => handleHandInRange('left'))
+    this.el.addEventListener('left-magnet-hand-out-of-range', () => handleHandOutOfRange('left'))
+    this.el.addEventListener('right-magnet-hand-in-range', () => handleHandInRange('right'))
+    this.el.addEventListener('right-magnet-hand-out-of-range', () => handleHandOutOfRange('right'))
+  },
+
   update () {
     const model = this.el.getObject3D('mesh')
 

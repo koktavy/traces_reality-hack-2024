@@ -532,12 +532,23 @@ AFRAME.registerComponent("handy-controls", {
           angleRange = angleRange || 120;
           angleEnd = angleEnd === undefined ? 80 : angleEnd;
           const d =  el.object3D.getWorldPosition(tempVector3_B).sub(tempVector3_A).length();
+          const magnetElId = magnetEl.id.replace(/-/g, '');
           if (d < magnetRange) {
+            if (!el.dataset[magnetElId + 'HandInRange']) {
+              el.dataset[magnetElId + 'HandInRange'] = true;
+              el.emit(magnetEl.id + '-hand-in-range');
+              console.log(magnetEl.id + '-hand-in-range');
+            }
             const Θ = (180/Math.PI) * el.object3D.getWorldQuaternion(tempQuaternion_A).premultiply(tempQuaternion_C).angleTo(magnetEl.object3D.quaternion);
             if (Θ < angleRange) {
               magnetTarget = el;
-              fadeT = invlerp(magnetRange,fadeEnd,d) * invlerp(angleRange,angleEnd,Θ);
+              fadeT = invlerp(magnetRange, fadeEnd, d) * invlerp(angleRange, angleEnd, Θ);
               break;
+            }
+          } else {
+            if (el.dataset[magnetElId + 'HandInRange']) {
+              delete el.dataset[magnetElId + 'HandInRange'];
+              el.emit(magnetEl.id + '-hand-out-of-range');
             }
           }
         }
