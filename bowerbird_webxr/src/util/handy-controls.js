@@ -305,6 +305,8 @@ AFRAME.registerComponent("handy-controls", {
     const controllerGrip = renderer.xr.getControllerGrip(index);
     const model = this.controllerModelFactory.createControllerModel(controllerGrip);
 
+    model.visible = false;
+
     // The controllerGrip may switch to a different inputSource if the
     // controllers disconnected and reconnected, so we need to track which
     // handedness the controllerGrip is currently controlling.
