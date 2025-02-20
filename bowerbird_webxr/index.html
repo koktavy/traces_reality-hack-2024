@@ -23,6 +23,7 @@
 
     <script src="components/colorize.js"></script>
     <script src="components/model-opacity.js"></script>
+    <script src="components/video-material-alpha-self.js"></script>
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
 
@@ -83,6 +84,7 @@
         <img id="releaseImg" src="assets/ui/release.png" />
         <img id="grabImg" src="assets/ui/grab.png" />
         <img id="lightImg" src="assets/ui/light.png" /> -->
+        <video id="suitcaseUIVideo" src="assets/ui/videos/suitcase.mp4" autoplay loop playsinline muted></video>
 
         <!-- Intro Audio -->
         <audio id="1introSrc" src="assets/scenes/1_Bedroom/1intro.mp3" preload="auto"></audio>
@@ -564,6 +566,13 @@
             light="type: spot; angle: 50; penumbra: 0.25; intensity: 2; shadowBias: -0.001; castShadow: true"
             animation__intensity="property: light.intensity; from: 0; to: 5; dur: 1150; loop: true; dir: alternate; easing: easeInOutSine">
           </a-entity>
+          <a-plane id="suitcaseUIPlane" 
+            video-material-alpha-self="videoSrc: suitcaseUIVideo; autoPlay: true;"
+            position="0 55 0"
+            height="23.8"
+            width="40"
+            rotation="0 0 0">
+          </a-plane>
         </a-gltf-model>
       </a-entity>
 

@@ -135,7 +135,9 @@ AFRAME.registerComponent('scene-controller', {
     document.getElementById('suitcaseLight').setAttribute('visible', false)
     const suitcaseIntro = document.getElementById('suitcaseIntro')
     suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
-    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.8`` 0; dur: 7000; easing: easeInOutQuad')
+    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.8 0; dur: 7000; easing: easeInOutQuad')
+    const suitcaseUIPlane = document.getElementById('suitcaseUIPlane')
+    suitcaseUIPlane.setAttribute('animation', 'property: scale; to: 0 0 0; dur: 700; easing: easeInQuad')
     document.getElementById('introSpotlightCone').setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
     document.getElementById('introSpotlightCone').firstElementChild.setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
     suitcaseIntro.addEventListener('animationcomplete__scale', () => {
