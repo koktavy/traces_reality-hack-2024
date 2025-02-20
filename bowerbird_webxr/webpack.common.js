@@ -52,6 +52,9 @@ module.exports = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
+        alias: {
+          'three/examples/jsm': path.resolve(__dirname, 'node_modules/three/examples/jsm')
+        }
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -67,6 +70,7 @@ module.exports = {
             { from: 'style.css', to: 'style.css' },
             { from: 'src/assets', to: 'assets' },
             { from: 'src/components', to: 'components' },
+            { from: 'src/util', to: 'util' },
             { from: 'simple-navmesh-constraint.js', to: 'simple-navmesh-constraint.js' },
             { from: 'model-utils.js', to: 'model-utils.js' },
             { from: 'main.js', to: 'main.js' },
