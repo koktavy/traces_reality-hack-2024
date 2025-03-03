@@ -28,11 +28,11 @@ const VideoMaterialAlphaSelf = {
 
     const alphaVideo = document.getElementById(videoSrc)
     const videoTexture = new THREE.VideoTexture(alphaVideo)
-    videoTexture.minFilter = THREE.LinearFilter
-    videoTexture.magFilter = THREE.LinearFilter
-    videoTexture.wrapS = THREE.ClampToEdgeWrapping
+    videoTexture.minFilter = THREE.LinearMipmapNearestFilter    
+    videoTexture.magFilter = THREE.NearestFilter // THREE.NearestFilter
+    videoTexture.wrapS = THREE.ClampToEdgeWrapping // ClampToEdgeWrapping
     videoTexture.wrapT = THREE.ClampToEdgeWrapping
-    videoTexture.generateMipmaps = false
+    videoTexture.generateMipmaps = true
     videoTexture.flipY = true
 
     alphaVideo.play()
@@ -57,7 +57,7 @@ const VideoMaterialAlphaSelf = {
         void main() {
           vec4 texel = texture2D(map, vUv);
           if (length(texel.rgb) < 0.2) discard; // Discard near-black pixels
-          gl_FragColor = vec4(texel.rgb * color, texel.a);
+          gl_FragColor = vec4(texel.rgb * color, 1.0);
         }
       `,
       transparent: true
