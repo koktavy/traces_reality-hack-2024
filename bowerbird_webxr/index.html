@@ -23,7 +23,8 @@
 
     <script src="components/colorize.js"></script>
     <script src="components/model-opacity.js"></script>
-    <script src="components/video-material-alpha-self.js"></script>
+    <!-- <script src="components/video-material-alpha-self.js"></script> -->
+    <script src="components/ui-image-toggle.js"></script>
     <script src="simple-navmesh-constraint.js"></script>
     <script src="model-utils.js"></script>
 
@@ -92,10 +93,10 @@
         <!-- UI -->
         <img id="introImg" src="assets/ui/hero-noitems.png" />
         <img id="outroImg" src="assets/ui/hero.png" />
-        <!-- <img id="pushImg" src="assets/ui/push.png" />
-        <img id="releaseImg" src="assets/ui/release.png" />
-        <img id="grabImg" src="assets/ui/grab.png" />
-        <img id="lightImg" src="assets/ui/light.png" /> -->
+        <!-- <img id="grabImg" src="assets/ui/grab.png" /> -->
+        <!-- <img id="lightImg" src="assets/ui/light.png" /> -->
+        <img id="pushImg" src="assets/ui/push-joystick.png" />
+        <img id="releaseImg" src="assets/ui/release-joystick.png" />
         <video id="suitcaseUIVideo" src="assets/ui/videos/suitcase.mp4" autoplay loop playsinline muted></video>
 
         <!-- Intro Audio -->
@@ -578,11 +579,11 @@
             light="type: spot; angle: 50; penumbra: 0.25; intensity: 2; shadowBias: -0.001; castShadow: true"
             animation__intensity="property: light.intensity; from: 0; to: 5; dur: 1150; loop: true; dir: alternate; easing: easeInOutSine">
           </a-entity>
-          <a-plane id="suitcaseUIPlane" 
-            video-material-alpha-self="videoSrc: suitcaseUIVideo; autoPlay: true;"
-            position="0 55 0"
-            height="30"
-            width="60"
+          <a-plane id="suitcaseUIPlane"
+            ui-image-toggle="image1: #pushImg; image2: #releaseImg; interval: 1650"
+            position="-3.75 55 0"
+            height="28"
+            width="56"
             rotation="0 0 0">
           </a-plane>
         </a-gltf-model>
