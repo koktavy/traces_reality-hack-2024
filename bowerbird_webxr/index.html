@@ -177,6 +177,10 @@
           physx-material="density: 0.1">
           <!-- physx-body-from-model="type: kinematic;" -->
         </a-entity>
+        <a-entity id="piano"
+          position="0 0 0"
+          sound="src: #pianoSrc; loop: true; volume: 0.2">
+        </a-entity>
       </a-entity>
 
       <a-entity
@@ -588,8 +592,6 @@
           </a-entity>
         </a-entity>
       </a-entity>
-
-      <a-entity id="piano" sound="src: #pianoSrc" position="0 3 0" loop="true" volume="0.5"></a-entity>
 
       <!-- Vignette #1 Group -->
       <a-entity id="1parent" position="0 0 -8.1" visible="false">

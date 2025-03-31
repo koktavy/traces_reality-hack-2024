@@ -99,7 +99,11 @@ AFRAME.registerComponent('scene-controller', {
     this.el.sceneEl.addEventListener('enter-vr', () => {
       document.getElementById('dom-overlay-message').style.display = 'none'
       // play piano audio
-      document.getElementById('piano').components['sound'].playSound()
+      const piano = document.getElementById('piano');
+      if (piano && piano.components['sound']) {
+        piano.components['sound'].playSound();
+        // piano.setAttribute('sound', 'loop: true; volume: 0.2');
+      }
       // a-frame animate to fade in
       this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
       this.uiIntro.addEventListener('animationcomplete', () => {
