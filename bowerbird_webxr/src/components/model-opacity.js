@@ -5,7 +5,7 @@ const ModelOpacity = {
   },
   update () {
     const model = this.el.getObject3D('mesh')
-    console.log(model)
+    // console.log(model)
     if (model) {
       this.fade(model)
     } else {
@@ -27,7 +27,6 @@ const ModelOpacity = {
           if (node.isMesh && node.name.includes(this.data.nodeNames[i])) {
             node.material.opacity = this.data.number
             node.material.transparent = true // Previously : data < 1.0
-            node.material.alphaTest = 0.25
             node.material.skinning = true
             node.material.morphTargets = true
             node.material.needsUpdate = true
@@ -36,7 +35,6 @@ const ModelOpacity = {
       } else if (node.isMesh) {
         node.material.opacity = this.data.number
         node.material.transparent = true // Previously : data < 1.0
-        node.material.alphaTest = 0.25
         node.material.skinning = true
         node.material.morphTargets = true
         node.material.needsUpdate = true

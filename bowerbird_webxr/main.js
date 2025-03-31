@@ -133,14 +133,27 @@ AFRAME.registerComponent('scene-controller', {
   teleportInsideSuitcase: function () {
     this.updateNavmesh('.navmesh')
     document.getElementById('suitcaseLight').setAttribute('visible', false)
+    document.getElementById('suitcaseUIPlane').setAttribute('visible', false)
     const suitcaseIntro = document.getElementById('suitcaseIntro')
     suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
-    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.8 0; dur: 7000; easing: easeInOutQuad')
+    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.1 0; dur: 7000; easing: easeInOutQuad')
+    const suitcaseFadeDelay = 3500
+    // Fade the suitcase to 0 opacity
+    setTimeout(() => {
+      suitcaseIntro.object3D.traverse((node) => {
+        if (node.isMesh) {
+          node.material.transparent = true
+          node.material.depthWrite = false // Prevent depth writing to avoid flickering
+        }
+      })
+    }, suitcaseFadeDelay)
+    suitcaseIntro.setAttribute('model-opacity', 'number: 1')
+    suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; to: 0; delay: ${suitcaseFadeDelay}; dur: 3500; easing: easeInQuad`)
     const suitcaseUIPlane = document.getElementById('suitcaseUIPlane')
     suitcaseUIPlane.setAttribute('animation', 'property: scale; to: 0 0 0; dur: 700; easing: easeInQuad')
     document.getElementById('introSpotlightCone').setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
     document.getElementById('introSpotlightCone').firstElementChild.setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
-    suitcaseIntro.addEventListener('animationcomplete__scale', () => {
+    suitcaseIntro.addEventListener('animationcomplete__opacity', () => {
       document.getElementById('introParent').setAttribute('visible', false)
       this.beginMain()
     }, { once: true })
