@@ -20,8 +20,7 @@ const UIImageToggle = {
     // Set the initial material
     const material = new THREE.MeshBasicMaterial({
       map: this.texture1,
-      transparent: true,
-      flatShading: true,
+      transparent: true
     });
     this.el.getObject3D('mesh').material = material;
 
