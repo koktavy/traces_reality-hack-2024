@@ -11,6 +11,7 @@ AFRAME.registerComponent('scene-controller', {
     this.uiOutro = document.getElementById('uiOutro')
     this.ground = document.getElementById('ground')
     this.introParent = document.getElementById('introParent')
+    this.suitcaseIntro = document.getElementById('suitcaseIntro')
 
     // Bindings
     this.startIntro = this.startIntro.bind(this)
@@ -45,13 +46,6 @@ AFRAME.registerComponent('scene-controller', {
     this.hero10 = document.getElementById('10hero')
     this.hero11 = document.getElementById('11hero')
     this.hero12 = document.getElementById('12hero')
-    // Build onboarding slideshow
-
-    // Show Title card
-
-    // Show suitcase
-
-    // Fade to black on enter suitcase
 
     const wholescene = document.getElementById('wholescene')
     const model = wholescene.getObject3D('mesh')
@@ -105,6 +99,7 @@ AFRAME.registerComponent('scene-controller', {
         // piano.setAttribute('sound', 'loop: true; volume: 0.2');
       }
       // a-frame animate to fade in
+      this.uiIntro.setAttribute('visible', true)
       this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
       this.uiIntro.addEventListener('animationcomplete', () => {
         // Moment's pause
@@ -112,8 +107,12 @@ AFRAME.registerComponent('scene-controller', {
           // animate out the uiIntro
           this.uiIntro.removeAttribute('animation')
           this.uiIntro.setAttribute('animation', 'property: opacity; from: 1; to: 0; dur: 1500; easing: linear')
+          // Listen for the animation to complete
+          this.uiIntro.addEventListener('animationcomplete', () => {
+            this.uiIntro.setAttribute('visible', false)
+          }, { once: true })
           // Fade in fog
-          this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.025; dur: 3500; easing: linear')
+          this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.017; dur: 3500; easing: linear')
           // Fade in ground
           this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3500; easing: linear')
           this.ground.addEventListener('animationcomplete', this.startIntro)
@@ -130,7 +129,7 @@ AFRAME.registerComponent('scene-controller', {
       this.introParent.setAttribute('visible', true)
       document.getElementById('introSpotlightAudio').components['sound'].playSound()
       this.updateNavmesh('.suitcase')
-      this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase)
+      this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase, { once: true })
     }, 1000)
   },
 
@@ -138,27 +137,26 @@ AFRAME.registerComponent('scene-controller', {
     this.updateNavmesh('.navmesh')
     document.getElementById('suitcaseLight').setAttribute('visible', false)
     document.getElementById('suitcaseUIPlane').setAttribute('visible', false)
-    const suitcaseIntro = document.getElementById('suitcaseIntro')
-    suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
-    suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.1 0; dur: 7000; easing: easeInOutQuad')
+    this.suitcaseIntro.setAttribute('animation__scale', 'property: scale; to: 3 3 3; dur: 7000; easing: easeInOutQuad')
+    this.suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.1 0; dur: 7000; easing: easeInOutQuad')
     const suitcaseFadeDelay = 3500
     // Fade the suitcase to 0 opacity
     setTimeout(() => {
-      suitcaseIntro.object3D.traverse((node) => {
+      this.suitcaseIntro.object3D.traverse((node) => {
         if (node.isMesh) {
           node.material.transparent = true
           node.material.depthWrite = false // Prevent depth writing to avoid flickering
         }
       })
     }, suitcaseFadeDelay)
-    suitcaseIntro.setAttribute('model-opacity', 'number: 1')
-    suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; to: 0; delay: ${suitcaseFadeDelay}; dur: 3500; easing: easeInQuad`)
+    this.suitcaseIntro.setAttribute('model-opacity', 'number: 1')
+    this.suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; to: 0; delay: ${suitcaseFadeDelay}; dur: 3500; easing: easeInQuad`)
     const suitcaseUIPlane = document.getElementById('suitcaseUIPlane')
     suitcaseUIPlane.setAttribute('animation', 'property: scale; to: 0 0 0; dur: 700; easing: easeInQuad')
     document.getElementById('introSpotlightCone').setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
     document.getElementById('introSpotlightCone').firstElementChild.setAttribute('animation', 'property: material.opacity; to: 0; dur: 7000; easing: easeInOutQuad')
-    suitcaseIntro.addEventListener('animationcomplete__opacity', () => {
-      document.getElementById('introParent').setAttribute('visible', false)
+    this.suitcaseIntro.addEventListener('animationcomplete__scale', () => {
+      this.introParent.setAttribute('visible', false)
       this.beginMain()
     }, { once: true })
   },
@@ -196,6 +194,11 @@ AFRAME.registerComponent('scene-controller', {
   },
 
   endScene: function () {
+    // Show suitcase
+    this.introParent.setAttribute('visible', true)
+    this.suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; from: 0; to: 1; dur: 7000; easing: easeInQuad`)
+    this.updateNavmesh('.suitcase')
+
     // parent all objects to scene
     // animate them off the body
     // float with random sway
@@ -203,7 +206,8 @@ AFRAME.registerComponent('scene-controller', {
     // animate gently off into the spotlight of each scene (no scene model visible)
     // last dialogue line?
     // fade to black
-    this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
+    // this.uiOutro.setAttribute('visible', true)
+    // this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
   }
 });
 
