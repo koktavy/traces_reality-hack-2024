@@ -199,124 +199,128 @@ AFRAME.registerComponent('scene-controller', {
     this.suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; from: 0; to: 1; dur: 7000; easing: easeInQuad`)
     this.updateNavmesh('.suitcase')
 
-    // parent all objects to scene
-    // animate them off the body
-    // float with random sway
-    // animate scale larger
-    // animate gently off into the spotlight of each scene (no scene model visible)
     
     // 1hero
     this.hero1 = document.getElementById('1hero');
-    this.hero1.setAttribute('position', '-35.55 16.44 -32.65');
-    this.hero1.setAttribute('rotation', '0.29 -60.91 6.2');
-    this.hero1.setAttribute('scale', '100 100 100');
     this.hero1.setAttribute('visible', true);
     this.hero1.removeAttribute('animation__bob');
-    this.hero1.removeAttribute('attach-to-parent')
+    this.hero1.removeAttribute('attach-to-parent');
+    this.hero1.setAttribute('animation__position', 'property: position; to: -35.55 16.44 -32.65; dur: 12000; easing: easeInSine');
+    this.hero1.setAttribute('animation__rotation', 'property: rotation; to: 0.29 -60.91 6.2; dur: 12000; easing: easeInOutBack');
+    this.hero1.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 2hero
     this.hero2 = document.getElementById('2hero');
-    this.hero2.setAttribute('position', '-20.53093 8.94716 -34.0414');
-    this.hero2.setAttribute('rotation', '-0.8359454230958713 -21.634886344139886 27.210911606353058');
-    this.hero2.setAttribute('scale', '100 100 100');
     this.hero2.setAttribute('visible', true);
     this.hero2.removeAttribute('animation__bob');
-    this.hero2.removeAttribute('attach-to-parent')
+    this.hero2.removeAttribute('attach-to-parent');
+    this.hero2.setAttribute('animation__position', 'property: position; to: -20.53093 8.94716 -34.0414; dur: 12000; easing: easeInSine');
+    this.hero2.setAttribute('animation__rotation', 'property: rotation; to: -0.8359454230958713 -21.634886344139886 27.210911606353058; dur: 12000; easing: easeInOutBack');
+    this.hero2.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 3hero
     this.hero3 = document.getElementById('3hero');
-    this.hero3.setAttribute('position', '24.52088 1.40033 -16.01817');
-    this.hero3.setAttribute('rotation', '-18.24 51.68 -15.09');
-    this.hero3.setAttribute('scale', '120 120 120');
     this.hero3.setAttribute('visible', true);
     this.hero3.removeAttribute('animation__bob');
-    this.hero3.removeAttribute('attach-to-parent')
+    this.hero3.removeAttribute('attach-to-parent');
+    this.hero3.setAttribute('animation__position', 'property: position; to: 24.52088 1.40033 -16.01817; dur: 12000; easing: easeInSine');
+    this.hero3.setAttribute('animation__rotation', 'property: rotation; to: -18.24 51.68 -15.09; dur: 12000; easing: easeInOutBack');
+    this.hero3.setAttribute('animation__scale', 'property: scale; to: 120 120 120; dur: 12000; easing: easeInSine');
 
     // 4hero
     this.hero4 = document.getElementById('4hero');
-    this.hero4.setAttribute('position', '53.19593 21.15411 -33.2396');
-    this.hero4.setAttribute('rotation', '5.81 55.83 80.7');
-    this.hero4.setAttribute('scale', '80 80 80');
     this.hero4.setAttribute('visible', true);
     this.hero4.removeAttribute('animation__bob');
-    this.hero4.removeAttribute('attach-to-parent')
+    this.hero4.removeAttribute('attach-to-parent');
+    this.hero4.setAttribute('animation__position', 'property: position; to: 53.19593 21.15411 -33.2396; dur: 12000; easing: easeInSine');
+    this.hero4.setAttribute('animation__rotation', 'property: rotation; to: 5.81 55.83 80.7; dur: 12000; easing: easeInOutBack');
+    this.hero4.setAttribute('animation__scale', 'property: scale; to: 80 80 80; dur: 12000; easing: easeInSine');
 
     // 5hero
     this.hero5 = document.getElementById('5hero');
-    this.hero5.setAttribute('position', '-50.09263 6.70529 -2.46135');
-    this.hero5.setAttribute('rotation', '0 0 -62.85060533687566');
-    this.hero5.setAttribute('scale', '100 100 100');
     this.hero5.setAttribute('visible', true);
     this.hero5.removeAttribute('animation__bob');
-    this.hero5.removeAttribute('attach-to-parent')
+    this.hero5.removeAttribute('attach-to-parent');
+    this.hero5.setAttribute('animation__position', 'property: position; to: -50.09263 6.70529 -2.46135; dur: 12000; easing: easeInSine');
+    this.hero5.setAttribute('animation__rotation', 'property: rotation; to: 0 0 -62.85060533687566; dur: 12000; easing: easeInOutBack');
+    this.hero5.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 6hero
     this.hero6 = document.getElementById('6hero');
-    this.hero6.setAttribute('position', '6.89092 4.81954 27.47854');
-    this.hero6.setAttribute('rotation', '77.99903648233949 151.1227750859108 -28.380891424010198');
-    this.hero6.setAttribute('scale', '100 100 100');
     this.hero6.setAttribute('visible', true);
     this.hero6.removeAttribute('animation__bob');
-    this.hero6.removeAttribute('attach-to-parent')
+    this.hero6.removeAttribute('attach-to-parent');
+    this.hero6.setAttribute('animation__position', 'property: position; to: 6.89092 4.81954 27.47854; dur: 12000; easing: easeInSine');
+    this.hero6.setAttribute('animation__rotation', 'property: rotation; to: 77.99903648233949 151.1227750859108 -28.380891424010198; dur: 12000; easing: easeInOutBack');
+    this.hero6.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 7hero
     this.hero7 = document.getElementById('7hero');
-    this.hero7.setAttribute('position', '42.19498 19.44893 28.20015');
-    this.hero7.setAttribute('rotation', '-0.02119943841984046 143.9361654615849 12.088263561670109');
-    this.hero7.setAttribute('scale', '100 100 100');
     this.hero7.setAttribute('visible', true);
     this.hero7.removeAttribute('animation__bob');
-    this.hero7.removeAttribute('attach-to-parent')
+    this.hero7.removeAttribute('attach-to-parent');
+    this.hero7.setAttribute('animation__position', 'property: position; to: 42.19498 19.44893 28.20015; dur: 12000; easing: easeInSine');
+    this.hero7.setAttribute('animation__rotation', 'property: rotation; to: -0.02119943841984046 143.9361654615849 12.088263561670109; dur: 12000; easing: easeInOutBack');
+    this.hero7.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 8hero
     this.hero8 = document.getElementById('8hero');
-    this.hero8.setAttribute('position', '-30.70502 5.03219 16.10448');
-    this.hero8.setAttribute('rotation', '0 -34.96818719462927 -72.41097910642857');
-    this.hero8.setAttribute('scale', '100 100 100');
     this.hero8.setAttribute('visible', true);
     this.hero8.removeAttribute('animation__bob');
-    this.hero8.removeAttribute('attach-to-parent')
+    this.hero8.removeAttribute('attach-to-parent');
+    this.hero8.setAttribute('animation__position', 'property: position; to: -30.70502 5.03219 16.10448; dur: 12000; easing: easeInSine');
+    this.hero8.setAttribute('animation__rotation', 'property: rotation; to: 0 -34.96818719462927 -72.41097910642857; dur: 12000; easing: easeInOutBack');
+    this.hero8.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 9hero
     this.hero9 = document.getElementById('9hero');
-    this.hero9.setAttribute('position', '-40.26011 22.95145 27.10317');
-    this.hero9.setAttribute('rotation', '20.611583722036237 82.70989547390514 124.8383362342843');
-    this.hero9.setAttribute('scale', '80 80 80');
     this.hero9.setAttribute('visible', true);
     this.hero9.removeAttribute('animation__bob');
-    this.hero9.removeAttribute('attach-to-parent')
+    this.hero9.removeAttribute('attach-to-parent');
+    this.hero9.setAttribute('animation__position', 'property: position; to: -40.26011 22.95145 27.10317; dur: 12000; easing: easeInSine');
+    this.hero9.setAttribute('animation__rotation', 'property: rotation; to: 20.611583722036237 82.70989547390514 124.8383362342843; dur: 12000; easing: easeInOutBack');
+    this.hero9.setAttribute('animation__scale', 'property: scale; to: 80 80 80; dur: 12000; easing: easeInSine');
 
     // 10hero
     this.hero10 = document.getElementById('10hero');
-    this.hero10.setAttribute('position', '-4.63639 0.95049 -26.01265');
-    this.hero10.setAttribute('rotation', '86.79107384862198 106.39196002004743 77.94918915416311');
-    this.hero10.setAttribute('scale', '100 100 100');
     this.hero10.setAttribute('visible', true);
     this.hero10.removeAttribute('animation__bob');
-    this.hero10.removeAttribute('attach-to-parent')
+    this.hero10.removeAttribute('attach-to-parent');
+    this.hero10.setAttribute('animation__position', 'property: position; to: -4.63639 0.95049 -26.01265; dur: 12000; easing: easeInSine');
+    this.hero10.setAttribute('animation__rotation', 'property: rotation; to: 86.79107384862198 106.39196002004743 77.94918915416311; dur: 12000; easing: easeInOutBack');
+    this.hero10.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 11hero
     this.hero11 = document.getElementById('11hero');
-    this.hero11.setAttribute('position', '17.29753 3.39162 -33.86655');
-    this.hero11.setAttribute('rotation', '-0.6462963929075686 112.17654191968823 169.8395873794494');
-    this.hero11.setAttribute('scale', '100 100 100');
     this.hero11.setAttribute('visible', true);
     this.hero11.removeAttribute('animation__bob');
-    this.hero11.removeAttribute('attach-to-parent')
+    this.hero11.removeAttribute('attach-to-parent');
+    this.hero11.setAttribute('animation__position', 'property: position; to: 17.29753 3.39162 -33.86655; dur: 12000; easing: easeInSine');
+    this.hero11.setAttribute('animation__rotation', 'property: rotation; to: -0.6462963929075686 112.17654191968823 169.8395873794494; dur: 12000; easing: easeInOutBack');
+    this.hero11.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
 
     // 12hero
     this.hero12 = document.getElementById('12hero');
-    this.hero12.setAttribute('position', '30.75029 3.97012 2.52054');
-    this.hero12.setAttribute('rotation', '89.99963750135457 -53.98236458384077 0');
-    this.hero12.setAttribute('scale', '100 100 100');
     this.hero12.setAttribute('visible', true);
     this.hero12.removeAttribute('animation__bob');
-    this.hero12.removeAttribute('attach-to-parent')
+    this.hero12.removeAttribute('attach-to-parent');
+    this.hero12.setAttribute('animation__position', 'property: position; to: 30.75029 3.97012 2.52054; dur: 12000; easing: easeInSine');
+    this.hero12.setAttribute('animation__rotation', 'property: rotation; to: 89.99963750135457 -53.98236458384077 0; dur: 12000; easing: easeInOutBack');
+    this.hero12.setAttribute('animation__scale', 'property: scale; to: 100 100 100; dur: 12000; easing: easeInSine');
+
+    // Animate the introSpotlight
+    const introSpotlight = document.getElementById('introSpotlight')
+    introSpotlight.setAttribute('visible', true)
+    introSpotlight.setAttribute('animation__position', 'property: position; to: 0 62 0; dur: 12000; easing: linear')
+    introSpotlight.setAttribute('animation__intensity', 'property: light.intensity; to: 40; dur: 12000; easing: linear')
+    introSpotlight.setAttribute('animation__angle', 'property: light.angle; to: 65; dur: 12000; easing: linear')
 
     // last dialogue line?
     // fade to black
-    this.uiOutro.setAttribute('visible', true)
-    this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
+    this.hero12.addEventListener('animationcomplete__position', () => {
+      this.uiOutro.setAttribute('visible', true)
+      this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 2500; easing: linear')
+    }, { once: true })
   }
 });
 
@@ -479,10 +483,22 @@ AFRAME.registerComponent('attach-to-parent', {
   },
 
   remove: function () {
-    // Append the entity to the scene instead of removing it
-    if (this.el.parentNode) {
-      this.el.sceneEl.object3D.add(this.el.object3D);
-    }
+    // Save world position, rotation, and scale
+    const worldPosition = new THREE.Vector3();
+    const worldQuaternion = new THREE.Quaternion();
+    const worldScale = new THREE.Vector3();
+    this.el.object3D.getWorldPosition(worldPosition);
+    this.el.object3D.getWorldQuaternion(worldQuaternion);
+    this.el.object3D.getWorldScale(worldScale);
+
+    // Reparent the object to the scene
+    this.el.sceneEl.object3D.add(this.el.object3D);
+
+    // Restore world position, rotation, and scale
+    this.el.object3D.parent.updateMatrixWorld();
+    this.el.object3D.position.copy(worldPosition);
+    this.el.object3D.quaternion.copy(worldQuaternion);
+    this.el.object3D.scale.copy(worldScale);
   }
 });
 
