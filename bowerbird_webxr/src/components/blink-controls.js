@@ -529,6 +529,12 @@ AFRAME.registerComponent('blink-controls', {
       return true
     } else {
       this.line.setPoint(i, last, next)
+      // For some reason, set visible false does not work, so the component must be removed, with these checks for performance
+      // (possibly fixed in later version of A-Frame, like 1.7.0)
+      if (this.hitEntity.hasAttribute('visible') && this.hitEntity.getAttribute('visible')) {
+        this.hitEntity.removeAttribute('visible')
+        this.hitEntity.setAttribute('visible', false)
+      }
       return false
     }
   },
