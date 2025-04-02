@@ -589,6 +589,7 @@ AFRAME.registerComponent('blink-controls', {
       side: 'double',
       depthTest: false
     })
+    torus.object3D.renderOrder = 1 // Set higher render order
     hitEntity.appendChild(torus)
 
     // Cylinder.
