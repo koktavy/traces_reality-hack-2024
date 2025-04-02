@@ -1,5 +1,9 @@
 # Traces
 
+## NOTE: Due to sync issues with the build pipeline, the project has been moved to [GitHub](https://github.com/koktavy/traces_reality-hack-2024)
+
+## Live at [traces.site](https://traces.site)!
+
 ## Local Setup
 
 cd bowerbird_webxr
