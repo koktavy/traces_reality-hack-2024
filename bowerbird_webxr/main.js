@@ -129,7 +129,23 @@ AFRAME.registerComponent('scene-controller', {
       this.introParent.setAttribute('visible', true)
       document.getElementById('introSpotlightAudio').components['sound'].playSound()
       this.updateNavmesh('.suitcase')
-      this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase, { once: true })
+      // Listen for the user to get close to the suitcase
+      const suitcase = document.getElementById('suitcaseIntro');
+      const user = document.getElementById('head');
+      const userPos = new THREE.Vector3();
+      const suitcasePos = new THREE.Vector3();
+      const checkDistance = () => {
+        user.object3D.getWorldPosition(userPos);
+        suitcase.object3D.getWorldPosition(suitcasePos);
+        const distance = Math.sqrt(Math.pow(userPos.x - suitcasePos.x, 2) + Math.pow(userPos.z - suitcasePos.z, 2));
+        if (distance < 1) {
+          clearInterval(interval);
+          this.teleportInsideSuitcase();
+        }
+      };
+
+      const interval = setInterval(checkDistance, 100);
+      // this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase, { once: true })
     }, 1000)
   },
 

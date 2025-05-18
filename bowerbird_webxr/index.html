@@ -949,12 +949,12 @@
           <a-entity id="leftFingertip" data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
           
           <!-- Ray and Grip are Available on Hands or Tracked Inputs -->
-          <a-entity id="rightRay" data-right="ray" mixin="blink" blink-controls>
+          <!-- <a-entity id="rightRay" data-right="ray" mixin="blink" blink-controls> -->
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
-          </a-entity>
-          <a-entity id="leftRay" data-left="ray" mixin="blink" blink-controls>
+          <!-- </a-entity> -->
+          <!-- <a-entity id="leftRay" data-left="ray" mixin="blink" blink-controls> -->
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
-          </a-entity>
+          <!-- </a-entity> -->
         
           <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
           <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"
@@ -1048,7 +1048,7 @@
       
       <!-- HTML form logic -->
       <script>
-        let movementType = 'teleport';
+        let movementType = 'move';
         function toggleThumbstick(detail) {
           const rayPointers = ['[data-right="ray"]', '[data-left="ray"]'].map(s => document.querySelector(s));
           const type = detail.value;
