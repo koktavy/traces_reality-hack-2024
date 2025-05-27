@@ -6,7 +6,7 @@
       // WebXR requires https: to work so ensure redirected if needed.
       if (location.hostname !== 'localhost' && window.location.protocol === 'http:') window.location.protocol = 'https:';
     </script>
-    
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Traces</title>
@@ -80,8 +80,8 @@
           hitCylinderHeight: 0.02;
           curveLineWidth: 0.01;
           rotateOnTeleport: false;
-          cameraRig: #cameraRig; 
-          teleportOrigin: #head; 
+          cameraRig: #cameraRig;
+          teleportOrigin: #head;
           collisionEntities: .apple;
           snapTurnAngle: 15;
           teleportationMethod: none;
@@ -528,7 +528,7 @@
             </a-entity>
           </a-entity>
       </a-entity>
-      
+
       <!-- Vignette #3 Group -->
       <a-entity id="3parent" position="12 0 1.4" visible="false">
 
@@ -536,7 +536,7 @@
           <!-- document.getElementById(`${sceneNum}amb`)[sound].playSound() -->
           <a-entity sound="src: #3amb"></a-entity>
           <!-- Object -->
- 
+
           <a-entity id="3spotlightParent"
             position="0 3 0">
             <a-entity id="3spotlightAudio"
@@ -884,7 +884,7 @@
       <!-- <a-gltf-model id="table" shadow="receive:true;" src="#table-gltf" position="-2 0 0.8" rotation="0 51 0" scale="1.5 1.5 1.5" physx-body-from-model="type: static;">
         <a-plane rotation="-90 0 0" width="1.2" height="0.6" class="navmesh-hole" visible="false"></a-plane>
       </a-gltf-model> -->
-      
+
       <!-- <a-gltf-model class="navmesh" src="#navmesh-glb" visible="false"></a-gltf-model> -->
 
       <a-entity id="ground" class="ground"
@@ -944,10 +944,10 @@
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:blue" data-none="screen-0"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:green" data-none="screen-1"></a-torus>
           <a-torus radius="0.008" radius-tubular="0.001" material="shader:flat;color:red" data-none="screen-2"></a-torus>
-          
+
           <a-entity id="rightFingertip" data-right="index-finger-tip" mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
           <a-entity id="leftFingertip" data-left="index-finger-tip"  mixin="blink" blink-controls="rotateOnTeleport:false; startEvents: pose_point_fuseShort; endEvents:pose_point_fuseLong;"></a-entity>
-          
+
           <!-- Ray and Grip are Available on Hands or Tracked Inputs -->
           <!-- <a-entity id="rightRay" data-right="ray" mixin="blink" blink-controls> -->
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
@@ -955,7 +955,7 @@
           <!-- <a-entity id="leftRay" data-left="ray" mixin="blink" blink-controls> -->
             <!-- <a-entity position="0 0 -0.22" class="pose-label" text="value: Hello World; align: center;"></a-entity> -->
           <!-- </a-entity> -->
-        
+
           <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
           <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"
             grab-magnet-target="
@@ -969,7 +969,7 @@
               stopEvents: squeezeend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
               noMagnetEl: #right-no-magnet;">
           </a-entity>
-      
+
           <!-- NOTE: Not all poses available on both hands! -->
           <!-- https://github.com/AdaRoseCannon/handy-work/issues/16 -->
 
@@ -1045,7 +1045,7 @@
         </fieldset>
         <button onclick="AFRAME.scenes[0].exitVR()" style="display: block;">Exit Immersive</button>
       </section> -->
-      
+
       <!-- HTML form logic -->
       <script>
         let movementType = 'move';
