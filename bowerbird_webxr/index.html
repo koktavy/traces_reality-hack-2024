@@ -959,14 +959,14 @@
           <!-- These act like anchors pulling both hands and controllers towards grabable objects, moving the whole hand and the attached elements-->
           <a-entity id="left-magnet" data-left="grip"  data-magnet="magnet-left"
             grab-magnet-target="
-              startEvents: squeezestart, pose_fist;
-              stopEvents: squeezeend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
+              startEvents: squeezestart, selectstart, pose_fist;
+              stopEvents: squeezeend, selectend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
               noMagnetEl: #left-no-magnet;">
           </a-entity>
           <a-entity id="right-magnet" data-right="grip" data-magnet="magnet-right"
             grab-magnet-target="
-              startEvents: squeezestart, pose_fist;
-              stopEvents: squeezeend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
+              startEvents: squeezestart, selectstart, pose_fist;
+              stopEvents: squeezeend, selectend, pose_relax, pose_vulcan, pose_flat, pose_flat_fuseShort, pose_vulcan_fuseShort, pose_relax_fuseShort, pose_shaka_fuseShort, pose_shake_fuseShort, pose_point_fuseShort;
               noMagnetEl: #right-no-magnet;">
           </a-entity>
 
