@@ -181,6 +181,16 @@
           rotation="0 -155 0"
           physx-material="density: 0.1">
           <!-- physx-body-from-model="type: kinematic;" -->
+          <!-- Gentle character light -->
+          <a-entity id="characterLight"
+            position="0 3 0"
+            light="
+              type: point;
+              intensity: 1.1;
+              color: #fff8e7;
+              distance: 2.5;
+              decay: 0.25;">
+          </a-entity>
         </a-entity>
         <a-entity id="piano"
           position="0 0 0"
