@@ -15,11 +15,39 @@ AFRAME.registerComponent('scene-controller', {
 
     // Bindings
     this.startIntro = this.startIntro.bind(this)
+    this.startCompleteIntroSequence = this.startCompleteIntroSequence.bind(this)
     this.beginMain = this.beginMain.bind(this)
     this.teleportInsideSuitcase = this.teleportInsideSuitcase.bind(this)
     this.updateNavmesh = this.updateNavmesh.bind(this)
     this.endScene = this.endScene.bind(this)
     this.control = this.control.bind(this)
+    this.resetExperience = this.resetExperience.bind(this)
+
+    // Reset condition tracking
+    this.leftJoystickPressed = false
+    this.rightJoystickPressed = false
+    this.resetCooldown = false
+
+    // Timeout management - store all timeouts to clear on reset
+    this.timeouts = {
+      resetCooldown: null,
+      userPositionSync: null,
+      suitcaseMaterialReset: null,
+      spotlightTransparency: null,
+      resetToInitialState: null,
+      introSequencePause: null,
+      startIntro: null,
+      beginMainDelay: null,
+      beginMainIntroAudio: null,
+      nextSceneDelay: null,
+      nextSceneIntroAudio: null
+    }
+
+    // Store original transform data
+    this.originalHeroData = {}
+    this.originalEnvironmentData = {}
+    this.originalSceneStates = {}
+    this.originalAudioStates = {}
 
     this.scene1 = null
     this.scene2 = null
@@ -91,41 +119,526 @@ AFRAME.registerComponent('scene-controller', {
 
     this.enterVR.innerHTML = 'Start VR'
     this.el.sceneEl.addEventListener('enter-vr', () => {
-      document.getElementById('dom-overlay-message').style.display = 'none'
-      // play piano audio
-      const piano = document.getElementById('piano');
-      if (piano && piano.components['sound']) {
-        piano.components['sound'].playSound();
-        // piano.setAttribute('sound', 'loop: true; volume: 0.2');
-      }
-      // a-frame animate to fade in
-      this.uiIntro.setAttribute('visible', true)
-      this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
-      this.uiIntro.addEventListener('animationcomplete', () => {
-        // Moment's pause
-        setTimeout(() => {
-          // animate out the uiIntro
-          this.uiIntro.removeAttribute('animation')
-          this.uiIntro.setAttribute('animation', 'property: opacity; from: 1; to: 0; dur: 1500; easing: linear')
-          // Listen for the animation to complete
-          this.uiIntro.addEventListener('animationcomplete', () => {
-            this.uiIntro.setAttribute('visible', false)
-          }, { once: true })
-          // Fade in fog
-          this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.017; dur: 3500; easing: linear')
-          // Fade in ground
-          this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3500; easing: linear')
-          this.ground.addEventListener('animationcomplete', this.startIntro)
-        }, 1000)
-      }, { once: true })
+      this.startCompleteIntroSequence()
     })
     this.el.sceneEl.addEventListener('exit-vr', () => {
       document.getElementById('dom-overlay-message').style.display = 'flex'
     })
+
+    // Set up controller input listeners for reset condition
+    this.setupResetListeners()
+
+    // Capture original transform data
+    this.captureOriginalData()
+  },
+
+  captureOriginalData: function () {
+    // Hero objects - capture ALL attributes that can change
+    for (let i = 1; i <= 12; i++) {
+      const hero = document.getElementById(`${i}hero`)
+      if (hero) {
+        this.originalHeroData[i] = {
+          // Transform properties (change in endScene, attach-to-parent, putdown)
+          // Create deep copies of objects
+          position: Object.assign({}, hero.getAttribute('position')),
+          rotation: Object.assign({}, hero.getAttribute('rotation')),
+          scale: Object.assign({}, hero.getAttribute('scale')),
+          visible: hero.getAttribute('visible'),
+          // Interaction properties (removed in putdown event)
+          classes: Array.from(hero.classList), // magnet-left, magnet-right removed in putdown
+          togglePhysics: hero.getAttribute('toggle-physics'), // removed in putdown
+          magnetRange: hero.getAttribute('data-magnet-range'), // removed in putdown
+          pickUp: hero.hasAttribute('data-pick-up'), // removed in putdown
+          physxBody: hero.getAttribute('physx-body'), // removed in putdown
+          physxMaterial: hero.getAttribute('physx-material'), // removed in putdown
+          // State tracking
+          hasGrabbedState: hero.is('grabbed'), // added/removed during pickup/putdown
+          // Parent tracking (objects can be reparented to body during attach-to-parent)
+          parentId: hero.object3D.parent === this.el.sceneEl.object3D ? 'scene' : 'body'
+        }
+      }
+    }
+
+    // Environment - capture ALL elements that change
+    this.originalEnvironmentData = {
+      fog: {
+        density: this.el.sceneEl.getAttribute('fog').density
+      },
+      ground: {
+        material: Object.assign({}, this.ground.getAttribute('material')),
+        transparent: this.ground.getAttribute('material').transparent || false
+      },
+      suitcase: {
+        position: Object.assign({}, this.suitcaseIntro.getAttribute('position')),
+        rotation: Object.assign({}, this.suitcaseIntro.getAttribute('rotation')),
+        scale: Object.assign({}, this.suitcaseIntro.getAttribute('scale'))
+      },
+      suitcaseLight: {
+        visible: document.getElementById('suitcaseLight').getAttribute('visible'),
+        animation: document.getElementById('suitcaseLight').getAttribute('animation__intensity')
+      },
+      suitcaseUIPlane: {
+        visible: document.getElementById('suitcaseUIPlane').getAttribute('visible'),
+        scale: Object.assign({}, document.getElementById('suitcaseUIPlane').getAttribute('scale')),
+        position: Object.assign({}, document.getElementById('suitcaseUIPlane').getAttribute('position')),
+        rotation: Object.assign({}, document.getElementById('suitcaseUIPlane').getAttribute('rotation')),
+        height: document.getElementById('suitcaseUIPlane').getAttribute('height'),
+        width: document.getElementById('suitcaseUIPlane').getAttribute('width')
+      },
+      cameraRig: {
+        position: Object.assign({}, document.getElementById('cameraRig').getAttribute('position')),
+        rotation: Object.assign({}, document.getElementById('cameraRig').getAttribute('rotation')),
+        navmeshConstraint: document.getElementById('cameraRig').getAttribute('simple-navmesh-constraint')
+      },
+      introParent: {
+        visible: this.introParent.getAttribute('visible')
+      },
+      introSpotlight: {
+        visible: document.getElementById('introSpotlight').getAttribute('visible'),
+        position: Object.assign({}, document.getElementById('introSpotlight').getAttribute('position')),
+        rotation: Object.assign({}, document.getElementById('introSpotlight').getAttribute('rotation')),
+        light: Object.assign({}, document.getElementById('introSpotlight').getAttribute('light'))
+      },
+      introSpotlightCone: {
+        material: Object.assign({}, document.getElementById('introSpotlightCone').getAttribute('material')),
+        position: Object.assign({}, document.getElementById('introSpotlightCone').getAttribute('position')),
+        rotation: Object.assign({}, document.getElementById('introSpotlightCone').getAttribute('rotation'))
+      },
+      introSpotlightConeChild: {
+        material: Object.assign({}, document.getElementById('introSpotlightCone').firstElementChild.getAttribute('material')),
+        position: Object.assign({}, document.getElementById('introSpotlightCone').firstElementChild.getAttribute('position'))
+      },
+      uiIntro: {
+        visible: this.uiIntro.getAttribute('visible'),
+        opacity: this.uiIntro.getAttribute('material').opacity || 0,
+        material: Object.assign({}, this.uiIntro.getAttribute('material'))
+      },
+      uiOutro: {
+        visible: this.uiOutro.getAttribute('visible'),
+        opacity: this.uiOutro.getAttribute('material').opacity || 0,
+        material: Object.assign({}, this.uiOutro.getAttribute('material'))
+      },
+      blinkControls: {
+        rightFingertip: document.getElementById('rightFingertip') ?
+          Object.assign({}, document.getElementById('rightFingertip').getAttribute('blink-controls')) : null,
+        leftFingertip: document.getElementById('leftFingertip') ?
+          Object.assign({}, document.getElementById('leftFingertip').getAttribute('blink-controls')) : null,
+        rightRay: document.getElementById('rightRay') ?
+          Object.assign({}, document.getElementById('rightRay').getAttribute('blink-controls')) : null,
+        leftRay: document.getElementById('leftRay') ?
+          Object.assign({}, document.getElementById('leftRay').getAttribute('blink-controls')) : null
+      }
+    }
+
+    // Scene states - track all scene parent visibility and 3D model states
+    this.originalSceneStates = {}
+    for (let i = 1; i <= 12; i++) {
+      const parent = document.getElementById(`${i}parent`)
+      this.originalSceneStates[i] = {
+        parentVisible: parent ? parent.getAttribute('visible') : 'false',
+        sceneModelVisible: null // Will be set after 3D models load
+      }
+    }
+
+    // Audio states - track which sounds are playing (all should be stopped initially)
+    this.originalAudioStates = {
+      piano: false, // Piano plays in startCompleteIntroSequence
+      introSpotlightAudio: false,
+      spotlightAudios: {}, // 1-12 spotlight audios
+      introAudios: {}, // 1-12 intro audios
+      outroAudios: {}, // 1-12 outro audios (play during pickup)
+      ambAudios: {} // 1-12 ambient audios
+    }
+
+    // Initialize audio states
+    for (let i = 1; i <= 12; i++) {
+      this.originalAudioStates.spotlightAudios[i] = false
+      this.originalAudioStates.introAudios[i] = false
+      this.originalAudioStates.outroAudios[i] = false
+      this.originalAudioStates.ambAudios[i] = false
+    }
+  },
+
+  setupResetListeners: function () {
+    // Find the specific controller elements that receive events
+    const leftMagnet = document.getElementById('left-magnet')
+    const rightMagnet = document.getElementById('right-magnet')
+
+    // Now listen for thumbstick button events on the same elements
+    const controllerElements = [
+      { el: leftMagnet, name: 'left-magnet', handedness: 'left' },
+      { el: rightMagnet, name: 'right-magnet', handedness: 'right' }
+    ]
+
+    // Listen to gamepad events
+    controllerElements.forEach(({ el, name, handedness }) => {
+      if (el) {
+        el.addEventListener('gamepad', (evt) => {
+          const eventName = evt.detail.event
+          if (eventName.includes('button3down') || eventName.includes('thumbstickdown') || eventName.includes('joystickdown')) {
+            if (handedness === 'left') {
+              this.leftJoystickPressed = true
+            } else {
+              this.rightJoystickPressed = true
+            }
+            this.checkResetCondition()
+          } else if (eventName.includes('button3up') || eventName.includes('thumbstickup') || eventName.includes('joystickup')) {
+            if (handedness === 'left') {
+              this.leftJoystickPressed = false
+            } else {
+              this.rightJoystickPressed = false
+            }
+          }
+          console.log(`Current state: Left=${this.leftJoystickPressed}, Right=${this.rightJoystickPressed}`)
+        })
+      }
+    })
+  },
+
+  clearAllTimeouts: function () {
+    // Clear all stored timeouts to prevent timing conflicts during reset
+    Object.keys(this.timeouts).forEach(key => {
+      if (this.timeouts[key]) {
+        clearTimeout(this.timeouts[key])
+        this.timeouts[key] = null
+      }
+    })
+  },
+
+  checkResetCondition: function () {
+    if (this.leftJoystickPressed && this.rightJoystickPressed && !this.resetCooldown) {
+      this.resetExperience()
+      // Set 2s reset cooldown to prevent multiple resets
+      this.resetCooldown = true
+      this.timeouts.resetCooldown = setTimeout(() => {
+        this.resetCooldown = false
+        this.timeouts.resetCooldown = null
+      }, 2000)
+    }
+  },
+
+  resetExperience: function () {
+    console.log('🔄 Resetting experience to intro sequence...')
+    // Clear all timeouts first to prevent timing conflicts
+    this.clearAllTimeouts()
+    // Remove all animations first to prevent component access errors
+    this.removeAllAnimations()
+    // Stop all audio to prevent conflicts
+    this.resetAudio()
+    // Reset all game objects and their states
+    this.resetHeroObjects()
+    // Reset all scene visibility and 3D models
+    this.resetScenes()
+    // Reset all environment elements
+    this.resetEnvironment()
+    // Small delay to ensure all resets are complete before starting intro
+    this.timeouts.resetToInitialState = setTimeout(() => {
+      // Force a render update to ensure all position/scale changes are applied
+      this.el.sceneEl.renderer.render(this.el.sceneEl.object3D, this.el.sceneEl.camera)
+      // Start the complete intro sequence using the same function as enter-vr
+      this.startCompleteIntroSequence()
+      this.timeouts.resetToInitialState = null
+      console.log('✅ Reset complete! User will see the suitcase intro sequence.')
+    }, 100)
+  },
+
+  resetHeroObjects: function () {
+    for (let i = 1; i <= 12; i++) {
+      const hero = document.getElementById(`${i}hero`)
+      const originalData = this.originalHeroData[i]
+      if (hero && originalData) {
+        // Remove ALL possible animations that can be added during experience
+        hero.removeAttribute('animation__position')
+        hero.removeAttribute('animation__rotation')
+        hero.removeAttribute('animation__scale')
+        hero.removeAttribute('animation__bob')
+        hero.removeAttribute('attach-to-parent')
+        // Reset ALL transform properties to original values
+        hero.setAttribute('position', originalData.position)
+        hero.setAttribute('rotation', originalData.rotation)
+        hero.setAttribute('scale', originalData.scale)
+        hero.setAttribute('visible', originalData.visible)
+        // Reset ALL interaction classes (magnet-left, magnet-right removed in putdown)
+        hero.className = ''
+        originalData.classes.forEach(className => {
+          hero.classList.add(className)
+        })
+        // Restore ALL physics and interaction attributes (removed in putdown)
+        if (originalData.togglePhysics) hero.setAttribute('toggle-physics', originalData.togglePhysics)
+        if (originalData.magnetRange) hero.setAttribute('data-magnet-range', originalData.magnetRange)
+        if (originalData.pickUp) hero.setAttribute('data-pick-up', '')
+        if (originalData.physxBody) hero.setAttribute('physx-body', originalData.physxBody)
+        if (originalData.physxMaterial) hero.setAttribute('physx-material', originalData.physxMaterial)
+        if (hero.is('grabbed')) hero.removeState('grabbed')
+        // Ensure proper parenting (objects can be reparented to body during attach-to-parent)
+        if (originalData.parentId === 'scene' && hero.object3D.parent !== this.el.sceneEl.object3D) {
+          this.el.sceneEl.object3D.add(hero.object3D)
+        }
+        // Remove any grab-disabled events that may have been emitted
+        hero.removeEventListener('grab-disabled', () => {})
+      }
+    }
+  },
+
+  resetScenes: function () {
+    // Reset ALL scene parent visibility to original state
+    for (let i = 1; i <= 12; i++) {
+      const parent = document.getElementById(`${i}parent`)
+      const originalState = this.originalSceneStates[i]
+      if (parent && originalState) {
+        parent.setAttribute('visible', originalState.parentVisible)
+      }
+    }
+    const scenes = [this.scene1, this.scene2, this.scene3, this.scene4, this.scene5, this.scene6, this.scene7, this.scene8, this.scene9, this.scene10, this.scene11, this.scene12]
+    // Scenes that share models and need mesh-level visibility control
+    const loopNums = [4, 6, 8, 10, 11, 12]
+    scenes.forEach((scene, index) => {
+      if (scene) {
+        const sceneNum = index + 1
+        if (loopNums.includes(sceneNum)) {
+          // These scenes share models - hide all meshes (they become visible during progression)
+          scene.traverse((node) => {
+            if (node.isMesh) {
+              node.visible = false
+            }
+          })
+        } else {
+          // Unique scenes - simple visibility toggle (they become visible during progression)
+          scene.visible = false
+        }
+      }
+    })
+    // Reset intro parent to original state
+    if (this.originalEnvironmentData.introParent) {
+      this.introParent.setAttribute('visible', this.originalEnvironmentData.introParent.visible)
+    }
+  },
+
+  resetSpotlightTransparency: function () {
+    // Reset intro spotlight cone
+    const introSpotlightCone = document.getElementById('introSpotlightCone')
+    if (introSpotlightCone) {
+      introSpotlightCone.setAttribute('material', 'src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25')
+      // Also reset the child cone in case of end scene animation
+      const childCone = introSpotlightCone.firstElementChild
+      if (childCone) {
+        childCone.setAttribute('material', 'color: #454545; transparent: false')
+      }
+    }
+    // Reset all scene spotlight cones (1-12)
+    for (let i = 1; i <= 12; i++) {
+      const spotlightCone = document.getElementById(`${i}spotlightCone`)
+      if (spotlightCone) {
+        spotlightCone.setAttribute('material', 'src: #lightfadeSrc; side: back; transparent: true; opacity: 0.25')
+        // Also reset the child cone
+        const childCone = spotlightCone.firstElementChild
+        if (childCone) {
+          childCone.setAttribute('material', 'color: #454545; transparent: false')
+        }
+      }
+    }
+  },
+
+  // Ensure all UI elements remain transparent after reset
+  resetUITransparency: function () {
+    // Reset suitcase UI plane (teleport instructions)
+    const suitcaseUIPlane = document.getElementById('suitcaseUIPlane')
+    if (suitcaseUIPlane) {
+      // Force Three.js material properties for ui-image-toggle component
+      const mesh = suitcaseUIPlane.getObject3D('mesh')
+      if (mesh && mesh.material) {
+        mesh.material.transparent = true
+        mesh.material.depthWrite = false
+        mesh.material.needsUpdate = true
+      }
+    }
+    // Reset main UI elements (intro/outro)
+    const uiIntro = document.getElementById('uiIntro')
+    const uiOutro = document.getElementById('uiOutro')
+    uiIntro.setAttribute('material', 'src: #introImg; transparent: true; opacity: 0')
+    uiOutro.setAttribute('material', 'src: #outroImg; transparent: true; opacity: 0')
+  },
+
+  resetEnvironment: function () {
+    const envData = this.originalEnvironmentData
+    // Reset scene fog
+    this.el.sceneEl.removeAttribute('animation__fog')
+    this.el.sceneEl.setAttribute('fog', `density: ${envData.fog.density}`)
+    // Reset ground material
+    this.ground.removeAttribute('animation')
+    this.ground.setAttribute('material', envData.ground.material)
+    this.ground.setAttribute('material', 'opacity', 0)
+    // Reset navmesh to original state
+    if (envData.blinkControls.rightFingertip) {
+      document.getElementById('rightFingertip').setAttribute('blink-controls', envData.blinkControls.rightFingertip)
+    }
+    if (envData.blinkControls.leftFingertip) {
+      document.getElementById('leftFingertip').setAttribute('blink-controls', envData.blinkControls.leftFingertip)
+    }
+    if (envData.blinkControls.rightRay && document.getElementById('rightRay')) {
+      document.getElementById('rightRay').setAttribute('blink-controls', envData.blinkControls.rightRay)
+    }
+    if (envData.blinkControls.leftRay && document.getElementById('leftRay')) {
+      document.getElementById('leftRay').setAttribute('blink-controls', envData.blinkControls.leftRay)
+    }
+    // Reset camera rig
+    const cameraRig = document.getElementById('cameraRig')
+    cameraRig.setAttribute('position', envData.cameraRig.position)
+    cameraRig.setAttribute('rotation', envData.cameraRig.rotation)
+    if (envData.cameraRig.navmeshConstraint) {
+      cameraRig.setAttribute('simple-navmesh-constraint', envData.cameraRig.navmeshConstraint)
+    }
+    this.updateNavmesh('.ground')
+    // Reset suitcase transform to original HTML values
+    this.suitcaseIntro.setAttribute('position', '0 0 0')
+    this.suitcaseIntro.setAttribute('rotation', '0 0 0')
+    this.suitcaseIntro.setAttribute('scale', '0.0175 0.0175 0.0175')
+    this.suitcaseIntro.setAttribute('model-opacity', 'number: 1')
+    if (this.suitcaseFadeTimeout) {
+      clearTimeout(this.suitcaseFadeTimeout)
+      this.suitcaseFadeTimeout = null
+    }
+    this.suitcaseIntro.object3D.traverse((node) => {
+      if (node.isMesh) node.material.depthWrite = true // Reset depthWrite to look normal before animating
+    })
+    // Reset suitcase UI elements (change visibility in teleportInsideSuitcase)
+    const suitcaseLight = document.getElementById('suitcaseLight')
+    suitcaseLight.setAttribute('visible', envData.suitcaseLight.visible)
+    if (envData.suitcaseLight.animation) suitcaseLight.setAttribute('animation__intensity', envData.suitcaseLight.animation)
+    const suitcaseUIPlane = document.getElementById('suitcaseUIPlane')
+    suitcaseUIPlane.removeAttribute('animation')
+    suitcaseUIPlane.setAttribute('visible', envData.suitcaseUIPlane.visible)
+    suitcaseUIPlane.setAttribute('scale', envData.suitcaseUIPlane.scale)
+    suitcaseUIPlane.setAttribute('position', envData.suitcaseUIPlane.position)
+    suitcaseUIPlane.setAttribute('rotation', envData.suitcaseUIPlane.rotation)
+    suitcaseUIPlane.setAttribute('height', envData.suitcaseUIPlane.height)
+    suitcaseUIPlane.setAttribute('width', envData.suitcaseUIPlane.width)
+    // Reset intro spotlight (changes in endScene)
+    const introSpotlight = document.getElementById('introSpotlight')
+    introSpotlight.removeAttribute('animation__position')
+    introSpotlight.removeAttribute('animation__intensity')
+    introSpotlight.removeAttribute('animation__angle')
+    introSpotlight.setAttribute('visible', envData.introSpotlight.visible)
+    introSpotlight.setAttribute('position', envData.introSpotlight.position)
+    introSpotlight.setAttribute('rotation', envData.introSpotlight.rotation)
+    introSpotlight.setAttribute('light', envData.introSpotlight.light)
+    // Reset spotlight cones (materials change during animations)
+    const introSpotlightCone = document.getElementById('introSpotlightCone')
+    introSpotlightCone.removeAttribute('animation')
+    introSpotlightCone.setAttribute('material', envData.introSpotlightCone.material)
+    introSpotlightCone.setAttribute('position', envData.introSpotlightCone.position)
+    introSpotlightCone.setAttribute('rotation', envData.introSpotlightCone.rotation)
+    const childCone = introSpotlightCone.firstElementChild
+    if (childCone) {
+      childCone.removeAttribute('animation')
+      childCone.setAttribute('material', envData.introSpotlightConeChild.material)
+      childCone.setAttribute('position', envData.introSpotlightConeChild.position)
+    }
+    // Reset UI elements (change visibility and opacity throughout experience)
+    this.uiIntro.setAttribute('visible', envData.uiIntro.visible)
+    this.uiIntro.setAttribute('material', envData.uiIntro.material)
+    this.uiIntro.removeAttribute('animation')
+    this.uiOutro.setAttribute('visible', envData.uiOutro.visible)
+    this.uiOutro.setAttribute('material', envData.uiOutro.material)
+    this.uiOutro.removeAttribute('animation')
+    // Ensure all spotlight cones maintain proper transparency
+    this.resetSpotlightTransparency()
+    // Ensure UI elements maintain proper transparency
+    this.resetUITransparency()
+  },
+
+  // Stop any audio that may be playing during reset
+  resetAudio: function () {
+    // Stop piano (plays in startCompleteIntroSequence)
+    const piano = document.getElementById('piano')
+    if (piano && piano.components.sound && piano.components.sound.isPlaying) {
+      piano.components.sound.stopSound()
+    }
+    // Stop intro spotlight audio
+    const introSpotlightAudio = document.getElementById('introSpotlightAudio')
+    if (introSpotlightAudio && introSpotlightAudio.components.sound && introSpotlightAudio.components.sound.isPlaying) {
+      introSpotlightAudio.components.sound.stopSound()
+    }
+    // Stop all scene-specific audio (1-12)
+    for (let i = 1; i <= 12; i++) {
+      // Stop spotlight audio (plays when scenes become visible)
+      const spotlightAudio = document.getElementById(`${i}spotlightAudio`)
+      if (spotlightAudio && spotlightAudio.components.sound && spotlightAudio.components.sound.isPlaying) {
+        spotlightAudio.components.sound.stopSound()
+      }
+      // Stop intro audio (plays 2.5s after scene becomes visible)
+      const introAudio = document.getElementById(`${i}intro`)
+      if (introAudio && introAudio.components.sound && introAudio.components.sound.isPlaying) {
+        introAudio.components.sound.stopSound()
+      }
+      // Stop outro audio (plays during pickup events)
+      const outroAudio = document.getElementById(`${i}outro`)
+      if (outroAudio && outroAudio.components.sound && outroAudio.components.sound.isPlaying) {
+        outroAudio.components.sound.stopSound()
+      }
+      // Stop ambient audio (plays with scene parents)
+      const parentEl = document.getElementById(`${i}parent`)
+      if (parentEl) {
+        const ambAudio = parentEl.querySelector('[sound]')
+        if (ambAudio && ambAudio.components.sound && ambAudio.components.sound.isPlaying) {
+          ambAudio.components.sound.stopSound()
+        }
+      }
+    }
+  },
+
+  // Remove all animations in the scene to prevent component access errors during reset
+  removeAllAnimations: function () {
+    const allElements = this.el.sceneEl.querySelectorAll('[animation], [animation__position], [animation__rotation], [animation__scale], [animation__opacity], [animation__bob], [animation__intensity], [animation__angle], [animation__fog], [animation__pos]')
+    allElements.forEach(el => {
+      // Remove all possible animation attributes - the experience will add them back as needed
+      el.removeAttribute('animation')
+      el.removeAttribute('animation__position')
+      el.removeAttribute('animation__rotation')
+      el.removeAttribute('animation__scale')
+      el.removeAttribute('animation__opacity')
+      el.removeAttribute('animation__bob')
+      el.removeAttribute('animation__intensity')
+      el.removeAttribute('animation__angle')
+      el.removeAttribute('animation__fog')
+      el.removeAttribute('animation__pos')
+    })
+  },
+
+  startCompleteIntroSequence: function () {
+    // Hide DOM overlay
+    document.getElementById('dom-overlay-message').style.display = 'none'
+    // Play piano audio
+    const piano = document.getElementById('piano');
+    if (piano && piano.components['sound']) {
+      piano.components['sound'].playSound();
+      // piano.setAttribute('sound', 'loop: true; volume: 0.2');
+    }
+    // A-Frame animate to fade in the Traces logo
+    this.uiIntro.setAttribute('visible', true)
+    this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
+    this.uiIntro.addEventListener('animationcomplete', () => {
+      // Moment's pause
+      this.timeouts.introSequencePause = setTimeout(() => {
+        // Animate out the uiIntro
+        this.uiIntro.removeAttribute('animation')
+        this.uiIntro.setAttribute('animation', 'property: opacity; from: 1; to: 0; dur: 1500; easing: linear')
+        // Listen for the animation to complete
+        this.uiIntro.addEventListener('animationcomplete', () => {
+          this.uiIntro.setAttribute('visible', false)
+        }, { once: true })
+        // Fade in fog
+        this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.017; dur: 3500; easing: linear')
+        // Fade in ground
+        this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3500; easing: linear')
+        this.ground.addEventListener('animationcomplete', this.startIntro)
+        this.timeouts.introSequencePause = null
+      }, 1000)
+    }, { once: true })
   },
 
   startIntro: function () {
-    setTimeout(() => {
+    this.timeouts.startIntro = setTimeout(() => {
       this.introParent.setAttribute('visible', true)
       document.getElementById('introSpotlightAudio').components['sound'].playSound()
       this.updateNavmesh('.suitcase')
@@ -146,6 +659,7 @@ AFRAME.registerComponent('scene-controller', {
 
       const interval = setInterval(checkDistance, 100);
       // this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase, { once: true })
+      this.timeouts.startIntro = null
     }, 1000)
   },
 
@@ -157,7 +671,7 @@ AFRAME.registerComponent('scene-controller', {
     this.suitcaseIntro.setAttribute('animation__pos', 'property: position; to: 0 2.1 0; dur: 7000; easing: easeInOutQuad')
     const suitcaseFadeDelay = 3500
     // Fade the suitcase to 0 opacity
-    setTimeout(() => {
+    this.suitcaseFadeTimeout = setTimeout(() => {
       this.suitcaseIntro.object3D.traverse((node) => {
         if (node.isMesh) {
           node.material.transparent = true
@@ -180,7 +694,7 @@ AFRAME.registerComponent('scene-controller', {
   beginMain: function () {
     const nextScene = 1
     // Show first scene
-    setTimeout(() => {
+    this.timeouts.beginMainDelay = setTimeout(() => {
       // Turn on spotlight
       const parent = document.getElementById(`${nextScene}parent`)
       parent.setAttribute('visible', true)
@@ -191,9 +705,11 @@ AFRAME.registerComponent('scene-controller', {
       // turn on next scene
       const nextSceneModel = this.el.sceneEl.components['scene-controller'][`scene${nextScene}`]
       nextSceneModel.visible = true
-      setTimeout(() => {
+      this.timeouts.beginMainIntroAudio = setTimeout(() => {
         document.getElementById(`${nextScene}intro`).components['sound'].playSound()
+        this.timeouts.beginMainIntroAudio = null
       }, 2500)
+      this.timeouts.beginMainDelay = null
     }, 2500)
   },
 
@@ -212,10 +728,11 @@ AFRAME.registerComponent('scene-controller', {
   endScene: function () {
     // Show suitcase
     this.introParent.setAttribute('visible', true)
+    // Ensure model-opacity component exists before animating it
+    this.suitcaseIntro.setAttribute('model-opacity', 'number: 0')
     this.suitcaseIntro.setAttribute('animation__opacity', `property: model-opacity.number; from: 0; to: 1; dur: 7000; easing: easeInQuad`)
     this.updateNavmesh('.suitcase')
 
-    
     // 1hero
     this.hero1 = document.getElementById('1hero');
     this.hero1.setAttribute('visible', true);
@@ -437,18 +954,17 @@ AFRAME.registerComponent('attach-to-parent', {
       thisScene.visible = false
     }
 
-    
     // World rotation before parenting
     const worldQuaternion = new THREE.Quaternion();
     this.el.object3D.getWorldQuaternion(worldQuaternion);
-    
+
     // Add as nested object of the parent
     this.data.target.object3D.add(this.el.object3D);
-    
+
     // Compute local rotation in the context of the new parent
     const inverseParentQuaternion = new THREE.Quaternion().copy(this.data.target.object3D.quaternion).invert();
     const localQuaternion = inverseParentQuaternion.multiply(worldQuaternion);
-    
+
     // Apply the local rotation and position
     this.el.object3D.quaternion.copy(localQuaternion);
     this.el.object3D.position.copy(this.data.offset);
@@ -472,7 +988,8 @@ AFRAME.registerComponent('attach-to-parent', {
       // Show end scene
     } else {
       // Show next scene
-      setTimeout(() => {
+      const sceneController = this.el.sceneEl.components['scene-controller']
+      sceneController.timeouts.nextSceneDelay = setTimeout(() => {
         // Turn on spotlight
         const parent = document.getElementById(`${nextScene}parent`)
         parent.setAttribute('visible', true)
@@ -491,9 +1008,11 @@ AFRAME.registerComponent('attach-to-parent', {
         } else {
           nextSceneModel.visible = true
         }
-        setTimeout(() => {
+        sceneController.timeouts.nextSceneIntroAudio = setTimeout(() => {
           document.getElementById(`${nextScene}intro`).components['sound'].playSound()
+          sceneController.timeouts.nextSceneIntroAudio = null
         }, 2500)
+        sceneController.timeouts.nextSceneDelay = null
       }, 1000)
     }
   },
@@ -550,7 +1069,7 @@ AFRAME.registerComponent("hide-on-hit-test-start", {
 //   },
 //   tick() {
 //     let obj;
-    
+
 //     if (this.data === 'xr-camera') {
 //       const xrCamera = this.el.sceneEl.renderer.xr.getCameraPose();
 //       if (xrCamera) {
@@ -670,7 +1189,7 @@ AFRAME.registerComponent("toggle-physics", {
       this.el.object3D.getWorldPosition(objectPosition);
       const direction = new THREE.Vector3().subVectors(objectPosition, targetPosition).normalize();
       const nearestPoint = new THREE.Vector3().copy(targetPosition).add(direction.multiplyScalar(radiusScalar)); // Assuming 0.19 is the radius of the body after scale adjustments
-      
+
       // Clear all interactions and physics from this el
       this.el.removeAttribute('toggle-physics');
       this.el.classList.remove('magnet-left', 'magnet-right');
@@ -741,7 +1260,7 @@ AFRAME.registerComponent("toggle-physics", {
 //     const oldActiveHand = e.detail.byNoMagnet;
 //     let index;
 //     while ((index=this.ladderHands.indexOf(oldActiveHand))!==-1) this.ladderHands.splice(index,1);
-    
+
 //     const activeHand = this.ladderHands[0];
 //     if (activeHand) {
 //       this.startingHandPosition.copy(activeHand.object3D.position);
@@ -787,7 +1306,7 @@ window.addEventListener("DOMContentLoaded", function() {
   // building.addEventListener('object3dset', function () {
     // if (this.components && this.components.reflection) this.components.reflection.needsVREnvironmentUpdate = true;
   // }, {once: true});
-  
+
   const labels = Array.from(document.querySelectorAll('.pose-label'));
   for (const el of labels) {
     el.parentNode.addEventListener('pose', function (event) {
@@ -797,7 +1316,7 @@ window.addEventListener("DOMContentLoaded", function() {
       el.setAttribute('text', 'value', event.detail.event);
     });
   }
-  
+
   // watergun: {
   //   const watergun = document.getElementById("watergun");
   //   const watergunSlider = watergun.firstElementChild;
