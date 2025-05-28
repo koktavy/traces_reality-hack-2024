@@ -311,7 +311,7 @@ AFRAME.registerComponent('scene-controller', {
               this.rightJoystickPressed = false
             }
           }
-          console.log(`Current state: Left=${this.leftJoystickPressed}, Right=${this.rightJoystickPressed}`)
+          // console.log(`Current state: Left=${this.leftJoystickPressed}, Right=${this.rightJoystickPressed}`)
         })
       }
     })
@@ -364,7 +364,7 @@ AFRAME.registerComponent('scene-controller', {
       // Start the complete intro sequence using the same function as enter-vr
       this.startCompleteIntroSequence()
       this.timeouts.resetToInitialState = null
-      console.log('✅ Reset complete! User will see the suitcase intro sequence.')
+      console.log('✅ Reset complete!')
     }, 100)
   },
 
@@ -1027,7 +1027,7 @@ AFRAME.registerComponent('attach-to-parent', {
     const nextScene = sceneNum + 1
     const sceneNeedsLoop = loopNums.includes(sceneNum)
     const nextNeedsLoop = loopNums.includes(nextScene)
-    console.log(nextScene)
+    // console.log(nextScene)
     // Turn off spotlight
     const parent = document.getElementById(`${sceneNum}parent`)
     parent.setAttribute('visible', false)
@@ -1255,7 +1255,7 @@ AFRAME.registerComponent("toggle-physics", {
       const bodyEl = document.querySelector('#body'); // We use #body to find the position relative to the GLB
       const targetPosition = new THREE.Vector3();
       bodyEl.object3D.getWorldPosition(targetPosition);
-      console.log(targetPosition)
+      // console.log(targetPosition)
 
       // Calculate the size of the object based on the bounding box
       const boundingBox = new THREE.Box3().setFromObject(this.el.object3D);
