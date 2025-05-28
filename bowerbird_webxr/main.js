@@ -187,12 +187,13 @@ AFRAME.registerComponent('scene-controller', {
         position: Object.assign({}, this.startBear.getAttribute('position')),
         rotation: Object.assign({}, this.startBear.getAttribute('rotation')),
         scale: Object.assign({}, this.startBear.getAttribute('scale')),
+        modelOpacity: this.startBear.getAttribute('model-opacity') ? Object.assign({}, this.startBear.getAttribute('model-opacity')) : { number: 0 },
         classes: Array.from(this.startBear.classList),
         magnetRange: this.startBear.getAttribute('data-magnet-range'),
         pickUp: this.startBear.hasAttribute('data-pick-up')
       },
       startBearText: {
-        color: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('color') : '#ffffff',
+        color: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('color') : '#000000',
         visible: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('visible') : true
       },
       suitcaseLight: {
@@ -539,9 +540,12 @@ AFRAME.registerComponent('scene-controller', {
     this.startBear.setAttribute('position', startBearData.position)
     this.startBear.setAttribute('rotation', startBearData.rotation)
     this.startBear.setAttribute('scale', startBearData.scale)
-    this.startBear.setAttribute('model-opacity', 'number: 1')
+    this.startBear.setAttribute('model-opacity', startBearData.modelOpacity)
     this.startBear.removeAttribute('animation__scale')
     this.startBear.removeAttribute('animation__opacity')
+    this.startBear.removeAttribute('animation__fadeIn')
+    this.startBear.removeAttribute('animation__bob')
+    this.startBear.removeAttribute('animation__tilt')
     // Restore grab interaction attributes
     this.startBear.className = ''
     startBearData.classes.forEach(className => {
@@ -555,6 +559,7 @@ AFRAME.registerComponent('scene-controller', {
     const startText = this.startBearParent.querySelector('a-troika-text')
     if (startText) {
       startText.removeAttribute('animation')
+      startText.removeAttribute('animation__fadeIn')
       startText.setAttribute('color', envData.startBearText.color)
       startText.setAttribute('visible', envData.startBearText.visible)
     }
@@ -646,7 +651,7 @@ AFRAME.registerComponent('scene-controller', {
 
   // Remove all animations in the scene to prevent component access errors during reset
   removeAllAnimations: function () {
-    const allElements = this.el.sceneEl.querySelectorAll('[animation], [animation__position], [animation__rotation], [animation__scale], [animation__opacity], [animation__bob], [animation__intensity], [animation__angle], [animation__fog], [animation__pos]')
+    const allElements = this.el.sceneEl.querySelectorAll('[animation], [animation__position], [animation__rotation], [animation__scale], [animation__opacity], [animation__bob], [animation__tilt], [animation__intensity], [animation__angle], [animation__fog], [animation__pos], [animation__fadeIn]')
     allElements.forEach(el => {
       // Remove all possible animation attributes - the experience will add them back as needed
       el.removeAttribute('animation')
@@ -655,10 +660,12 @@ AFRAME.registerComponent('scene-controller', {
       el.removeAttribute('animation__scale')
       el.removeAttribute('animation__opacity')
       el.removeAttribute('animation__bob')
+      el.removeAttribute('animation__tilt')
       el.removeAttribute('animation__intensity')
       el.removeAttribute('animation__angle')
       el.removeAttribute('animation__fog')
       el.removeAttribute('animation__pos')
+      el.removeAttribute('animation__fadeIn')
     })
   },
 
@@ -674,13 +681,20 @@ AFRAME.registerComponent('scene-controller', {
     // A-Frame animate to fade in the Traces logo
     this.uiIntro.setAttribute('visible', true)
     this.uiIntro.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
-    this.uiIntro.addEventListener('animationcomplete', () => {
-      // Show the start bear after logo fades in - this is now the "start screen"
-      this.timeouts.introSequencePause = setTimeout(() => {
-        this.startBearParent.setAttribute('visible', true)
-        this.timeouts.introSequencePause = null
-      }, 500)
-    }, { once: true })
+
+    // Fade in start bear
+    this.startBearParent.setAttribute('visible', true)
+    this.startBear.setAttribute('model-opacity', 'number: 0')
+    this.startBear.setAttribute('animation__fadeIn', 'property: model-opacity.number; from: 0; to: 1; dur: 3000; delay: 3500; easing: easeInOutQuad')
+    this.startBear.setAttribute('animation__bob', 'property: position; to: 0 0.025 0; dur: 2250; dir: alternate; easing: easeInOutSine; loop: true')
+    this.startBear.setAttribute('animation__tilt', 'property: rotation; from: 5 -90 0; to: -5 -90 0; dur: 4500; dir: alternate; easing: easeInOutSine; loop: true')
+    // Fade in pick up instruction
+    const startText = this.startBearParent.querySelector('a-troika-text')
+    if (startText) {
+      // Set initial color to black and animate to visible
+      startText.setAttribute('color', '#000000')
+      startText.setAttribute('animation__fadeIn', 'property: color; to: #888888; dur: 3000; delay: 5500; easing: easeOutQuad')
+    }
   },
 
   handlestartBearGrab: function () {
