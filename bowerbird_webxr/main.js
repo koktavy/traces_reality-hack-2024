@@ -12,10 +12,13 @@ AFRAME.registerComponent('scene-controller', {
     this.ground = document.getElementById('ground')
     this.introParent = document.getElementById('introParent')
     this.suitcaseIntro = document.getElementById('suitcaseIntro')
+    this.startBearParent = document.getElementById('startBearParent')
+    this.startBear = document.getElementById('startBear')
 
     // Bindings
     this.startIntro = this.startIntro.bind(this)
     this.startCompleteIntroSequence = this.startCompleteIntroSequence.bind(this)
+    this.handlestartBearGrab = this.handlestartBearGrab.bind(this)
     this.beginMain = this.beginMain.bind(this)
     this.teleportInsideSuitcase = this.teleportInsideSuitcase.bind(this)
     this.updateNavmesh = this.updateNavmesh.bind(this)
@@ -128,6 +131,9 @@ AFRAME.registerComponent('scene-controller', {
     // Set up controller input listeners for reset condition
     this.setupResetListeners()
 
+    // Set up start bear grab listener
+    this.setupstartBearListener()
+
     // Capture original transform data
     this.captureOriginalData()
   },
@@ -172,6 +178,22 @@ AFRAME.registerComponent('scene-controller', {
         position: Object.assign({}, this.suitcaseIntro.getAttribute('position')),
         rotation: Object.assign({}, this.suitcaseIntro.getAttribute('rotation')),
         scale: Object.assign({}, this.suitcaseIntro.getAttribute('scale'))
+      },
+      startBearParent: {
+        visible: this.startBearParent.getAttribute('visible'),
+        position: Object.assign({}, this.startBearParent.getAttribute('position'))
+      },
+      startBear: {
+        position: Object.assign({}, this.startBear.getAttribute('position')),
+        rotation: Object.assign({}, this.startBear.getAttribute('rotation')),
+        scale: Object.assign({}, this.startBear.getAttribute('scale')),
+        classes: Array.from(this.startBear.classList),
+        magnetRange: this.startBear.getAttribute('data-magnet-range'),
+        pickUp: this.startBear.hasAttribute('data-pick-up')
+      },
+      startBearText: {
+        color: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('color') : '#ffffff',
+        visible: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('visible') : true
       },
       suitcaseLight: {
         visible: document.getElementById('suitcaseLight').getAttribute('visible'),
@@ -293,6 +315,10 @@ AFRAME.registerComponent('scene-controller', {
         })
       }
     })
+  },
+
+  setupstartBearListener: function () {
+    if (this.startBear) this.startBear.addEventListener('pickup', this.handlestartBearGrab)
   },
 
   clearAllTimeouts: function () {
@@ -501,6 +527,37 @@ AFRAME.registerComponent('scene-controller', {
     this.suitcaseIntro.object3D.traverse((node) => {
       if (node.isMesh) node.material.depthWrite = true // Reset depthWrite to look normal before animating
     })
+    if (this.suitcaseDistanceInterval) {
+      clearInterval(this.suitcaseDistanceInterval)
+      this.suitcaseDistanceInterval = null
+    }
+    // Reset start bear to original state
+    const startBearData = envData.startBear
+    const startBearParentData = envData.startBearParent
+    this.startBearParent.setAttribute('visible', startBearParentData.visible)
+    this.startBearParent.setAttribute('position', startBearParentData.position)
+    this.startBear.setAttribute('position', startBearData.position)
+    this.startBear.setAttribute('rotation', startBearData.rotation)
+    this.startBear.setAttribute('scale', startBearData.scale)
+    this.startBear.setAttribute('model-opacity', 'number: 1')
+    this.startBear.removeAttribute('animation__scale')
+    this.startBear.removeAttribute('animation__opacity')
+    // Restore grab interaction attributes
+    this.startBear.className = ''
+    startBearData.classes.forEach(className => {
+      this.startBear.classList.add(className)
+    })
+    if (startBearData.magnetRange) this.startBear.setAttribute('data-magnet-range', startBearData.magnetRange)
+    if (startBearData.pickUp) this.startBear.setAttribute('data-pick-up', '')
+    if (this.startBear.is('grabbed')) this.startBear.removeState('grabbed')
+
+    // Reset troika text color and visibility
+    const startText = this.startBearParent.querySelector('a-troika-text')
+    if (startText) {
+      startText.removeAttribute('animation')
+      startText.setAttribute('color', envData.startBearText.color)
+      startText.setAttribute('visible', envData.startBearText.visible)
+    }
     // Reset suitcase UI elements (change visibility in teleportInsideSuitcase)
     const suitcaseLight = document.getElementById('suitcaseLight')
     suitcaseLight.setAttribute('visible', envData.suitcaseLight.visible)
@@ -616,24 +673,55 @@ AFRAME.registerComponent('scene-controller', {
     }
     // A-Frame animate to fade in the Traces logo
     this.uiIntro.setAttribute('visible', true)
-    this.uiIntro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
+    this.uiIntro.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 4500; delay: 1000; easing: linear')
     this.uiIntro.addEventListener('animationcomplete', () => {
-      // Moment's pause
+      // Show the start bear after logo fades in - this is now the "start screen"
       this.timeouts.introSequencePause = setTimeout(() => {
-        // Animate out the uiIntro
-        this.uiIntro.removeAttribute('animation')
-        this.uiIntro.setAttribute('animation', 'property: opacity; from: 1; to: 0; dur: 1500; easing: linear')
-        // Listen for the animation to complete
-        this.uiIntro.addEventListener('animationcomplete', () => {
-          this.uiIntro.setAttribute('visible', false)
-        }, { once: true })
-        // Fade in fog
-        this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.017; dur: 3500; easing: linear')
-        // Fade in ground
-        this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3500; easing: linear')
-        this.ground.addEventListener('animationcomplete', this.startIntro)
+        this.startBearParent.setAttribute('visible', true)
         this.timeouts.introSequencePause = null
-      }, 1000)
+      }, 500)
+    }, { once: true })
+  },
+
+  handlestartBearGrab: function () {
+    // Scale the start bear to 0
+    this.startBear.setAttribute('animation__scale', 'property: scale; to: 0 0 0; dur: 3000; easing: easeInSine')
+    this.startBear.setAttribute('model-opacity', 'number: 1')
+    this.startBear.setAttribute('animation__opacity', 'property: model-opacity.number; to: 0; dur: 2000; easing: easeInSine')
+    // Fade out the logo
+    this.uiIntro.removeAttribute('animation')
+    this.uiIntro.setAttribute('animation', 'property: material.opacity; from: 1; to: 0; dur: 1500; easing: linear')
+    // Set the uiIntro invisible once animation completes
+    this.uiIntro.addEventListener('animationcomplete', () => {
+      this.uiIntro.setAttribute('visible', false)
+    }, { once: true })
+
+    // Fade out the "pick up to begin" text
+    const startText = this.startBearParent.querySelector('a-troika-text')
+    if (startText) {
+      startText.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
+      startText.addEventListener('animationcomplete', () => {
+        startText.setAttribute('visible', false)
+      }, { once: true })
+    }
+    // Fade in fog
+    this.el.sceneEl.setAttribute('animation__fog', 'property: fog.density; from: 0; to: 0.017; dur: 3000; delay: 1000; easing: linear')
+    // Fade in ground
+    this.ground.setAttribute('animation', 'property: material.opacity; from: 0; to: 1; dur: 3000; delay: 1000; easing: linear')
+    // Listen for the logo animation to complete
+    this.startBear.addEventListener('animationcomplete__scale', () => {
+      // Reset camera rig to original position to keep suitcase sequence
+      const cameraRig = document.getElementById('cameraRig')
+      const sceneController = this.el.sceneEl.components['scene-controller']
+      if (cameraRig && sceneController) {
+        const envData = sceneController.originalEnvironmentData
+        cameraRig.setAttribute('position', envData.cameraRig.position)
+        cameraRig.setAttribute('rotation', envData.cameraRig.rotation)
+      }
+      this.startBearParent.setAttribute('visible', false)
+      // Move startBear out of reach so it can't be grabbed again even if dropped
+      this.startBear.setAttribute('position', '0 -100 0')
+      this.ground.addEventListener('animationcomplete', this.startIntro)
     }, { once: true })
   },
 
@@ -652,12 +740,13 @@ AFRAME.registerComponent('scene-controller', {
         suitcase.object3D.getWorldPosition(suitcasePos);
         const distance = Math.sqrt(Math.pow(userPos.x - suitcasePos.x, 2) + Math.pow(userPos.z - suitcasePos.z, 2));
         if (distance < 1) {
-          clearInterval(interval);
+          clearInterval(this.suitcaseDistanceInterval);
+          this.suitcaseDistanceInterval = null
           this.teleportInsideSuitcase();
         }
       };
 
-      const interval = setInterval(checkDistance, 100);
+      this.suitcaseDistanceInterval = setInterval(checkDistance, 100);
       // this.el.sceneEl.addEventListener('teleported', this.teleportInsideSuitcase, { once: true })
       this.timeouts.startIntro = null
     }, 1000)
@@ -1150,11 +1239,16 @@ AFRAME.registerComponent("toggle-physics", {
   events: {
     pickup: function() {
       this.el.addState('grabbed');
-      // play audio
-      // get the 1st char of this.el.id
-      const sceneNum = parseInt(this.el.id, 10);
-      console.log(sceneNum) // 1hero
-      document.getElementById(`${sceneNum}outro`).components['sound'].playSound()
+      // play audio - skip for startBear as it doesn't need audio
+      if (this.el.id !== 'startBear') {
+        // get the 1st char of this.el.id for numbered heroes
+        const sceneNum = parseInt(this.el.id, 10);
+        // console.log(sceneNum) // 1hero
+        const outroAudio = document.getElementById(`${sceneNum}outro`);
+        if (outroAudio && outroAudio.components['sound']) {
+          outroAudio.components['sound'].playSound();
+        }
+      }
     },
     putdown: function(e) {
       this.el.removeState('grabbed');
