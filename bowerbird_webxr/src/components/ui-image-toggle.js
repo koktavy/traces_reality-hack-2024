@@ -17,6 +17,10 @@ const UIImageToggle = {
     this.texture2.colorSpace = THREE.SRGBColorSpace;
     this.texture2.needsUpdate = true;
 
+    // Apply high-quality texture optimizations
+    this.optimizeTexture(this.texture1);
+    this.optimizeTexture(this.texture2);
+
     // Set the initial material
     const material = new THREE.MeshBasicMaterial({
       map: this.texture1,
@@ -29,6 +33,24 @@ const UIImageToggle = {
 
     this.swapTexture = this.swapTexture.bind(this);
     this.intervalId = setInterval(this.swapTexture, this.data.interval);
+  },
+
+  optimizeTexture(texture) {
+    if (!texture) return;
+    const renderer = this.el.sceneEl.renderer;
+    // Set anisotropic filtering to maximum supported
+    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+    texture.anisotropy = Math.min(16, maxAnisotropy);
+    // Set filtering modes for crisp rendering
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    // Generate mipmaps for better distance rendering
+    texture.generateMipmaps = true;
+    // Additional quality settings
+    texture.flipY = true;
+    texture.premultiplyAlpha = false;
+    // Force texture update
+    texture.needsUpdate = true;
   },
 
   swapTexture() {
