@@ -196,6 +196,13 @@ AFRAME.registerComponent('scene-controller', {
         color: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('color') : '#000000',
         visible: this.startBearParent.querySelector('a-troika-text') ? this.startBearParent.querySelector('a-troika-text').getAttribute('visible') : true
       },
+      startInstructionPlaneLeft: {
+        visible: document.getElementById('startInstructionPlaneLeft') ? document.getElementById('startInstructionPlaneLeft').getAttribute('visible') : true,
+      },
+      startInstructionTextLeft: {
+        color: document.getElementById('startInstructionTextLeft') ? document.getElementById('startInstructionTextLeft').getAttribute('color') : '#000000',
+        visible: document.getElementById('startInstructionTextLeft') ? document.getElementById('startInstructionTextLeft').getAttribute('visible') : true
+      },
       suitcaseLight: {
         visible: document.getElementById('suitcaseLight').getAttribute('visible'),
         animation: document.getElementById('suitcaseLight').getAttribute('animation__intensity')
@@ -543,7 +550,7 @@ AFRAME.registerComponent('scene-controller', {
     this.startBear.setAttribute('model-opacity', startBearData.modelOpacity)
     this.startBear.removeAttribute('animation__scale')
     this.startBear.removeAttribute('animation__opacity')
-    this.startBear.removeAttribute('animation__fadeIn')
+    this.startBear.removeAttribute('animation__fadein')
     this.startBear.removeAttribute('animation__bob')
     this.startBear.removeAttribute('animation__tilt')
     // Restore grab interaction attributes
@@ -556,12 +563,45 @@ AFRAME.registerComponent('scene-controller', {
     if (this.startBear.is('grabbed')) this.startBear.removeState('grabbed')
 
     // Reset troika text color and visibility
-    const startText = this.startBearParent.querySelector('a-troika-text')
-    if (startText) {
-      startText.removeAttribute('animation')
-      startText.removeAttribute('animation__fadeIn')
-      startText.setAttribute('color', envData.startBearText.color)
-      startText.setAttribute('visible', envData.startBearText.visible)
+    const startBearText = document.getElementById('startBearText')
+    if (startBearText) {
+      startBearText.removeAttribute('animation')
+      startBearText.removeAttribute('animation__fadein')
+      startBearText.setAttribute('color', envData.startBearText.color)
+      startBearText.setAttribute('visible', envData.startBearText.visible)
+    }
+
+    // Reset instruction plane
+    const startInstructionPlaneLeft = document.getElementById('startInstructionPlaneLeft')
+    if (startInstructionPlaneLeft) {
+      startInstructionPlaneLeft.removeAttribute('animation')
+      startInstructionPlaneLeft.removeAttribute('animation__fadein')
+      startInstructionPlaneLeft.setAttribute('visible', envData.startInstructionPlaneLeft.visible)
+      // Stop any running opacity animations
+      this.startInstructionPlaneLeftAnimationActive = false
+      if (this.startInstructionPlaneLeftOpacityInterval) {
+        clearInterval(this.startInstructionPlaneLeftOpacityInterval)
+        this.startInstructionPlaneLeftOpacityInterval = null
+      }
+      if (this.startInstructionPlaneLeftFadeOutInterval) {
+        clearInterval(this.startInstructionPlaneLeftFadeOutInterval)
+        this.startInstructionPlaneLeftFadeOutInterval = null
+      }
+      // Reset the THREE.js material opacity directly
+      const mesh = startInstructionPlaneLeft.getObject3D('mesh')
+      if (mesh && mesh.material) {
+        mesh.material.opacity = 0
+        mesh.material.needsUpdate = true
+      }
+    }
+
+    // Reset instruction text
+    const startInstructionTextLeft = document.getElementById('startInstructionTextLeft')
+    if (startInstructionTextLeft) {
+      startInstructionTextLeft.removeAttribute('animation__fadeout')
+      startInstructionTextLeft.removeAttribute('animation__fadein')
+      startInstructionTextLeft.setAttribute('color', envData.startInstructionTextLeft.color)
+      startInstructionTextLeft.setAttribute('visible', envData.startInstructionTextLeft.visible)
     }
     // Reset suitcase UI elements (change visibility in teleportInsideSuitcase)
     const suitcaseLight = document.getElementById('suitcaseLight')
@@ -651,7 +691,7 @@ AFRAME.registerComponent('scene-controller', {
 
   // Remove all animations in the scene to prevent component access errors during reset
   removeAllAnimations: function () {
-    const allElements = this.el.sceneEl.querySelectorAll('[animation], [animation__position], [animation__rotation], [animation__scale], [animation__opacity], [animation__bob], [animation__tilt], [animation__intensity], [animation__angle], [animation__fog], [animation__pos], [animation__fadeIn]')
+    const allElements = this.el.sceneEl.querySelectorAll('[animation], [animation__position], [animation__rotation], [animation__scale], [animation__opacity], [animation__bob], [animation__tilt], [animation__intensity], [animation__angle], [animation__fog], [animation__pos], [animation__fadein], [animation__fadeout]')
     allElements.forEach(el => {
       // Remove all possible animation attributes - the experience will add them back as needed
       el.removeAttribute('animation')
@@ -665,7 +705,8 @@ AFRAME.registerComponent('scene-controller', {
       el.removeAttribute('animation__angle')
       el.removeAttribute('animation__fog')
       el.removeAttribute('animation__pos')
-      el.removeAttribute('animation__fadeIn')
+      el.removeAttribute('animation__fadein')
+      el.removeAttribute('animation__fadeout')
     })
   },
 
@@ -685,16 +726,40 @@ AFRAME.registerComponent('scene-controller', {
     // Fade in start bear
     this.startBearParent.setAttribute('visible', true)
     this.startBear.setAttribute('model-opacity', 'number: 0')
-    this.startBear.setAttribute('animation__fadeIn', 'property: model-opacity.number; from: 0; to: 1; dur: 3000; delay: 3500; easing: easeInOutQuad')
+    this.startBear.setAttribute('animation__fadein', 'property: model-opacity.number; from: 0; to: 1; dur: 2500; delay: 3500; easing: easeInOutQuad')
     this.startBear.setAttribute('animation__bob', 'property: position; to: 0 0.025 0; dur: 2250; dir: alternate; easing: easeInOutSine; loop: true')
     this.startBear.setAttribute('animation__tilt', 'property: rotation; from: 5 -90 0; to: -5 -90 0; dur: 4500; dir: alternate; easing: easeInOutSine; loop: true')
     // Fade in pick up instruction
-    const startText = this.startBearParent.querySelector('a-troika-text')
-    if (startText) {
-      // Set initial color to black and animate to visible
-      startText.setAttribute('color', '#000000')
-      startText.setAttribute('animation__fadeIn', 'property: color; to: #888888; dur: 3000; delay: 5500; easing: easeOutQuad')
-    }
+    const startBearText = document.getElementById('startBearText')
+    startBearText.setAttribute('color', '#000000')
+    startBearText.setAttribute('animation__fadein', 'property: color; to: #888888; dur: 2000; delay: 5000; easing: easeOutQuad')
+    startBearText.addEventListener('animationcomplete__fadein', () => {
+      const startInstructionPlaneLeft = document.getElementById('startInstructionPlaneLeft')
+      // Animate the image opacity from 0 to 1 over 1.75s at the three.js level
+      const material = startInstructionPlaneLeft.getObject3D('mesh').material
+      material.opacity = 0
+      const fadeInDur = 1750
+      const opacityIncrement = 1 / 100
+      const interval = fadeInDur / 100
+      this.startInstructionPlaneLeftAnimationActive = true
+      this.startInstructionPlaneLeftOpacityInterval = setInterval(() => {
+        // Check if animation was stopped (by scene reset)
+        if (!this.startInstructionPlaneLeftAnimationActive) return
+        // Always read current opacity from material (in case it was reset)
+        const currentOpacity = material.opacity + opacityIncrement
+        material.opacity = currentOpacity
+        if (currentOpacity >= 1) {
+          clearInterval(this.startInstructionPlaneLeftOpacityInterval)
+          this.startInstructionPlaneLeftOpacityInterval = null
+          this.startInstructionPlaneLeftAnimationActive = false
+        }
+      }, interval)
+
+      // Fade in instruction text
+      const startInstructionTextLeft = document.getElementById('startInstructionTextLeft')
+      startInstructionTextLeft.setAttribute('color', '#000000')
+      startInstructionTextLeft.setAttribute('animation__fadein', `property: color; to: #888888; dur: ${fadeInDur}; easing: easeOutQuad`)
+    }, { once: true })
   },
 
   handlestartBearGrab: function () {
@@ -710,12 +775,40 @@ AFRAME.registerComponent('scene-controller', {
       this.uiIntro.setAttribute('visible', false)
     }, { once: true })
 
-    // Fade out the "pick up to begin" text
-    const startText = this.startBearParent.querySelector('a-troika-text')
-    if (startText) {
-      startText.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
-      startText.addEventListener('animationcomplete', () => {
-        startText.setAttribute('visible', false)
+    // Fade out the start screen UI
+    const startBearText = document.getElementById('startBearText')
+    startBearText.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
+    startBearText.addEventListener('animationcomplete', () => {
+      startBearText.setAttribute('visible', false)
+    }, { once: true })
+
+    // Fade out the instruction plane using THREE.js animation
+    const startInstructionPlaneLeft = document.getElementById('startInstructionPlaneLeft')
+    if (startInstructionPlaneLeft) {
+      const material = startInstructionPlaneLeft.getObject3D('mesh').material
+      const startOpacity = material.opacity
+      const targetOpacity = 0
+      const duration = 500 // 500ms
+      const startTime = Date.now()
+      this.startInstructionPlaneLeftFadeOutInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        material.opacity = startOpacity + (targetOpacity - startOpacity) * progress
+        material.needsUpdate = true
+        if (progress >= 1) {
+          clearInterval(this.startInstructionPlaneLeftFadeOutInterval)
+          this.startInstructionPlaneLeftFadeOutInterval = null
+          startInstructionPlaneLeft.setAttribute('visible', false)
+        }
+      }, 16) // ~60fps
+    }
+
+    // Fade out the instruction text
+    const startInstructionTextLeft = document.getElementById('startInstructionTextLeft')
+    if (startInstructionTextLeft) {
+      startInstructionTextLeft.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
+      startInstructionTextLeft.addEventListener('animationcomplete', () => {
+        startInstructionTextLeft.setAttribute('visible', false)
       }, { once: true })
     }
     // Fade in fog

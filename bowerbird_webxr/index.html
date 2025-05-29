@@ -103,6 +103,8 @@
         <!-- <img id="lightImg" src="assets/ui/light.png" /> -->
         <img id="pushImg" src="assets/ui/push-joystick.png" />
         <img id="releaseImg" src="assets/ui/release-joystick.png" />
+        <img id="move1Img" src="assets/ui/start/move1.png" />
+        <img id="move2Img" src="assets/ui/start/move2.png" />
         <video id="suitcaseUIVideo" src="assets/ui/videos/suitcase.mp4" autoplay loop playsinline muted></video>
 
         <!-- Intro Audio -->
@@ -448,7 +450,7 @@
           data-pick-up=""
           model-opacity="number: 0">
         </a-gltf-model>
-        <a-troika-text
+        <a-troika-text id="startBearText"
           value="pick up to begin"
           position="0 -0.25 0.175"
           align="center"
@@ -456,6 +458,23 @@
           font="assets/fonts/Lato-Black.ttf"
           font-size="0.08">
         </a-troika-text>
+        <!-- Left-side instruction images and text -->
+        <a-plane id="startInstructionPlaneLeft"
+          ui-image-toggle="image1: #move1Img; image2: #move2Img; interval: 900"
+          position="-0.85 -0.1 0.1"
+          rotation="0 25 0"
+          scale="-0.7 0.7 0.7"
+          visible="true">
+          <a-troika-text id="startInstructionTextLeft"
+            value="use the joystick to walk"
+            position="0 -0.5 0.1"
+            scale="-1 1 1"
+            align="center"
+            color="#000000"
+            font="assets/fonts/Lato-Black.ttf"
+            font-size="0.06">
+          </a-troika-text>
+        </a-plane>
       </a-entity>
 
       <a-entity id="introParent"

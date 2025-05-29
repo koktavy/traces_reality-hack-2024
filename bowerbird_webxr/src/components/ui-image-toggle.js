@@ -10,17 +10,20 @@ const UIImageToggle = {
 
     // Create textures from the image elements
     this.texture1 = new THREE.Texture(this.data.image1);
-    this.texture1.colorSpace = THREE.SRGBColorSpace; // Set color space
+    this.texture1.colorSpace = THREE.SRGBColorSpace;
     this.texture1.needsUpdate = true;
 
     this.texture2 = new THREE.Texture(this.data.image2);
-    this.texture2.colorSpace = THREE.SRGBColorSpace; // Set color space
+    this.texture2.colorSpace = THREE.SRGBColorSpace;
     this.texture2.needsUpdate = true;
 
     // Set the initial material
     const material = new THREE.MeshBasicMaterial({
       map: this.texture1,
-      transparent: true
+      transparent: true,
+      opacity: 0,
+      alphaTest: 0.01,
+      side: THREE.FrontSide
     });
     this.el.getObject3D('mesh').material = material;
 
