@@ -203,6 +203,13 @@ AFRAME.registerComponent('scene-controller', {
         color: document.getElementById('startInstructionTextLeft') ? document.getElementById('startInstructionTextLeft').getAttribute('color') : '#000000',
         visible: document.getElementById('startInstructionTextLeft') ? document.getElementById('startInstructionTextLeft').getAttribute('visible') : true
       },
+      startInstructionPlaneRight: {
+        visible: document.getElementById('startInstructionPlaneRight') ? document.getElementById('startInstructionPlaneRight').getAttribute('visible') : true,
+      },
+      startInstructionTextRight: {
+        color: document.getElementById('startInstructionTextRight') ? document.getElementById('startInstructionTextRight').getAttribute('color') : '#000000',
+        visible: document.getElementById('startInstructionTextRight') ? document.getElementById('startInstructionTextRight').getAttribute('visible') : true
+      },
       suitcaseLight: {
         visible: document.getElementById('suitcaseLight').getAttribute('visible'),
         animation: document.getElementById('suitcaseLight').getAttribute('animation__intensity')
@@ -603,6 +610,39 @@ AFRAME.registerComponent('scene-controller', {
       startInstructionTextLeft.setAttribute('color', envData.startInstructionTextLeft.color)
       startInstructionTextLeft.setAttribute('visible', envData.startInstructionTextLeft.visible)
     }
+
+    // Reset right instruction plane
+    const startInstructionPlaneRight = document.getElementById('startInstructionPlaneRight')
+    if (startInstructionPlaneRight) {
+      startInstructionPlaneRight.removeAttribute('animation')
+      startInstructionPlaneRight.removeAttribute('animation__fadein')
+      startInstructionPlaneRight.setAttribute('visible', envData.startInstructionPlaneRight.visible)
+      // Stop any running opacity animations
+      this.startInstructionPlaneRightAnimationActive = false
+      if (this.startInstructionPlaneRightOpacityInterval) {
+        clearInterval(this.startInstructionPlaneRightOpacityInterval)
+        this.startInstructionPlaneRightOpacityInterval = null
+      }
+      if (this.startInstructionPlaneRightFadeOutInterval) {
+        clearInterval(this.startInstructionPlaneRightFadeOutInterval)
+        this.startInstructionPlaneRightFadeOutInterval = null
+      }
+      // Reset the THREE.js material opacity directly
+      const mesh = startInstructionPlaneRight.getObject3D('mesh')
+      if (mesh && mesh.material) {
+        mesh.material.opacity = 0
+        mesh.material.needsUpdate = true
+      }
+    }
+
+    // Reset right instruction text
+    const startInstructionTextRight = document.getElementById('startInstructionTextRight')
+    if (startInstructionTextRight) {
+      startInstructionTextRight.removeAttribute('animation__fadeout')
+      startInstructionTextRight.removeAttribute('animation__fadein')
+      startInstructionTextRight.setAttribute('color', envData.startInstructionTextRight.color)
+      startInstructionTextRight.setAttribute('visible', envData.startInstructionTextRight.visible)
+    }
     // Reset suitcase UI elements (change visibility in teleportInsideSuitcase)
     const suitcaseLight = document.getElementById('suitcaseLight')
     suitcaseLight.setAttribute('visible', envData.suitcaseLight.visible)
@@ -759,6 +799,30 @@ AFRAME.registerComponent('scene-controller', {
       const startInstructionTextLeft = document.getElementById('startInstructionTextLeft')
       startInstructionTextLeft.setAttribute('color', '#000000')
       startInstructionTextLeft.setAttribute('animation__fadein', `property: color; to: #888888; dur: ${fadeInDur}; easing: easeOutQuad`)
+
+      // Fade in right instruction plane
+      const startInstructionPlaneRight = document.getElementById('startInstructionPlaneRight')
+      // Animate the image opacity from 0 to 1 over 1.75s at the three.js level
+      const materialRight = startInstructionPlaneRight.getObject3D('mesh').material
+      materialRight.opacity = 0
+      this.startInstructionPlaneRightAnimationActive = true
+      this.startInstructionPlaneRightOpacityInterval = setInterval(() => {
+        // Check if animation was stopped (by scene reset)
+        if (!this.startInstructionPlaneRightAnimationActive) return
+        // Always read current opacity from material (in case it was reset)
+        const currentOpacity = materialRight.opacity + opacityIncrement
+        materialRight.opacity = currentOpacity
+        if (currentOpacity >= 1) {
+          clearInterval(this.startInstructionPlaneRightOpacityInterval)
+          this.startInstructionPlaneRightOpacityInterval = null
+          this.startInstructionPlaneRightAnimationActive = false
+        }
+      }, interval)
+
+      // Fade in right instruction text
+      const startInstructionTextRight = document.getElementById('startInstructionTextRight')
+      startInstructionTextRight.setAttribute('color', '#000000')
+      startInstructionTextRight.setAttribute('animation__fadein', `property: color; to: #888888; dur: ${fadeInDur}; easing: easeOutQuad`)
     }, { once: true })
   },
 
@@ -809,6 +873,36 @@ AFRAME.registerComponent('scene-controller', {
       startInstructionTextLeft.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
       startInstructionTextLeft.addEventListener('animationcomplete', () => {
         startInstructionTextLeft.setAttribute('visible', false)
+      }, { once: true })
+    }
+
+    // Fade out the right instruction plane using THREE.js animation
+    const startInstructionPlaneRight = document.getElementById('startInstructionPlaneRight')
+    if (startInstructionPlaneRight) {
+      const material = startInstructionPlaneRight.getObject3D('mesh').material
+      const startOpacity = material.opacity
+      const targetOpacity = 0
+      const duration = 500 // 500ms
+      const startTime = Date.now()
+      this.startInstructionPlaneRightFadeOutInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        material.opacity = startOpacity + (targetOpacity - startOpacity) * progress
+        material.needsUpdate = true
+        if (progress >= 1) {
+          clearInterval(this.startInstructionPlaneRightFadeOutInterval)
+          this.startInstructionPlaneRightFadeOutInterval = null
+          startInstructionPlaneRight.setAttribute('visible', false)
+        }
+      }, 16) // ~60fps
+    }
+
+    // Fade out the right instruction text
+    const startInstructionTextRight = document.getElementById('startInstructionTextRight')
+    if (startInstructionTextRight) {
+      startInstructionTextRight.setAttribute('animation', 'property: color; to: #000000; dur: 500; easing: linear')
+      startInstructionTextRight.addEventListener('animationcomplete', () => {
+        startInstructionTextRight.setAttribute('visible', false)
       }, { once: true })
     }
     // Fade in fog
