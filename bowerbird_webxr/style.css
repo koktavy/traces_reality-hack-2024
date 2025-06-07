@@ -94,9 +94,9 @@ body {
 }
 
 #enterVR:hover {
-  border: 2px solid #177fa6;
-  color: #177fa6;
-  background: white;
+  /* border: 2px solid #177fa6; */
+  /* color: #177fa6; */
+  background: #177fa6;
   font-weight: bold;
 }
 
