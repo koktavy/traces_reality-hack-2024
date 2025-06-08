@@ -767,7 +767,7 @@ AFRAME.registerComponent('scene-controller', {
     this.startBearParent.setAttribute('visible', true)
     this.startBear.setAttribute('model-opacity', 'number: 0')
     this.startBear.setAttribute('animation__fadein', 'property: model-opacity.number; from: 0; to: 1; dur: 2500; delay: 3500; easing: easeInOutQuad')
-    this.startBear.setAttribute('animation__bob', 'property: position; to: 0 0.025 0; dur: 2250; dir: alternate; easing: easeInOutSine; loop: true')
+    this.startBear.setAttribute('animation__bob', 'property: position; to: 0 -0.075 -0.25; dur: 2250; dir: alternate; easing: easeInOutSine; loop: true')
     this.startBear.setAttribute('animation__tilt', 'property: rotation; from: 5 -90 0; to: -5 -90 0; dur: 4500; dir: alternate; easing: easeInOutSine; loop: true')
     // Fade in pick up instruction
     const startBearText = document.getElementById('startBearText')
