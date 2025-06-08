@@ -25,6 +25,7 @@ AFRAME.registerComponent('scene-controller', {
     this.endScene = this.endScene.bind(this)
     this.control = this.control.bind(this)
     this.resetExperience = this.resetExperience.bind(this)
+    this.checkResetCondition = this.checkResetCondition.bind(this)
 
     // Reset condition tracking
     this.leftJoystickPressed = false
