@@ -530,6 +530,15 @@ AFRAME.registerComponent('scene-controller', {
     if (envData.cameraRig.navmeshConstraint) {
       cameraRig.setAttribute('simple-navmesh-constraint', envData.cameraRig.navmeshConstraint)
     }
+
+    // Prevent visual blips during after teleporting
+    const bodyParent = document.getElementById('bodyParent')
+    const rightHandParent = document.getElementById('rightHandParent')
+    const leftHandParent = document.getElementById('leftHandParent')
+    if (bodyParent && bodyParent.components['follow-along']) bodyParent.components['follow-along'].updatePosition()
+    if (rightHandParent && rightHandParent.components['follow-along']) rightHandParent.components['follow-along'].updatePosition()
+    if (leftHandParent && leftHandParent.components['follow-along']) leftHandParent.components['follow-along'].updatePosition()
+
     this.updateNavmesh('.ground')
     // Reset suitcase transform to original HTML values
     this.suitcaseIntro.setAttribute('position', '0 0 0')
@@ -919,6 +928,14 @@ AFRAME.registerComponent('scene-controller', {
         const envData = sceneController.originalEnvironmentData
         cameraRig.setAttribute('position', envData.cameraRig.position)
         cameraRig.setAttribute('rotation', envData.cameraRig.rotation)
+
+        // Prevent visual blips during after teleporting
+        const bodyParent = document.getElementById('bodyParent')
+        const rightHandParent = document.getElementById('rightHandParent')
+        const leftHandParent = document.getElementById('leftHandParent')
+        if (bodyParent && bodyParent.components['follow-along']) bodyParent.components['follow-along'].updatePosition()
+        if (rightHandParent && rightHandParent.components['follow-along']) rightHandParent.components['follow-along'].updatePosition()
+        if (leftHandParent && leftHandParent.components['follow-along']) leftHandParent.components['follow-along'].updatePosition()
       }
       this.startBearParent.setAttribute('visible', false)
       // Move startBear out of reach so it can't be grabbed again even if dropped
@@ -1159,9 +1176,9 @@ AFRAME.registerComponent('follow-along', {
     this.targetRot = new THREE.Quaternion();
     this.targetEul = new THREE.Euler();
   },
-  tick: function () {
-    // Pos
 
+  updatePosition: function () {
+    // Pos
     this.data.target.object3D.updateMatrixWorld();
     this.data.target.object3D.getWorldPosition(this.targetPos);
     this.targetPos.add(this.data.offset);
@@ -1175,6 +1192,11 @@ AFRAME.registerComponent('follow-along', {
       // set full quaternion
       this.el.object3D.quaternion.copy(this.targetRot);
     }
+  },
+
+  tick: function () {
+    // Use the same update logic in tick for normal frame updates
+    this.updatePosition();
   }
 });
 
