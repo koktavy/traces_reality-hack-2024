@@ -837,6 +837,10 @@ AFRAME.registerComponent('scene-controller', {
   },
 
   handlestartBearGrab: function () {
+    // Clear position for proper hand attachment
+    this.startBear.setAttribute('position', '0 0 0')
+    this.startBear.removeAttribute('animation__bob')
+    this.startBear.removeAttribute('animation__tilt')
     // Scale the start bear to 0
     this.startBear.setAttribute('animation__scale', 'property: scale; to: 0 0 0; dur: 3000; easing: easeInSine')
     this.startBear.setAttribute('model-opacity', 'number: 1')
