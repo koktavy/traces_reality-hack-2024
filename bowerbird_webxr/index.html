@@ -996,13 +996,13 @@
       <a-entity
         id="cameraRig"
         simple-navmesh-constraint="navmesh: .ground; fall: 0.5; height: 1.65; exclude: .navmesh-hole;"
-        movement-controls="speed: 0.18; camera: #head;"
+        movement-controls="speed: 0.18; camera: #head; controls: keyboard, touch;"
         position="0 0 0" rotation="0 0 0" origin-on-ar-start
       >
         <!-- camera / "head" -->
         <a-entity id="head"
           camera="near: 0.01;"
-          look-controls="pointerLockEnabled: false"
+          look-controls="pointerLockEnabled: false; touchSensitivity: 0.02; mouseSensitivity: 0.02;"
           position="0 1.65 0">
           <a-entity id="uiParent">
             <a-plane id="uiOutro"
