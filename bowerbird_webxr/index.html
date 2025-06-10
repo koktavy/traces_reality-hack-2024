@@ -491,14 +491,6 @@
         </a-plane>
       </a-entity>
 
-      <!-- Traces Logo UI (floating in world space) -->
-      <a-plane id="uiIntro"
-        material="src: #introImg; transparent: true; opacity: 0;"
-        position="0 1.6 -2.75"
-        scale="1 0.5 0.5"
-        visible="false">
-      </a-plane>
-
       <a-entity id="introParent"
         visible="false"
         position="0 0.15 -2.25">
@@ -1132,6 +1124,14 @@
           hand-grip-animator="handedness: left; magnetTarget: #left-magnet; morphTargetName: Key 1">
         </a-gltf-model>
       </a-entity>
+
+      <!-- Traces Logo UI (below hands in dom) -->
+      <a-plane id="uiIntro"
+        material="src: #introImg; transparent: true; opacity: 0;"
+        position="0 1.6 -2.75"
+        scale="1 0.5 0.5"
+        visible="false">
+      </a-plane>
     </a-scene>
 
     <div id="dom-overlay">
