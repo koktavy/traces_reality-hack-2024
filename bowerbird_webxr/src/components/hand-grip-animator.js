@@ -85,7 +85,7 @@ AFRAME.registerComponent('hand-grip-animator', {
             child.material.needsUpdate = true;
           }
 
-          console.log(`hand-grip-animator: Found "${morphTargetName}" morph target at index ${this.morphTargetIndex} for ${this.data.handedness} hand`);
+          // console.log(`hand-grip-animator: Found "${morphTargetName}" morph target at index ${this.morphTargetIndex} for ${this.data.handedness} hand`);
           return;
         }
       }
@@ -140,8 +140,8 @@ AFRAME.registerComponent('hand-grip-animator', {
 
     // Debug logging (only when values change significantly)
     if (Math.abs(gripValue - (this.lastLoggedGripValue || 0)) > 0.05) {
-      const mappedValue = this.currentGripValue * this.data.maxMorphValue;
-      console.log(`hand-grip-animator ${this.data.handedness}: trigger=${triggerValue.toFixed(2)}, grip=${actualGripValue.toFixed(2)}, combined=${gripValue.toFixed(2)}, morph=${mappedValue.toFixed(2)}`);
+      // const mappedValue = this.currentGripValue * this.data.maxMorphValue;
+      // console.log(`hand-grip-animator ${this.data.handedness}: trigger=${triggerValue.toFixed(2)}, grip=${actualGripValue.toFixed(2)}, combined=${gripValue.toFixed(2)}, morph=${mappedValue.toFixed(2)}`);
       this.lastLoggedGripValue = gripValue;
     }
   },
