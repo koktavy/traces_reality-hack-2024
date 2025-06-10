@@ -448,7 +448,7 @@
         <a-troika-text id="startBearText"
           value="pick up to begin"
           position="0 -0.35 -0.075"
-          align="center"
+          anchor="center"
           color="#000000"
           font="assets/fonts/Lato-Black.ttf"
           font-size="0.08"
@@ -465,7 +465,7 @@
             value="use the joystick to walk"
             position="0 -0.5 0.1"
             scale="-1 1 1"
-            align="center"
+            anchor="center"
             color="#000000"
             font="assets/fonts/Lato-Black.ttf"
             font-size="0.06"
@@ -482,7 +482,7 @@
             value="press grip to grab objects"
             position="0 -0.5 0.1"
             scale="1 1 1"
-            align="center"
+            anchor="center"
             color="#000000"
             font="assets/fonts/Lato-Black.ttf"
             font-size="0.06"
@@ -515,13 +515,17 @@
             light="type: spot; angle: 50; penumbra: 0.25; intensity: 2; shadowBias: -0.001; castShadow: true"
             animation__intensity="property: light.intensity; from: 0; to: 5; dur: 1150; loop: true; dir: alternate; easing: easeInOutSine">
           </a-entity>
-          <a-plane id="suitcaseUIPlane"
-            ui-image-toggle="image1: #pushImg; image2: #releaseImg; interval: 1650"
-            position="-3.75 55 0"
-            height="28"
-            width="56"
-            rotation="0 0 0">
-          </a-plane>
+          <a-troika-text id="suitcaseUIPlane"
+            value="ready for the journey?&#10;&#10;come on in"
+            position="0 40 -10"
+            rotation="-10 0 0"
+            anchor="center"
+            align="center"
+            color="#ffffff"
+            font="assets/fonts/Lato-Black.ttf"
+            font-size="4"
+            material="side: front; shader: flat">
+          </a-troika-text>
         </a-gltf-model>
         <a-entity id="introSpotlightParent"
           position="0 3 1.5">
