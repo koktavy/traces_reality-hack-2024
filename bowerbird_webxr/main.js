@@ -9,6 +9,9 @@ AFRAME.registerComponent('scene-controller', {
     this.enterVR = document.getElementById('enterVR')
     this.uiIntro = document.getElementById('uiIntro')
     this.uiOutro = document.getElementById('uiOutro')
+    this.creditsContainer = document.getElementById('creditsContainer')
+    this.creditsLabel = document.getElementById('creditsLabel')
+    this.creditsNames = document.getElementById('creditsNames')
     this.ground = document.getElementById('ground')
     this.introParent = document.getElementById('introParent')
     this.suitcaseIntro = document.getElementById('suitcaseIntro')
@@ -255,6 +258,15 @@ AFRAME.registerComponent('scene-controller', {
         visible: this.uiOutro.getAttribute('visible'),
         opacity: this.uiOutro.getAttribute('material').opacity || 0,
         material: Object.assign({}, this.uiOutro.getAttribute('material'))
+      },
+      creditsContainer: {
+        visible: this.creditsContainer.getAttribute('visible')
+      },
+      creditsLabel: {
+        material: Object.assign({}, this.creditsLabel.getAttribute('material'))
+      },
+      creditsNames: {
+        material: Object.assign({}, this.creditsNames.getAttribute('material'))
       },
       blinkControls: {
         rightFingertip: document.getElementById('rightFingertip') ?
@@ -693,6 +705,12 @@ AFRAME.registerComponent('scene-controller', {
     this.uiOutro.setAttribute('visible', envData.uiOutro.visible)
     this.uiOutro.setAttribute('material', envData.uiOutro.material)
     this.uiOutro.removeAttribute('animation')
+    // Reset credits container and text elements
+    this.creditsContainer.setAttribute('visible', envData.creditsContainer.visible)
+    this.creditsLabel.setAttribute('material', envData.creditsLabel.material)
+    this.creditsLabel.removeAttribute('animation__fadein')
+    this.creditsNames.setAttribute('material', envData.creditsNames.material)
+    this.creditsNames.removeAttribute('animation__fadein')
     // Ensure all spotlight cones maintain proper transparency
     this.resetSpotlightTransparency()
     // Ensure UI elements maintain proper transparency
@@ -1165,6 +1183,11 @@ AFRAME.registerComponent('scene-controller', {
     this.hero12.addEventListener('animationcomplete__position', () => {
       this.uiOutro.setAttribute('visible', true)
       this.uiOutro.setAttribute('animation', 'property: opacity; from: 0; to: 1; dur: 4500; delay: 2500; easing: linear')
+
+      // Fade in credits text shortly after outro image starts fading in
+      this.creditsContainer.setAttribute('visible', true)
+      this.creditsLabel.setAttribute('animation__fadein', 'property: material.opacity; from: 0; to: 1; dur: 2000; delay: 4000; easing: easeOutQuad')
+      this.creditsNames.setAttribute('animation__fadein', 'property: material.opacity; from: 0; to: 1; dur: 2000; delay: 4200; easing: easeOutQuad')
     }, { once: true })
   }
 });

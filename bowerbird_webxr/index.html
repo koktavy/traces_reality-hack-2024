@@ -513,7 +513,7 @@
             rotation="-10 0 0"
             anchor="center"
             align="center"
-            color="#ffffff"
+            color="#fff8e7"
             font="assets/fonts/Lato-Black.ttf"
             font-size="4"
             material="side: front; shader: flat">
@@ -1002,7 +1002,7 @@
         <!-- camera / "head" -->
         <a-entity id="head"
           camera="near: 0.01;"
-          look-controls="pointerLockEnabled: false; touchSensitivity: 0.02; mouseSensitivity: 0.02;"
+          look-controls="pointerLockEnabled: false;"
           position="0 1.65 0">
           <a-entity id="uiParent">
             <a-plane id="uiOutro"
@@ -1011,6 +1011,28 @@
               scale="1 0.5 0.5"
               visible="false">
             </a-plane>
+            <a-entity id="creditsContainer" visible="false">
+              <a-troika-text id="creditsLabel"
+                value="Created by:"
+                position="0 -0.475 -1.5"
+                anchor="center"
+                align="center"
+                color="#177fa6"
+                font="assets/fonts/Lato-Black.ttf"
+                font-size="0.06"
+                material="side: front; shader: flat; transparent: true; opacity: 0">
+              </a-troika-text>
+              <a-troika-text id="creditsNames"
+                value="Pia Behmuaras&#10;Tavius Koktavy&#10;Vien Nguyen&#10;Wyatt Roy&#10;Jia Chen"
+                position="0 -0.7 -1.5"
+                anchor="center"
+                align="center"
+                color="#eee8e7"
+                font="assets/fonts/Lato-Black.ttf"
+                font-size="0.055"
+                material="side: front; shader: flat; transparent: true; opacity: 0">
+              </a-troika-text>
+            </a-entity>
           </a-entity>
           <a-entity id="introSounds" position="0 0 -0.5">
             <a-entity id="1intro" sound="src: #1introSrc"></a-entity>
